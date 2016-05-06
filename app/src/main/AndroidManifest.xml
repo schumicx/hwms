@@ -32,6 +32,7 @@
         <activity android:name=".ui.WeighActivity" />
         <activity android:name=".ui.InboundActivity" />
         <activity android:name=".ui.OutboundActivity" />
+        <activity android:name=".ui.OutboundItemsActivity" />
         <activity android:name=".ui.RecycleActivity" />
         <activity android:name=".ui.AffirmDetailsActivity" />
         <activity android:name=".ui.AffirmItemsActivity" />
