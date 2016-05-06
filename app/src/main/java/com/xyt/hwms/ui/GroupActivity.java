@@ -2,17 +2,43 @@ package com.xyt.hwms.ui;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListView;
 
 import com.xyt.hwms.R;
+import com.xyt.hwms.adapter.GroupAdapter;
+import com.xyt.hwms.adapter.RecycleItemsAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class GroupActivity extends BaseActivity {
+
+    @BindView(R.id.listview)
+    ListView listview;
+    private List<Integer> list = new ArrayList<>();
+    private GroupAdapter groupAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
+        ButterKnife.bind(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        View head = getLayoutInflater().inflate(R.layout.list_head_group, null);
+        listview.addHeaderView(head);
+
+        list.add(1);
+        list.add(1);
+        if (groupAdapter == null) {
+            groupAdapter = new GroupAdapter(context, list);
+        }
+        listview.setAdapter(groupAdapter);
     }
 
     @Override
