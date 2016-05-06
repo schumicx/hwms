@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:descendantFocusability="blocksDescendants">
+
+    <ImageView
+        android:id="@+id/portrait"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_centerVertical="true" />
+
+    <View
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:layout_below="@id/portrait" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/portrait"
+        android:singleLine="true"
+        android:text="XXXX" />
+
+    <TextView
+        android:id="@+id/phonenum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/name"
+        android:layout_toRightOf="@+id/name"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="XXXX" />
+
+    <TextView
+        android:id="@+id/apartment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/name"
+        android:layout_below="@+id/phonenum" />
+
+    <TextView
+        android:id="@+id/priceRange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/name"
+        android:layout_below="@+id/apartment" />
+
+    <Button
+        android:id="@+id/recommand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:focusable="false"
+        android:gravity="center" />
+</RelativeLayout>
