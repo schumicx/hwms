@@ -28,14 +28,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.AffirmActivity" />
+        <activity android:name=".ui.AffirmDetailsActivity" />
+        <activity android:name=".ui.AffirmItemsActivity" />
         <activity android:name=".ui.GroupActivity" />
         <activity android:name=".ui.WeighActivity" />
         <activity android:name=".ui.InboundActivity" />
         <activity android:name=".ui.OutboundActivity" />
         <activity android:name=".ui.OutboundItemsActivity" />
         <activity android:name=".ui.RecycleActivity" />
-        <activity android:name=".ui.AffirmDetailsActivity" />
-        <activity android:name=".ui.AffirmItemsActivity" />
+        <activity android:name=".ui.RecycleItemsActivity" />
         <activity android:name=".ui.BaseActivity" />
     </application>
 

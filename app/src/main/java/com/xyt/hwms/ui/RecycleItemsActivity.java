@@ -1,54 +1,40 @@
 package com.xyt.hwms.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.xyt.hwms.R;
-import com.xyt.hwms.adapter.OutboundAdapter;
-import com.xyt.hwms.adapter.RecycleAdapter;
+import com.xyt.hwms.adapter.OutboundItemsAdapter;
+import com.xyt.hwms.adapter.RecycleItemsAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnItemClick;
 
-public class RecycleActivity extends BaseActivity {
+public class RecycleItemsActivity extends BaseActivity {
 
     @BindView(R.id.listview)
     ListView listview;
-    @BindView(R.id.empty)
-    TextView empty;
     private List<Integer> list = new ArrayList<>();
-    private RecycleAdapter recycleAdapter;
-
-    @OnItemClick(R.id.listview)
-    public void onItemClick(int position) {
-        Intent intent = new Intent(getBaseContext(), RecycleItemsActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable("customer", list.get(position));
-//        bundle.putBoolean("isEdit", false);
-//        intent.putExtras(bundle);
-        startActivity(intent);
-    }
+    private RecycleItemsAdapter recycleItemsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recycle);
+        setContentView(R.layout.activity_recycle_items);
         ButterKnife.bind(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         list.add(1);
-        if (recycleAdapter == null) {
-            recycleAdapter = new RecycleAdapter(context, list);
+        list.add(1);
+        if (recycleItemsAdapter == null) {
+            recycleItemsAdapter = new RecycleItemsAdapter(context, list);
         }
-        listview.setAdapter(recycleAdapter);
+        listview.setAdapter(recycleItemsAdapter);
     }
 
     @Override
