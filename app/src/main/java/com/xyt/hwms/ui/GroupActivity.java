@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.GroupAdapter;
@@ -54,5 +55,10 @@ public class GroupActivity extends BaseActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void getTagId(String data) {
+        Toast.makeText(getBaseContext(), "aaa-----"+data, Toast.LENGTH_SHORT).show();
     }
 }

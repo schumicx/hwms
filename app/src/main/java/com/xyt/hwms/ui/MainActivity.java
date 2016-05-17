@@ -3,8 +3,18 @@ package com.xyt.hwms.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.google.gson.Gson;
 import com.xyt.hwms.R;
+import com.xyt.hwms.support.utils.ApplicationController;
+import com.xyt.hwms.support.utils.GsonObjectRequest;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -46,5 +56,10 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+    }
+
+    @Override
+    public void getTagId(String data) {
+        Toast.makeText(getBaseContext(), "bbb-----"+data, Toast.LENGTH_SHORT).show();
     }
 }

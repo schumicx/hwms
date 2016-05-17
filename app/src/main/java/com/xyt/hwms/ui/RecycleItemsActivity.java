@@ -3,6 +3,7 @@ package com.xyt.hwms.ui;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.OutboundItemsAdapter;
@@ -50,5 +51,10 @@ public class RecycleItemsActivity extends BaseActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void getTagId(String data) {
+        Toast.makeText(getBaseContext(), "xxxxxxxxxxx-----"+data, Toast.LENGTH_SHORT).show();
     }
 }

@@ -105,4 +105,9 @@ public class AffirmActivity extends BaseActivity implements AbsListView.OnScroll
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         visibleLastIndex = firstVisibleItem + visibleItemCount - 1;
     }
+
+    @Override
+    public void getTagId(String data) {
+        Toast.makeText(getBaseContext(), "xxxxxxxxxxx-----"+data, Toast.LENGTH_SHORT).show();
+    }
 }

@@ -2,6 +2,7 @@ package com.xyt.hwms.ui;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.xyt.hwms.R;
 
@@ -31,5 +32,10 @@ public class AffirmDetailsActivity extends BaseActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void getTagId(String data) {
+        Toast.makeText(getBaseContext(), "xxxxxxxxxxx-----"+data, Toast.LENGTH_SHORT).show();
     }
 }
