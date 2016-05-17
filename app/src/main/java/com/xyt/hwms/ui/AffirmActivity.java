@@ -9,12 +9,22 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.AffirmAdapter;
+import com.xyt.hwms.bean.BaseBean;
+import com.xyt.hwms.support.utils.ApplicationController;
 import com.xyt.hwms.support.utils.Constants;
+import com.xyt.hwms.support.utils.GsonObjectRequest;
+import com.xyt.hwms.support.utils.PreferencesUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -67,10 +77,12 @@ public class AffirmActivity extends BaseActivity implements AbsListView.OnScroll
         swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                pageNum = 0;
-//                cusRequest();
+                pageNum = Constants.STARTPAGE;
+                request();
             }
         });
+
+        request();
     }
 
     @Override
@@ -95,7 +107,7 @@ public class AffirmActivity extends BaseActivity implements AbsListView.OnScroll
         if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && visibleLastIndex == lastIndex && curPageSize == Constants.PAGESIZE) {
             swiperefresh.setRefreshing(true);
             curPageSize = 0;
-//            cusRequestest();
+            request();
         } else if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && visibleLastIndex == lastIndex && curPageSize < Constants.PAGESIZE && curPageSize > 0) {
             Toast.makeText(context, "XXXX", Toast.LENGTH_SHORT).show();
         }
@@ -109,5 +121,61 @@ public class AffirmActivity extends BaseActivity implements AbsListView.OnScroll
     @Override
     public void getTagId(String data) {
         Toast.makeText(getBaseContext(), "xxxxxxxxxxx-----"+data, Toast.LENGTH_SHORT).show();
+    }
+
+    //获取固废转移单
+    private void request() {
+        String url = Constants.SERVER + "hwit-transfer-apply";
+        Map<String, Object> params = new HashMap<>();
+//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
+//        params.put("pageNum", pageNum);
+//        params.put("pageSize", );
+        params.put("_username", "develop");
+        params.put("_password", "gbros:{2014}");
+        params.put(Constants.PAGE, pageNum);
+        params.put(Constants.SIZE, Constants.PAGESIZE);
+        ApplicationController.getInstance().addToRequestQueue(
+                new GsonObjectRequest<>(url, BaseBean.class, params, new Response.Listener<BaseBean>() {
+                    @Override
+                    public void onResponse(BaseBean response) {
+                        if (swiperefresh.isRefreshing()) {
+                            swiperefresh.setRefreshing(false);
+                        }
+//                        if (response.getRet() == Constants.SUCCESS) {
+//                            if (pageNum == Constants.STARTPAGE) {
+//                                list.clear();
+//                            }
+//                            if (response.getList().size() > 0) {
+//                                list.addAll(response.getList());
+//                                curPageSize = response.getList().size();
+//                            } else if (pageNum != Constants.STARTPAGE) {
+//                                SuperToast.create(context, context.getResources().getString(R.string.noMoredata), SuperToast.Duration.SHORT, SuperToast.Animations.SCALE).show();
+//                            }
+////                            if (list.size() == 0 && pageNum == Constants.STARTPAGE) {
+////                                empty.setText(getResources().getString(R.string.customerNoData));
+////                                empty.setVisibility(View.VISIBLE);
+////                            }
+//                            if (curPageSize == Constants.PAGESIZE) {
+//                                pageNum++;
+//                            }
+//                            affirmAdapter.notifyDataSetChanged();
+//                        } else {
+//                            Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
+//                        }
+                     }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                        if (swiperefresh.isRefreshing()) {
+                            swiperefresh.setRefreshing(false);
+                        }
+//                        if (!TextUtils.isEmpty(error.getMessage())) {
+//                            SuperToast.create(context, context.getResources().getString(R.string.request_error), SuperToast.Duration.SHORT, SuperToast.Animations.SCALE).show();
+//                        } else {
+//                            SuperToast.create(context, context.getResources().getString(R.string.request_timeout), SuperToast.Duration.SHORT, SuperToast.Animations.SCALE).show();
+//                        }
+                    }
+                }), getLocalClassName());
     }
 }

@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.xyt.hwms.R;
+import com.xyt.hwms.support.utils.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ import java.util.Map;
 public abstract class BaseActivity extends AppCompatActivity {
 
     protected Context context;
-    protected int pageNum = 0;
+    protected int pageNum = Constants.STARTPAGE;
     protected int visibleLastIndex = 0;
     protected int curPageSize = 0;
 

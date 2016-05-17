@@ -13,6 +13,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Iterator;
+import java.util.Map;
 
 public class GsonObjectRequest<T> extends JsonRequest<T> {
 
@@ -24,8 +26,25 @@ public class GsonObjectRequest<T> extends JsonRequest<T> {
         this.mClazz = clazz;
     }
 
-    public GsonObjectRequest(String url, Class<T> clazz, String jsonRequest, Listener<T> listener, ErrorListener errorListener) {
-        this(jsonRequest == null ? Method.GET : Method.POST, url, clazz, jsonRequest, listener, errorListener);
+//    public GsonObjectRequest(String url, Class<T> clazz, String jsonRequest, Listener<T> listener, ErrorListener errorListener) {
+//        this(jsonRequest == null ? Method.GET : Method.POST, url, clazz, jsonRequest, listener, errorListener);
+//    }
+
+    public GsonObjectRequest(String url, Class<T> clazz, Map mapRequest, Listener<T> listener, ErrorListener errorListener) {
+        this(Method.GET, url + transferParams(mapRequest), clazz, null, listener, errorListener);
+    }
+
+    private static String transferParams(Map mapRequest) {
+        StringBuilder sb = new StringBuilder();
+        if (mapRequest != null) {
+            Iterator<Map.Entry> entries = mapRequest.entrySet().iterator();
+            sb.append("?");
+            while (entries.hasNext()) {
+                Map.Entry entry = entries.next();
+                sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+            }
+        }
+        return sb.toString();
     }
 
     @Override
