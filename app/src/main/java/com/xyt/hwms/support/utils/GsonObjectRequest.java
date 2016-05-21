@@ -20,15 +20,12 @@ public class GsonObjectRequest<T> extends JsonRequest<T> {
 
     private final Gson mGson = new Gson();
     private final Class<T> mClazz;
+    private int statusCode;
 
     public GsonObjectRequest(int method, String url, Class<T> clazz, String jsonRequest, Listener<T> listener, ErrorListener errorListener) {
         super(method, url, (jsonRequest == null) ? null : jsonRequest, listener, errorListener);
         this.mClazz = clazz;
     }
-
-//    public GsonObjectRequest(String url, Class<T> clazz, String jsonRequest, Listener<T> listener, ErrorListener errorListener) {
-//        this(jsonRequest == null ? Method.GET : Method.POST, url, clazz, jsonRequest, listener, errorListener);
-//    }
 
     public GsonObjectRequest(String url, Class<T> clazz, Map mapRequest, Listener<T> listener, ErrorListener errorListener) {
         this(Method.GET, url + transferParams(mapRequest), clazz, null, listener, errorListener);
@@ -47,8 +44,21 @@ public class GsonObjectRequest<T> extends JsonRequest<T> {
         return sb.toString();
     }
 
+//    public GsonObjectRequest(String url, Class<T> clazz, String jsonRequest, Listener<T> listener, ErrorListener errorListener) {
+//        this(jsonRequest == null ? Method.GET : Method.POST, url, clazz, jsonRequest, listener, errorListener);
+//    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
+    }
+
     @Override
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
+        setStatusCode(response.statusCode);
         try {
             String jsonString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
             Log.d("Gson_log", jsonString);

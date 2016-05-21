@@ -1,17 +1,17 @@
 package com.xyt.hwms.bean;
 
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * Created by Levin on 2016-05-17.
  */
-public class BaseBean implements Serializable {
+public class EADObject implements Serializable {
     private int code;
     private String content;
-    private Map data;
+    private String error;
+    private Record data;
 
-    public BaseBean() {
+    public EADObject() {
     }
 
     public int getCode() {
@@ -30,11 +30,19 @@ public class BaseBean implements Serializable {
         this.content = content;
     }
 
-    public Map getData() {
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public Record getData() {
         return data;
     }
 
-    public void setData(Map data) {
+    public void setData(Record data) {
         this.data = data;
     }
 }

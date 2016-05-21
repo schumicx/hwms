@@ -11,26 +11,9 @@
     tools:context=".ui.AffirmDetailsActivity">
 
     <TextView
+        android:id="@+id/detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="XXXXXX\nXXXXXX" />
-
-    <Button
-        android:id="@+id/email_sign_in_button"
-        style="?android:textAppearanceSmall"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="OK"
-        android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/dd"
-        style="?android:textAppearanceSmall"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="BACK"
-        android:textStyle="bold" />
 
 </LinearLayout>

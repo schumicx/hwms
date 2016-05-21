@@ -4,23 +4,26 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.AffirmAdapter;
-import com.xyt.hwms.bean.BaseBean;
+import com.xyt.hwms.bean.EADObject;
 import com.xyt.hwms.support.utils.ApplicationController;
+import com.xyt.hwms.support.utils.BaseUtils;
 import com.xyt.hwms.support.utils.Constants;
 import com.xyt.hwms.support.utils.GsonObjectRequest;
-import com.xyt.hwms.support.utils.PreferencesUtils;
 
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnItemClick;
 
-public class AffirmActivity extends BaseActivity implements AbsListView.OnScrollListener {
+public class AffirmActivity extends BaseActivity /*implements AbsListView.OnScrollListener*/ {
 
     @BindView(R.id.listview)
     ListView listview;
@@ -38,16 +41,17 @@ public class AffirmActivity extends BaseActivity implements AbsListView.OnScroll
     SwipeRefreshLayout swiperefresh;
     @BindView(R.id.empty)
     TextView empty;
-    private List<Integer> list = new ArrayList<>();
+    private List<Map> list = new ArrayList<>();
     private AffirmAdapter affirmAdapter;
 
     @OnItemClick(R.id.listview)
     public void onItemClick(int position) {
-        Intent intent = new Intent(getBaseContext(), AffirmItemsActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable("customer", list.get(position));
-//        bundle.putBoolean("isEdit", false);
-//        intent.putExtras(bundle);
+        Intent intent = new Intent(context, AffirmItemsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("object", (Serializable) list);
+        bundle.putInt("position", position);
+        intent.putExtras(bundle);
+//        startActivityForResult(intent, RESULT_OK);
         startActivity(intent);
     }
 
@@ -57,19 +61,13 @@ public class AffirmActivity extends BaseActivity implements AbsListView.OnScroll
         setContentView(R.layout.activity_affirm);
         ButterKnife.bind(this);
 
-        getSupportActionBar().setTitle("XXXXXXX");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        list.add(1);
-        list.add(1);
-        list.add(1);
-        list.add(1);
-        list.add(1);
         if (affirmAdapter == null) {
             affirmAdapter = new AffirmAdapter(context, list);
         }
         listview.setAdapter(affirmAdapter);
-        listview.setOnScrollListener(this);
+//        listview.setOnScrollListener(this);
         swiperefresh.setColorSchemeResources(android.R.color.holo_red_light,
                 android.R.color.holo_green_light,
                 android.R.color.holo_blue_bright,
@@ -77,11 +75,14 @@ public class AffirmActivity extends BaseActivity implements AbsListView.OnScroll
         swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                pageNum = Constants.STARTPAGE;
+//                pageNum = Constants.STARTPAGE;
                 request();
             }
         });
 
+
+        swiperefresh.setProgressViewOffset(true, 0, BaseUtils.dip2px(context, 24));
+        swiperefresh.setRefreshing(true);
         request();
     }
 
@@ -92,7 +93,8 @@ public class AffirmActivity extends BaseActivity implements AbsListView.OnScroll
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+//                finish();
+                Toast.makeText(context,new Gson().toJson(list),Toast.LENGTH_LONG).show();
                 return true;
             default:
                 break;
@@ -100,81 +102,87 @@ public class AffirmActivity extends BaseActivity implements AbsListView.OnScroll
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-        int itemsLastIndex = affirmAdapter.getCount() - 1;
-        int lastIndex = itemsLastIndex; // headerView,footView各＋1
-        if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && visibleLastIndex == lastIndex && curPageSize == Constants.PAGESIZE) {
-            swiperefresh.setRefreshing(true);
-            curPageSize = 0;
-            request();
-        } else if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && visibleLastIndex == lastIndex && curPageSize < Constants.PAGESIZE && curPageSize > 0) {
-            Toast.makeText(context, "XXXX", Toast.LENGTH_SHORT).show();
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        list = (List) data.getSerializableExtra("object");
+//    }
 
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        visibleLastIndex = firstVisibleItem + visibleItemCount - 1;
-    }
+//    @Override
+//    public void onScrollStateChanged(AbsListView view, int scrollState) {
+//        int itemsLastIndex = affirmAdapter.getCount() - 1;
+//        int lastIndex = itemsLastIndex; // headerView,footView各＋1
+//        if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && visibleLastIndex == lastIndex && curPageSize == Constants.PAGESIZE) {
+//            swiperefresh.setRefreshing(true);
+//            curPageSize = 0;
+//            request();
+//        } else if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && visibleLastIndex == lastIndex && curPageSize < Constants.PAGESIZE && curPageSize > 0) {
+//            Toast.makeText(context, "XXXX", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//
+//    @Override
+//    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//        visibleLastIndex = firstVisibleItem + visibleItemCount - 1;
+//    }
 
     @Override
     public void getTagId(String data) {
-        Toast.makeText(getBaseContext(), "xxxxxxxxxxx-----"+data, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "NFC TagId:" + data, Toast.LENGTH_SHORT).show();
     }
 
     //获取固废转移单
     private void request() {
-        String url = Constants.SERVER + "hwit-transfer-apply";
+        String url = Constants.SERVER + "hwit-transfer-record";
         Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
-//        params.put("pageNum", pageNum);
-//        params.put("pageSize", );
         params.put("_username", "develop");
         params.put("_password", "gbros:{2014}");
-        params.put(Constants.PAGE, pageNum);
-        params.put(Constants.SIZE, Constants.PAGESIZE);
+//        params.put(Constants.PAGE, pageNum);
+//        params.put(Constants.SIZE, Constants.PAGESIZE);
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(url, BaseBean.class, params, new Response.Listener<BaseBean>() {
+                new GsonObjectRequest<>(url, EADObject.class, params, new Response.Listener<EADObject>() {
                     @Override
-                    public void onResponse(BaseBean response) {
+                    public void onResponse(EADObject response) {
                         if (swiperefresh.isRefreshing()) {
                             swiperefresh.setRefreshing(false);
                         }
-//                        if (response.getRet() == Constants.SUCCESS) {
-//                            if (pageNum == Constants.STARTPAGE) {
-//                                list.clear();
-//                            }
-//                            if (response.getList().size() > 0) {
-//                                list.addAll(response.getList());
-//                                curPageSize = response.getList().size();
-//                            } else if (pageNum != Constants.STARTPAGE) {
-//                                SuperToast.create(context, context.getResources().getString(R.string.noMoredata), SuperToast.Duration.SHORT, SuperToast.Animations.SCALE).show();
-//                            }
-////                            if (list.size() == 0 && pageNum == Constants.STARTPAGE) {
-////                                empty.setText(getResources().getString(R.string.customerNoData));
-////                                empty.setVisibility(View.VISIBLE);
-////                            }
-//                            if (curPageSize == Constants.PAGESIZE) {
-//                                pageNum++;
-//                            }
-//                            affirmAdapter.notifyDataSetChanged();
-//                        } else {
-//                            Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
+//                        if (pageNum == Constants.STARTPAGE) {
+//                            list.clear();
 //                        }
-                     }
+                        if (response.getData().getCollection().size() > 0) {
+                            list.clear();
+                            list.addAll(response.getData().getCollection());
+//                            curPageSize = response.getData().getCollection().size();
+                        }
+//                        else if (pageNum != Constants.STARTPAGE) {
+//                            Toast.makeText(context, "没有更多数据", Toast.LENGTH_SHORT).show();
+//                        }
+                        if (list.size() == 0 /*&& pageNum == Constants.STARTPAGE*/) {
+                            empty.setText("no data");
+                            empty.setVisibility(View.VISIBLE);
+                        }
+//                        if (curPageSize == Constants.PAGESIZE) {
+//                            pageNum++;
+//                        }
+                        affirmAdapter.notifyDataSetChanged();
+                    }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
                         if (swiperefresh.isRefreshing()) {
                             swiperefresh.setRefreshing(false);
                         }
-//                        if (!TextUtils.isEmpty(error.getMessage())) {
-//                            SuperToast.create(context, context.getResources().getString(R.string.request_error), SuperToast.Duration.SHORT, SuperToast.Animations.SCALE).show();
-//                        } else {
-//                            SuperToast.create(context, context.getResources().getString(R.string.request_timeout), SuperToast.Duration.SHORT, SuperToast.Animations.SCALE).show();
-//                        }
+                        try {
+                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                        } catch (NullPointerException e) {
+                            if (!BaseUtils.isNetworkConnected(context)) {
+                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }), getLocalClassName());
     }

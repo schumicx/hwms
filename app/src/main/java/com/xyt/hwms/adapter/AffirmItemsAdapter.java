@@ -5,13 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xyt.hwms.R;
 
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,9 +21,9 @@ import butterknife.ButterKnife;
 public class AffirmItemsAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
-    private List<?> list;
+    private List<Map> list;
 
-    public AffirmItemsAdapter(Context context, List<?> list) {
+    public AffirmItemsAdapter(Context context, List<Map> list) {
         this.list = list;
         this.context = context;
         this.inflater = LayoutInflater.from(context);
@@ -56,12 +55,17 @@ public class AffirmItemsAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
+        viewHolder.name.setText((String)list.get(position).get("waste_detail_id"));
+        viewHolder.code.setText((String)list.get(position).get("label_code"));
+
         return convertView;
     }
 
     static class ViewHolder {
         @BindView(R.id.name)
         TextView name;
+        @BindView(R.id.code)
+        TextView code;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
