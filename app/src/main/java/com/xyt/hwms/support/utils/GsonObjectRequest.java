@@ -2,6 +2,7 @@ package com.xyt.hwms.support.utils;
 
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Response;
@@ -13,6 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -64,9 +66,20 @@ public class GsonObjectRequest<T> extends JsonRequest<T> {
             Log.d("Gson_log", jsonString);
             return Response.success(mGson.fromJson(jsonString, mClazz), HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
+            Log.d("eee", "UnsupportedEncodingException");
             return Response.error(new ParseError(e));
         } catch (JsonSyntaxException e) {
+            Log.d("eeeeee", "JsonSyntaxException");
             return Response.error(new ParseError(e));
         }
     }
+
+//    @Override
+//    public Map<String, String> getHeaders() throws AuthFailureError {
+//        Map<String, String> headers = new HashMap<String, String>();
+//        headers.put("Charset", "UTF-8");
+//        headers.put("Content-Type", "application/x-javascript");
+//        headers.put("Accept-Encoding", "gzip,deflate");
+//        return super.getHeaders();
+//    }
 }

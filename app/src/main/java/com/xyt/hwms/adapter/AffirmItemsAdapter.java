@@ -57,6 +57,13 @@ public class AffirmItemsAdapter extends BaseAdapter {
 
         viewHolder.name.setText((String)list.get(position).get("waste_detail_id"));
         viewHolder.code.setText((String)list.get(position).get("label_code"));
+        if((String)list.get(position).get("status") == "已转移") {
+            viewHolder.name.setBackgroundColor(0xff00ff00);
+        } else if((String)list.get(position).get("status") == "退回"){
+            viewHolder.name.setBackgroundColor(0xffff0000);
+        } else {
+            viewHolder.name.setBackgroundColor(0xffffffff);
+        }
 
         return convertView;
     }

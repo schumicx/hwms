@@ -1,16 +1,14 @@
 package com.xyt.hwms.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.AffirmItemsAdapter;
+import com.xyt.hwms.support.utils.Constants;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,19 +21,15 @@ public class AffirmItemsActivity extends BaseActivity {
 
     @BindView(R.id.listview)
     ListView listview;
+    public AffirmDetailsDialogFragment dialog;
     private List<Map> list = new ArrayList<>();
     private AffirmItemsAdapter affirmItemsAdapter;
-    private List object;
     private int applyIndex;
 
     @OnItemClick(R.id.listview)
     public void onItemClick(int position) {
-//        Intent intent = new Intent(getBaseContext(), AffirmDetailsActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable("detail", (Serializable) list.get(position));
-//        intent.putExtras(bundle);
-//        startActivity(intent);
-        AffirmDetailsDialogFragment.newInstance(object, applyIndex, position).show(getSupportFragmentManager(), "NoticeDialogFragment");
+        dialog = AffirmDetailsDialogFragment.newInstance(applyIndex, position);
+        dialog.show(getSupportFragmentManager(), getLocalClassName());
     }
 
     @Override
@@ -46,15 +40,8 @@ public class AffirmItemsActivity extends BaseActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        object = (List) getIntent().getSerializableExtra("object");
         applyIndex = getIntent().getIntExtra("position", 0);
-        list = (List)((Map)object.get(applyIndex)).get("detail");
-
-        Intent intent = new Intent();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("object", (Serializable)object);
-        intent.putExtras(bundle);
-        this.setResult(RESULT_OK, intent);
+        list.addAll((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail"));
 
         if (affirmItemsAdapter == null) {
             affirmItemsAdapter = new AffirmItemsAdapter(context, list);
@@ -69,8 +56,7 @@ public class AffirmItemsActivity extends BaseActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case android.R.id.home:
-//                finish();
-                Toast.makeText(context,new Gson().toJson(((Map) ((List) ((Map) object.get(applyIndex)).get("detail")).get(0))),Toast.LENGTH_LONG).show();
+                finish();
                 return true;
             default:
                 break;
@@ -80,6 +66,20 @@ public class AffirmItemsActivity extends BaseActivity {
 
     @Override
     public void getTagId(String data) {
-        Toast.makeText(getBaseContext(), "xxxxxxxxxxx-----" + data, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getBaseContext(), (String) list.get(0).get("waste_detail_id"), Toast.LENGTH_SHORT).show();
+        if (dialog != null) {
+            dialog.dismiss();
+        }
+        for (int i = 0; i < list.size(); i++) {
+            if ("0154985b79348a8ae61a538908b447e5".equals((String) list.get(i).get("waste_detail_id"))) {
+                dialog = AffirmDetailsDialogFragment.newInstance(applyIndex, i);
+                dialog.show(getSupportFragmentManager(), getLocalClassName());
+                break;
+            }
+        }
+    }
+
+    public void updateView() {
+        affirmItemsAdapter.notifyDataSetChanged();
     }
 }
