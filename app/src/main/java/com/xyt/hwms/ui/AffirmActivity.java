@@ -3,7 +3,6 @@ package com.xyt.hwms.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -190,9 +189,6 @@ public class AffirmActivity extends BaseActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if (swiperefresh.isRefreshing()) {
-                            swiperefresh.setRefreshing(false);
-                        }
                         try {
                             Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {

@@ -25,9 +25,11 @@ public class AffirmItemsActivity extends BaseActivity {
     private List<Map> list = new ArrayList<>();
     private AffirmItemsAdapter affirmItemsAdapter;
     private int applyIndex;
+    private int position;
 
     @OnItemClick(R.id.listview)
     public void onItemClick(int position) {
+        this.position = position;
         dialog = AffirmDetailsDialogFragment.newInstance(applyIndex, position);
         dialog.show(getSupportFragmentManager(), getLocalClassName());
     }
@@ -72,7 +74,8 @@ public class AffirmItemsActivity extends BaseActivity {
         }
         for (int i = 0; i < list.size(); i++) {
             if ("0154985b79348a8ae61a538908b447e5".equals((String) list.get(i).get("waste_detail_id"))) {
-                dialog = AffirmDetailsDialogFragment.newInstance(applyIndex, i);
+                this.position = i;
+                dialog = AffirmDetailsDialogFragment.newInstance(applyIndex, position);
                 dialog.show(getSupportFragmentManager(), getLocalClassName());
                 break;
             }
@@ -80,6 +83,10 @@ public class AffirmItemsActivity extends BaseActivity {
     }
 
     public void updateView() {
+        if(((Map) ((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail")).get(position)).get("status").toString().equals("退回")) {
+            ReasonDialogFragment.newInstance(applyIndex, position).show(getSupportFragmentManager(), getLocalClassName());
+        }
+
         affirmItemsAdapter.notifyDataSetChanged();
     }
 }

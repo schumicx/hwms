@@ -25,6 +25,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected int pageNum = Constants.STARTPAGE;
     protected int visibleLastIndex = 0;
     protected int curPageSize = 0;
+    protected String NFCTagId;
 
     private NfcAdapter mAdapter;
     private PendingIntent mPendingIntent;

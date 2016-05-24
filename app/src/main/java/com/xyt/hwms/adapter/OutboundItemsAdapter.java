@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.xyt.hwms.R;
 
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,9 +21,9 @@ import butterknife.ButterKnife;
 public class OutboundItemsAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
-    private List<?> list;
+    private List<Map> list;
 
-    public OutboundItemsAdapter(Context context, List<?> list) {
+    public OutboundItemsAdapter(Context context, List<Map> list) {
         this.list = list;
         this.context = context;
         this.inflater = LayoutInflater.from(context);
@@ -53,6 +54,8 @@ public class OutboundItemsAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+
+        viewHolder.name.setText(list.get(position).get("k").toString());
 
         return convertView;
     }
