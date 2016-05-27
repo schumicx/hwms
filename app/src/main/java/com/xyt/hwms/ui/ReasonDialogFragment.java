@@ -18,9 +18,9 @@ import java.util.Map;
 
 public class ReasonDialogFragment extends DialogFragment {
 
-    String a[];
     private int applyIndex;
     private int wasteIndex;
+    private String a[];
 
     public static ReasonDialogFragment newInstance(int applyIndex, int wasteIndex) {
         ReasonDialogFragment fragment = new ReasonDialogFragment();

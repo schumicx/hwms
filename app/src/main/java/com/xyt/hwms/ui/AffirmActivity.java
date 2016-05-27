@@ -119,13 +119,18 @@ public class AffirmActivity extends BaseActivity {
         Toast.makeText(context, "NFC TagId:" + data, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void getBarcode(String data) {
+        Toast.makeText(context, "Barcode:" + data, Toast.LENGTH_SHORT).show();
+    }
+
     //获取固废转移单
     private void request() {
         String url = Constants.SERVER + "hwit-transfer-record";
         Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("_username", "develop");
-        params.put("_password", "gbros:{2014}");
+        params.put("_password", "whchem@2016");
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(url, EADObject.class, params, new Response.Listener<EADObject>() {
                     @Override

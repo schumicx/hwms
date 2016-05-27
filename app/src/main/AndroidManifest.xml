@@ -44,6 +44,11 @@
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+
     <application
         android:name=".support.utils.ApplicationController"
         android:allowBackup="true"
@@ -59,28 +64,48 @@
 
         <activity
             android:name=".ui.LoginActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <!--<intent-filter>-->
             <!--<action android:name="android.intent.action.MAIN" />-->
             <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
-        <activity android:name=".ui.MainActivity">
+        <activity
+            android:name=".ui.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.AffirmActivity" />
-        <activity android:name=".ui.AffirmDetailsActivity" />
-        <activity android:name=".ui.AffirmItemsActivity" />
-        <activity android:name=".ui.GroupActivity" />
-        <activity android:name=".ui.WeighActivity" />
-        <activity android:name=".ui.InboundActivity" />
-        <activity android:name=".ui.OutboundActivity" />
-        <activity android:name=".ui.OutboundItemsActivity" />
-        <activity android:name=".ui.RecycleActivity" />
-        <activity android:name=".ui.RecycleItemsActivity" />
+        <activity
+            android:name=".ui.AffirmActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.AffirmItemsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.GroupActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.WeighActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.InboundActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.OutboundActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.OutboundItemsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.RecycleActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.RecycleItemsActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

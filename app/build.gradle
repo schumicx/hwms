@@ -67,11 +67,11 @@ android {
         }
     }
 
-    sourceSets {
-        main {
-            jniLibs.srcDirs = ['jnilibs']
-        }
-    }
+//    sourceSets {
+//        main {
+//            jniLibs.srcDirs = ['jnilibs']
+//        }
+//    }
 }
 
 dependencies {

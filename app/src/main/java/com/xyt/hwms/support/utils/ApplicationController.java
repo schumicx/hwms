@@ -1,11 +1,14 @@
 package com.xyt.hwms.support.utils;
 
 import android.app.Application;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.text.TextUtils;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.motorolasolutions.adc.decoder.BarCodeReader;
 
 public class ApplicationController extends Application {
 
@@ -17,6 +20,18 @@ public class ApplicationController extends Application {
      * A singleton instance of the application class for easy access in other places
      */
     private static ApplicationController sInstance;
+
+    static {
+        System.loadLibrary("IAL");
+        System.loadLibrary("SDL");
+        System.loadLibrary("barcodereader44");
+    }
+
+    public int trigMode = BarCodeReader.ParamVal.AUTO_AIM;
+    public int state = Constants.STATE_IDLE;
+    public ToneGenerator toneGenerator;
+    public BarCodeReader barCodeReader;
+
     /**
      * Global request queue for Volley
      */
@@ -34,6 +49,13 @@ public class ApplicationController extends Application {
         super.onCreate();
         // initialize the singleton
         sInstance = this;
+        toneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
+        barCodeReader = BarCodeReader.open(this);
+
+        doSetParam(22, 2);
+        doSetParam(23, 40);
+        doSetParam(BarCodeReader.ParamNum.QR_INVERSE, BarCodeReader.ParamVal.INVERSE_AUTOD);
+        doSetParam(BarCodeReader.ParamNum.DATAMATRIX_INVERSE, BarCodeReader.ParamVal.INVERSE_AUTOD);
     }
 
     /**
@@ -93,5 +115,47 @@ public class ApplicationController extends Application {
         if (mRequestQueue != null) {
             mRequestQueue.cancelAll(TAG);
         }
+    }
+
+    public void beep() {
+        if (toneGenerator != null) {
+            toneGenerator.startTone(ToneGenerator.TONE_CDMA_NETWORK_BUSY_ONE_SHOT);
+        }
+    }
+
+    public boolean isAutoAim() {
+        return (trigMode == BarCodeReader.ParamVal.AUTO_AIM);
+    }
+
+    public void doDecode() {
+        if (setIdle() != Constants.STATE_IDLE) {
+            return;
+        }
+        state = Constants.STATE_DECODE;
+        barCodeReader.startDecode(); // start decode (callback gets results)
+    }
+
+    private void doSetParam(int num, int val) {
+        int ret = barCodeReader.setParameter(num, val);
+        if (ret != BarCodeReader.BCR_ERROR && num == BarCodeReader.ParamNum.PRIM_TRIG_MODE) {
+            trigMode = val;
+            if (val == BarCodeReader.ParamVal.AUTO_AIM) {
+                barCodeReader.startHandsFreeDecode(BarCodeReader.ParamVal.AUTO_AIM);
+            }
+        }
+    }
+
+    private int setIdle() {
+        int prevState = state;
+        int ret = prevState;        //for states taking time to chg/end
+        state = Constants.STATE_IDLE;
+        switch (prevState) {
+            case Constants.STATE_DECODE:
+                barCodeReader.stopDecode();
+                break;
+            default:
+                ret = Constants.STATE_IDLE;
+        }
+        return ret;
     }
 }

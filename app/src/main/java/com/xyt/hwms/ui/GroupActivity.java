@@ -61,4 +61,9 @@ public class GroupActivity extends BaseActivity {
     public void getTagId(String data) {
         Toast.makeText(getBaseContext(), "aaa-----"+data, Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void getBarcode(String data) {
+        Toast.makeText(context, "Barcode:" + data, Toast.LENGTH_SHORT).show();
+    }
 }

@@ -62,4 +62,9 @@ public class MainActivity extends BaseActivity {
     public void getTagId(String data) {
         Toast.makeText(getBaseContext(), "bbb-----"+data, Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void getBarcode(String data) {
+        Toast.makeText(context, "aaaaaaa------Barcode:" + data, Toast.LENGTH_SHORT).show();
+    }
 }

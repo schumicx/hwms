@@ -353,5 +353,10 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
     public void getTagId(String data) {
         Toast.makeText(getBaseContext(), "xxxxxxxxxxx-----"+data, Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void getBarcode(String data) {
+        Toast.makeText(context, "Barcode:" + data, Toast.LENGTH_SHORT).show();
+    }
 }
 

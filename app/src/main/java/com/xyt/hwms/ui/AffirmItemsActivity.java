@@ -2,6 +2,7 @@ package com.xyt.hwms.ui;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -19,9 +20,9 @@ import butterknife.OnItemClick;
 
 public class AffirmItemsActivity extends BaseActivity {
 
+    public AffirmDetailsDialogFragment dialog;
     @BindView(R.id.listview)
     ListView listview;
-    public AffirmDetailsDialogFragment dialog;
     private List<Map> list = new ArrayList<>();
     private AffirmItemsAdapter affirmItemsAdapter;
     private int applyIndex;
@@ -29,8 +30,8 @@ public class AffirmItemsActivity extends BaseActivity {
 
     @OnItemClick(R.id.listview)
     public void onItemClick(int position) {
-        this.position = position;
-        dialog = AffirmDetailsDialogFragment.newInstance(applyIndex, position);
+        this.position = position - 1;
+        dialog = AffirmDetailsDialogFragment.newInstance(applyIndex, position - 1);
         dialog.show(getSupportFragmentManager(), getLocalClassName());
     }
 
@@ -44,6 +45,9 @@ public class AffirmItemsActivity extends BaseActivity {
 
         applyIndex = getIntent().getIntExtra("position", 0);
         list.addAll((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail"));
+
+        View head = getLayoutInflater().inflate(R.layout.list_head_affirm_items, null);
+        listview.addHeaderView(head);
 
         if (affirmItemsAdapter == null) {
             affirmItemsAdapter = new AffirmItemsAdapter(context, list);
@@ -82,11 +86,24 @@ public class AffirmItemsActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void getBarcode(String data) {
+        Toast.makeText(context, "Barcode:" + data, Toast.LENGTH_SHORT).show();
+    }
+
     public void updateView() {
-        if(((Map) ((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail")).get(position)).get("status").toString().equals("退回")) {
+        if (((Map) ((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail")).get(position)).get("status").toString().equals("退回")) {
             ReasonDialogFragment.newInstance(applyIndex, position).show(getSupportFragmentManager(), getLocalClassName());
         }
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).get("status").toString().equals("退回")) {
 
+            } else if (list.get(i).get("status").toString().equals("接受")) {
+
+            } else {
+
+            }
+        }
         affirmItemsAdapter.notifyDataSetChanged();
     }
 }

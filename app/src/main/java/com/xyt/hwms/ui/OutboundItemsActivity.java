@@ -75,6 +75,11 @@ public class OutboundItemsActivity extends BaseActivity {
         request();
     }
 
+    @Override
+    public void getBarcode(String data) {
+        Toast.makeText(context, "Barcode:" + data, Toast.LENGTH_SHORT).show();
+    }
+
     //出庫
     private void request() {
         String url = Constants.SERVER + "hwit-transfer-record";

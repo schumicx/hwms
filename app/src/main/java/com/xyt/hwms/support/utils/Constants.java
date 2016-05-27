@@ -6,7 +6,8 @@ import java.util.Map;
 
 public class Constants {
     //测试
-    public static final String BASE_URL = "http://ead.xiyouqi.cn:8080";
+//    public static final String BASE_URL = "http://ead.xiyouqi.cn:8080";
+    public static final String BASE_URL = "http://10.10.102.154:8080";
 //    public static final String BASE_URL = "http://192.168.43.126:8080";
     //生产
 //    public static final String BASE_URL = "http://120.25.153.217";
@@ -24,4 +25,11 @@ public class Constants {
     public static final String PAGE = "_page";
     public static final String SIZE = "_size";
     public static final int STARTPAGE = 1;
+
+
+    public static final int STATE_IDLE = 0;
+    public static final int STATE_DECODE = 1;
+    public static final boolean beepMode = true;        // decode beep enable
+    public static long decode_start = 0;
+    public static long decode_end = 0;
 }
