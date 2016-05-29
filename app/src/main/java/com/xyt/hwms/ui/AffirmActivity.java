@@ -3,6 +3,7 @@ package com.xyt.hwms.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +28,6 @@ import com.xyt.hwms.support.utils.PreferencesUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,19 +75,30 @@ public class AffirmActivity extends BaseActivity {
         swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                request();
+                if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
+                    swiperefresh.setRefreshing(false);
+                    SyncDialogFragment.newInstance().show(getSupportFragmentManager(), getLocalClassName());
+                } else {
+                    obtainRequest();
+                }
             }
         });
 
         swiperefresh.setProgressViewOffset(true, 0, BaseUtils.dip2px(context, 24));
-        swiperefresh.setRefreshing(true);
-        request();
+
+        if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
+            Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), List.class);
+            list.addAll(Constants.AFFIRM_LIST);
+            SyncDialogFragment.newInstance().show(getSupportFragmentManager(), getLocalClassName());
+        } else {
+            swiperefresh.setRefreshing(true);
+            obtainRequest();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Toast.makeText(context, PreferencesUtils.getString(context, "affirm"), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -106,7 +117,11 @@ public class AffirmActivity extends BaseActivity {
                 finish();
                 return true;
             case R.id.sync:
-                syncRequest();
+                if (!PreferencesUtils.getBoolean(context, "isSync", false)) {
+                    syncRequest();
+                } else {
+                    Toast.makeText(context, "最新,无需同步", Toast.LENGTH_SHORT).show();
+                }
                 break;
             default:
                 break;
@@ -124,15 +139,17 @@ public class AffirmActivity extends BaseActivity {
         Toast.makeText(context, "Barcode:" + data, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void closeAffirmDialog() {
+    }
+
     //获取固废转移单
-    private void request() {
-        String url = Constants.SERVER + "hwit-transfer-record";
-        Map<String, Object> params = new HashMap<>();
+    private void obtainRequest() {
+        String url = Constants.SERVER + "mobile-hwit";
+//        Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
-        params.put("_username", "develop");
-        params.put("_password", "whchem@2016");
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(url, EADObject.class, params, new Response.Listener<EADObject>() {
+                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016", EADObject.class, null, new Response.Listener<EADObject>() {
                     @Override
                     public void onResponse(EADObject response) {
                         if (swiperefresh.isRefreshing()) {
@@ -140,12 +157,10 @@ public class AffirmActivity extends BaseActivity {
                         }
                         if (response.getData().getCollection().size() > 0) {
                             list.clear();
-                            list.addAll(response.getData().getCollection());
-//                            if (TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
-                            PreferencesUtils.putString(context, "affirm", new Gson().toJson(list));
+                            PreferencesUtils.putString(context, "affirm", new Gson().toJson(response.getData().getCollection()));
+                            PreferencesUtils.putBoolean(context, "isSync", true);
                             Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), List.class);
-                            ;
-//                            }
+                            list.addAll(Constants.AFFIRM_LIST);
                         }
                         if (list.size() == 0) {
                             empty.setText("no data");
@@ -160,33 +175,41 @@ public class AffirmActivity extends BaseActivity {
                             swiperefresh.setRefreshing(false);
                         }
                         try {
-                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), EADMsgObject.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
                             if (!BaseUtils.isNetworkConnected(context)) {
-                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
                             }
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
+                        Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), List.class);
+                        list.addAll(Constants.AFFIRM_LIST);
+                        affirmAdapter.notifyDataSetChanged();
+
                         error.printStackTrace();
                     }
                 }), getLocalClassName());
     }
 
     //同步固废转移单
-    private void syncRequest() {
-        String url = Constants.SERVER + "hwit-transfer-record";
+    public void syncRequest() {
+        String url = Constants.SERVER + "mobile-hwit";
 //        Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
 //        params.put("", "gbros:{2014}");
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.PUT, url+"?_username=develop&_password=gbros:{2014}", EADMsgObject.class, PreferencesUtils.getString(context, "affirm"), new Response.Listener<EADMsgObject>() {
+                new GsonObjectRequest<>(Request.Method.PUT, url + "?_username=develop&_password=whchem@2016", EADMsgObject.class, PreferencesUtils.getString(context, "affirm"), new Response.Listener<EADMsgObject>() {
                     @Override
                     public void onResponse(EADMsgObject response) {
                         if (response.getCode() == 200) {
                             Toast.makeText(context, "success", Toast.LENGTH_SHORT).show();
+                            PreferencesUtils.putString(context, "affirm", null);
+                            PreferencesUtils.putBoolean(context, "isSync", true);
+                            Constants.AFFIRM_LIST = null;
+                            obtainRequest();
                         } else {
                             Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
                         }
@@ -195,12 +218,12 @@ public class AffirmActivity extends BaseActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         try {
-                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), EADMsgObject.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
                             if (!BaseUtils.isNetworkConnected(context)) {
-                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
                             }
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();

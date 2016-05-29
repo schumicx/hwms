@@ -47,7 +47,7 @@ public class RecycleActivity extends BaseActivity {
     public void onItemClick(int position) {
         Intent intent = new Intent(getBaseContext(), RecycleItemsActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("id", "");
+        bundle.putString("id", ((Map)list.get(position)).get("inner_id").toString());
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -103,6 +103,10 @@ public class RecycleActivity extends BaseActivity {
     @Override
     public void getBarcode(String data) {
         Toast.makeText(context, "Barcode:" + data, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void closeAffirmDialog() {
     }
 
     //获取内部利用转移单

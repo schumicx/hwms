@@ -2,21 +2,24 @@ package com.xyt.hwms.ui;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.RecycleItemsAdapter;
 import com.xyt.hwms.bean.EADMsgObject;
+import com.xyt.hwms.bean.EADObject;
 import com.xyt.hwms.support.utils.ApplicationController;
 import com.xyt.hwms.support.utils.BaseUtils;
 import com.xyt.hwms.support.utils.Constants;
 import com.xyt.hwms.support.utils.GsonObjectRequest;
-import com.xyt.hwms.support.utils.PreferencesUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -32,6 +35,8 @@ public class RecycleItemsActivity extends BaseActivity {
 
     @BindView(R.id.listview)
     ListView listview;
+    @BindView(R.id.empty)
+    TextView empty;
     private List<Map> list = new ArrayList<>();
     private RecycleItemsAdapter recycleItemsAdapter;
 
@@ -48,9 +53,11 @@ public class RecycleItemsActivity extends BaseActivity {
         id = getIntent().getStringExtra("id");
 
         if (recycleItemsAdapter == null) {
-            recycleItemsAdapter = new RecycleItemsAdapter(context, list);
+            recycleItemsAdapter = new RecycleItemsAdapter(context, list, id);
         }
         listview.setAdapter(recycleItemsAdapter);
+
+        request();
     }
 
     @Override
@@ -70,12 +77,16 @@ public class RecycleItemsActivity extends BaseActivity {
 
     @Override
     public void getTagId(String data) {
-        request();
     }
 
     @Override
     public void getBarcode(String data) {
-        Toast.makeText(context, "Barcode:" + data, Toast.LENGTH_SHORT).show();
+        barCodeData = data;
+        submitRequest();
+    }
+
+    @Override
+    public void closeAffirmDialog() {
     }
 
     //内部利用
@@ -85,18 +96,51 @@ public class RecycleItemsActivity extends BaseActivity {
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
 //        params.put("", "gbros:{2014}");
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=gbros:{2014}", EADMsgObject.class, PreferencesUtils.getString(context, "affirm"), new Response.Listener<EADMsgObject>() {
+                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016", EADObject.class, null, new Response.Listener<EADObject>() {
+                    @Override
+                    public void onResponse(EADObject response) {
+                        if (response.getData().getCollection() != null && response.getData().getCollection().size() > 0) {
+                            list.clear();
+                            list.addAll(response.getData().getCollection());
+                        }
+                        if (list.size() == 0) {
+                            empty.setText("no data");
+                            empty.setVisibility(View.VISIBLE);
+                        }
+                        recycleItemsAdapter.notifyDataSetChanged();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        try {
+                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                        } catch (NullPointerException e) {
+                            if (!BaseUtils.isNetworkConnected(context)) {
+                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }), getLocalClassName());
+    }
+
+    //内部利用出库
+    private void submitRequest() {
+        String url = Constants.SERVER + "mobile-hwiu/" + id + "/detail";
+        Map<String, Object> params = new HashMap<>();
+//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
+        params.put("label_code", barCodeData);
+        ApplicationController.getInstance().addToRequestQueue(
+                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", EADMsgObject.class, new Gson().toJson(params), new Response.Listener<EADMsgObject>() {
                     @Override
                     public void onResponse(EADMsgObject response) {
-//                        if (response.getCode() == 200) {
-//                            Toast.makeText(context, "success", Toast.LENGTH_SHORT).show();
                         Map m = new HashMap();
-                        m.put("k", System.currentTimeMillis() + "");
+                        m.put("label_code", barCodeData);
                         list.add(0, m);
                         recycleItemsAdapter.notifyDataSetChanged();
-//                        } else {
-//                            Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
-//                        }
                     }
                 }, new Response.ErrorListener() {
                     @Override

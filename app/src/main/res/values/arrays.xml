@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="reason">
-        <item>原因1</item>
-        <item>原因2</item>
-        <item>原因3</item>
-        <item>原因4</item>
-        <item>原因5</item>
+        <item>混装严重</item>
+        <item>没有内袋</item>
+        <item>漏液</item>
+        <item>一般固废</item>
+        <item>其它</item>
     </string-array>
 </resources>

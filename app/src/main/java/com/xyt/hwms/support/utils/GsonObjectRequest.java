@@ -46,9 +46,9 @@ public class GsonObjectRequest<T> extends JsonRequest<T> {
         return sb.toString();
     }
 
-//    public GsonObjectRequest(String url, Class<T> clazz, String jsonRequest, Listener<T> listener, ErrorListener errorListener) {
-//        this(jsonRequest == null ? Method.GET : Method.POST, url, clazz, jsonRequest, listener, errorListener);
-//    }
+    public GsonObjectRequest(String url, Class<T> clazz, String jsonRequest, Listener<T> listener, ErrorListener errorListener) {
+        this(jsonRequest == null ? Method.GET : Method.POST, url, clazz, jsonRequest, listener, errorListener);
+    }
 
     public int getStatusCode() {
         return statusCode;

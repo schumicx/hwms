@@ -80,6 +80,10 @@ public class OutboundItemsActivity extends BaseActivity {
         Toast.makeText(context, "Barcode:" + data, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void closeAffirmDialog() {
+    }
+
     //出庫
     private void request() {
         String url = Constants.SERVER + "hwit-transfer-record";

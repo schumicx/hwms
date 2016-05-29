@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants">
 
     <TextView
@@ -9,15 +9,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:singleLine="true"
-        android:text="OOOOO" />
+        android:text="XXXX" />
 
-    <Button
-        android:id="@+id/recommand"
+    <TextView
+        android:id="@+id/code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:focusable="false"
-        android:gravity="center" />
+        android:layout_below="@+id/name"
+        android:singleLine="true"
+        android:text="XXXX" />
 
+    <Button
+        android:id="@+id/remove"
+        style="?android:textAppearanceSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="remove"
+        android:textStyle="bold" />
 </RelativeLayout>

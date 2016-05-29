@@ -104,6 +104,10 @@ public class OutboundActivity extends BaseActivity {
         Toast.makeText(context, "Barcode:" + data, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void closeAffirmDialog() {
+    }
+
     //获取出库转移单
     private void request() {
         if (TextUtils.isEmpty(NFCTagId)) {
