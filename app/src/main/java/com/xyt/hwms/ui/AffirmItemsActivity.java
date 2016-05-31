@@ -25,7 +25,7 @@ import butterknife.OnItemClick;
 
 public class AffirmItemsActivity extends BaseActivity {
 
-    public AffirmDetailsDialogFragment affirmDialog;
+    public CacheWasteDialogFragment affirmDialog;
     @BindView(R.id.listview)
     ListView listview;
     TextView total;
@@ -44,7 +44,7 @@ public class AffirmItemsActivity extends BaseActivity {
     @OnItemClick(R.id.listview)
     public void onItemClick(int position) {
         this.position = position - 1;
-        affirmDialog = AffirmDetailsDialogFragment.newInstance(applyIndex, position - 1);
+        affirmDialog = CacheWasteDialogFragment.newInstance(applyIndex, position - 1);
         affirmDialog.show(getSupportFragmentManager(), getLocalClassName());
     }
 
@@ -133,7 +133,7 @@ public class AffirmItemsActivity extends BaseActivity {
         for (int i = 0; i < list.size(); i++) {
             if (data.equals((String) list.get(i).get("label_code"))) {
                 this.position = i;
-                affirmDialog = AffirmDetailsDialogFragment.newInstance(applyIndex, position);
+                affirmDialog = CacheWasteDialogFragment.newInstance(applyIndex, position);
                 affirmDialog.show(getSupportFragmentManager(), getLocalClassName());
                 break;
             }

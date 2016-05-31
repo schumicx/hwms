@@ -116,11 +116,11 @@ public class OutboundActivity extends BaseActivity {
             }
             return;
         }
-        String url = Constants.SERVER + "hwit-transfer-record";
+        String url = Constants.SERVER + "mobile-hwit";
         Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("_username", "develop");
-        params.put("_password", "gbros:{2014}");
+        params.put("_password", "whchem@2016");
         params.put("nfc", NFCTagId);
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(url, EADObject.class, params, new Response.Listener<EADObject>() {

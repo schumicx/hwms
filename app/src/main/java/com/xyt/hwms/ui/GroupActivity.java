@@ -26,7 +26,7 @@ import butterknife.OnItemClick;
 
 public class GroupActivity extends BaseActivity {
 
-    public AffirmDetailsDialogFragment affirmDialog;
+    public CacheWasteDialogFragment affirmDialog;
     @BindView(R.id.listview)
     ListView listview;
     @BindView(R.id.empty)
@@ -56,7 +56,7 @@ public class GroupActivity extends BaseActivity {
     @OnItemClick(R.id.listview)
     public void onItemClick(int position) {
         this.position = position - 1;
-        affirmDialog = AffirmDetailsDialogFragment.newInstance(applyIndex, position - 1);
+        affirmDialog = CacheWasteDialogFragment.newInstance(applyIndex, position - 1);
         affirmDialog.show(getSupportFragmentManager(), getLocalClassName());
     }
 
@@ -133,7 +133,7 @@ public class GroupActivity extends BaseActivity {
                     } else {
                         list.add(0, listData.get(i));
                     }
-                    affirmDialog = AffirmDetailsDialogFragment.newInstance(applyIndex, position);
+                    affirmDialog = CacheWasteDialogFragment.newInstance(applyIndex, position);
                     affirmDialog.show(getSupportFragmentManager(), getLocalClassName());
                     break;
                 }

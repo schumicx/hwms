@@ -1,19 +1,18 @@
 package com.xyt.hwms.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.google.gson.Gson;
 import com.xyt.hwms.R;
-import com.xyt.hwms.adapter.AffirmItemsAdapter;
 import com.xyt.hwms.adapter.OutboundItemsAdapter;
 import com.xyt.hwms.bean.EADMsgObject;
 import com.xyt.hwms.bean.EADObject;
@@ -21,7 +20,6 @@ import com.xyt.hwms.support.utils.ApplicationController;
 import com.xyt.hwms.support.utils.BaseUtils;
 import com.xyt.hwms.support.utils.Constants;
 import com.xyt.hwms.support.utils.GsonObjectRequest;
-import com.xyt.hwms.support.utils.PreferencesUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -31,12 +29,13 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnItemClick;
 
 public class OutboundItemsActivity extends BaseActivity {
 
     @BindView(R.id.listview)
     ListView listview;
+    @BindView(R.id.empty)
+    TextView empty;
     private List<Map> list = new ArrayList<>();
     private OutboundItemsAdapter outboundItemsAdapter;
 
@@ -71,38 +70,76 @@ public class OutboundItemsActivity extends BaseActivity {
 
     @Override
     public void getTagId(String data) {
-        Toast.makeText(getBaseContext(), "xxxxxxxxxxx-----"+data, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getBaseContext(), "xxxxxxxxxxx-----" + data, Toast.LENGTH_SHORT).show();
         request();
     }
 
     @Override
     public void getBarcode(String data) {
-        Toast.makeText(context, "Barcode:" + data, Toast.LENGTH_SHORT).show();
+        barCodeData = data;
     }
 
     @Override
     public void closeAffirmDialog() {
     }
 
-    //出庫
+    //出库查询
     private void request() {
-        String url = Constants.SERVER + "hwit-transfer-record";
-//        Map<String, Object> params = new HashMap<>();
+        String url = Constants.SERVER + "mobile-hwiu/" + "id" + "/detail";
+        Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
-//        params.put("", "gbros:{2014}");
+        params.put("_username", "develop");
+        params.put("_password", "whchem@2016");
+        params.put("store_label_code", barCodeData);//库
+        params.put("position_label_code", barCodeData);//库位
+        params.put("container_label_code", barCodeData);//容器
+        params.put("label_code", barCodeData);//固废
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.GET, url+"?_username=develop&_password=gbros:{2014}", EADMsgObject.class, PreferencesUtils.getString(context, "affirm"), new Response.Listener<EADMsgObject>() {
+                new GsonObjectRequest<>(url, EADObject.class, params, new Response.Listener<EADObject>() {
+                    @Override
+                    public void onResponse(EADObject response) {
+                        if (response.getData().getCollection() != null && response.getData().getCollection().size() > 0) {
+                            list.clear();
+                            list.addAll(response.getData().getCollection());
+                        }
+                        if (list.size() == 0) {
+                            empty.setText("no data");
+                            empty.setVisibility(View.VISIBLE);
+                        }
+                        outboundItemsAdapter.notifyDataSetChanged();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        try {
+                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                        } catch (NullPointerException e) {
+                            if (!BaseUtils.isNetworkConnected(context)) {
+                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }), getLocalClassName());
+    }
+
+    //出库
+    private void submitRequest() {
+        String url = Constants.SERVER + "mobile-hwiu/" + "id" + "/detail";
+        Map<String, Object> params = new HashMap<>();
+//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
+        params.put("label_code", barCodeData);
+        ApplicationController.getInstance().addToRequestQueue(
+                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", EADMsgObject.class, new Gson().toJson(params), new Response.Listener<EADMsgObject>() {
                     @Override
                     public void onResponse(EADMsgObject response) {
-//                        if (response.getCode() == 200) {
-//                            Toast.makeText(context, "success", Toast.LENGTH_SHORT).show();
-                            Map m = new HashMap();
-                            m.put("k",System.currentTimeMillis()+"");
-                            list.add(0, m);
-                            outboundItemsAdapter.notifyDataSetChanged();
-//                        } else {
-//                            Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
-//                        }
+                        Map m = new HashMap();
+                        m.put("label_code", barCodeData);
+                        list.add(0, m);
+                        outboundItemsAdapter.notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {
                     @Override

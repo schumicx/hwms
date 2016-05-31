@@ -7,8 +7,8 @@ import java.util.Map;
 public class Constants {
     //测试
 //    public static final String BASE_URL = "http://ead.xiyouqi.cn:8080";
-//    public static final String BASE_URL = "http://10.10.102.154:8080";
-    public static final String BASE_URL = "http://10.10.11.159:8080";
+    public static final String BASE_URL = "http://10.10.102.154:8080";
+//    public static final String BASE_URL = "http://10.10.11.159:8080";
     //生产
 //    public static final String BASE_URL = "http://120.25.153.217";
 

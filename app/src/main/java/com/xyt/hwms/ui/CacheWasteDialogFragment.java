@@ -21,15 +21,15 @@ import com.xyt.hwms.support.utils.PreferencesUtils;
 import java.util.List;
 import java.util.Map;
 
-public class AffirmDetailsDialogFragment extends DialogFragment {
+public class CacheWasteDialogFragment extends DialogFragment {
 
     public TextView detail;
 
     private int applyIndex;
     private int wasteIndex;
 
-    public static AffirmDetailsDialogFragment newInstance(int applyIndex, int wasteIndex) {
-        AffirmDetailsDialogFragment fragment = new AffirmDetailsDialogFragment();
+    public static CacheWasteDialogFragment newInstance(int applyIndex, int wasteIndex) {
+        CacheWasteDialogFragment fragment = new CacheWasteDialogFragment();
         fragment.applyIndex = applyIndex;
         fragment.wasteIndex = wasteIndex;
         return fragment;

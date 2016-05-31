@@ -39,11 +39,9 @@ public class MainActivity extends BaseActivity {
                 break;
             case R.id.button2:
                 //Group
-                startActivity(new Intent(getBaseContext(), GroupActivity.class));
                 break;
             case R.id.button3:
                 //Weigh
-                startActivity(new Intent(getBaseContext(), WeighActivity.class));
                 break;
             case R.id.button4:
                 //Inbound
@@ -96,7 +94,7 @@ public class MainActivity extends BaseActivity {
                 new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016", EADObject.class, null, new Response.Listener<EADObject>() {
                     @Override
                     public void onResponse(EADObject response) {
-                        if (response.getData().getCollection().size() > 0) {
+                        if (response.getData().getCollection()!=null&&response.getData().getCollection().size() > 0) {
                             PreferencesUtils.putString(context, "affirm", new Gson().toJson(response.getData().getCollection()));
                             PreferencesUtils.putBoolean(context, "isSync", true);
                         }
