@@ -106,7 +106,7 @@ public class RecycleActivity extends BaseActivity {
     }
 
     @Override
-    public void closeAffirmDialog() {
+    public void closeDialog() {
     }
 
     //获取内部利用转移单

@@ -109,7 +109,7 @@ public class CacheWasteDialogFragment extends DialogFragment {
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
         if (getActivity() != null) {
-            ((BaseActivity) getActivity()).closeAffirmDialog();
+            ((BaseActivity) getActivity()).closeDialog();
 //            ((AffirmItemsActivity) getActivity()).updateView();
 //            ((AffirmItemsActivity) getActivity()).affirmDialog = null;
         }
@@ -119,7 +119,7 @@ public class CacheWasteDialogFragment extends DialogFragment {
     public void dismiss() {
         super.dismiss();
         if (getActivity() != null) {
-            ((BaseActivity) getActivity()).closeAffirmDialog();
+            ((BaseActivity) getActivity()).closeDialog();
 //            ((AffirmItemsActivity) getActivity()).updateView();
 //            ((AffirmItemsActivity) getActivity()).affirmDialog = null;
         }

@@ -142,7 +142,7 @@ public class InboundActivity extends BaseActivity {
     }
 
     @Override
-    public void closeAffirmDialog() {
+    public void closeDialog() {
         for (int i = 0; i < list.size(); i++) {
             if (Constants.WASTE_BACK.equals((String) list.get(i).get("status"))) {
                 list.remove(i);

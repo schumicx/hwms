@@ -44,10 +44,12 @@
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
 
     <application
         android:name=".support.utils.ApplicationController"
@@ -57,28 +59,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!--<intent-filter>-->
-        <!--<action android:name="android.nfc.action.TAG_DISCOVERED"/>-->
-        <!--<category android:name="android.intent.category.DEFAULT"/>-->
-        <!--</intent-filter>-->
-
         <activity
             android:name=".ui.LoginActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN" />-->
-            <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
-        <activity
-            android:name=".ui.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.MainActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.AffirmActivity"
             android:screenOrientation="portrait" />
@@ -89,12 +81,9 @@
             android:name=".ui.GroupActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.WeighActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ui.InboundActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.OutboundActivity"
             android:screenOrientation="portrait" />

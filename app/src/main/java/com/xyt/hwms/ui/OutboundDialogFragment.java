@@ -10,41 +10,51 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ListView;
 
 import com.xyt.hwms.R;
+import com.xyt.hwms.adapter.AffirmItemsAdapter;
 
-public class WasteDialogFragment extends DialogFragment {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-    public TextView detail;
+public class OutboundDialogFragment extends DialogFragment {
 
-    public static WasteDialogFragment newInstance() {
-        WasteDialogFragment fragment = new WasteDialogFragment();
+    public ListView listview;
+    private List<Map> list = new ArrayList<>();
+    private AffirmItemsAdapter affirmItemsAdapter;
+
+    public static OutboundDialogFragment newInstance(List<Map> querylist) {
+        OutboundDialogFragment fragment = new OutboundDialogFragment();
+        fragment.list.addAll(querylist);
         return fragment;
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        affirmItemsAdapter = new AffirmItemsAdapter(getActivity(), list);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.activity_affirm_details, null);
-        detail = (TextView) view.findViewById(R.id.detail);
-        detail.setText("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+        View view = inflater.inflate(R.layout.activity_outbound_query, null);
+        listview = (ListView) view.findViewById(R.id.listview);
+
+        listview.setAdapter(affirmItemsAdapter);
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         builder.setView(view)
                 // Add action buttons
-                .setPositiveButton("退回", new DialogInterface.OnClickListener() {
+                .setPositiveButton("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        ((BaseActivity)getActivity()).showReasonDialog();
                     }
                 })
-                .setNegativeButton("接受", new DialogInterface.OnClickListener() {
+                .setNegativeButton("出库", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        ((BaseActivity)getActivity()).closeDialog();
                     }
                 });
         return builder.create();
@@ -58,9 +68,9 @@ public class WasteDialogFragment extends DialogFragment {
             public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                 switch (keyCode) {
                     case KeyEvent.KEYCODE_F4:
+                        ((BaseActivity)getActivity()).closeDialog();
                         break;
                     case KeyEvent.KEYCODE_DEL:
-                        ((BaseActivity)getActivity()).showReasonDialog();
                         break;
                 }
                 dismiss();
@@ -70,23 +80,19 @@ public class WasteDialogFragment extends DialogFragment {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
-        if (getActivity() != null) {
-            ((BaseActivity) getActivity()).closeDialog();
-//            ((AffirmItemsActivity) getActivity()).updateView();
-//            ((AffirmItemsActivity) getActivity()).affirmDialog = null;
-        }
-    }
+//    @Override
+//    public void onDismiss(DialogInterface dialog) {
+//        super.onDismiss(dialog);
+//        if (getActivity() != null) {
+//            ((BaseActivity) getActivity()).closeDialog();
+//        }
+//    }
 
-    @Override
-    public void dismiss() {
-        super.dismiss();
-        if (getActivity() != null) {
-            ((BaseActivity) getActivity()).closeDialog();
-//            ((AffirmItemsActivity) getActivity()).updateView();
-//            ((AffirmItemsActivity) getActivity()).affirmDialog = null;
-        }
-    }
+//    @Override
+//    public void dismiss() {
+//        super.dismiss();
+//        if (getActivity() != null) {
+//            ((BaseActivity) getActivity()).closeDialog();
+//        }
+//    }
 }

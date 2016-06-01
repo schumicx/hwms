@@ -55,7 +55,7 @@ public class OutboundItemsAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.name.setText(list.get(position).get("k").toString());
+        viewHolder.name.setText(list.get(position).get("label_code").toString());
 
         return convertView;
     }

@@ -21,16 +21,13 @@ import com.xyt.hwms.support.utils.GsonObjectRequest;
 import com.xyt.hwms.support.utils.PreferencesUtils;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity {
 
-    @OnClick({R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6})
+    @OnClick({R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button1:
@@ -38,22 +35,20 @@ public class MainActivity extends BaseActivity {
                 startActivity(new Intent(getBaseContext(), AffirmActivity.class));
                 break;
             case R.id.button2:
-                //Group
+                //Affirm In
+                startActivity(new Intent(getBaseContext(), AffirmActivity.class));
                 break;
             case R.id.button3:
-                //Weigh
-                break;
-            case R.id.button4:
                 //Inbound
                 startActivity(new Intent(getBaseContext(), InboundActivity.class));
+                break;
+            case R.id.button4:
+                //Recycle
+                startActivity(new Intent(getBaseContext(), RecycleActivity.class));
                 break;
             case R.id.button5:
                 //Outbound
                 startActivity(new Intent(getBaseContext(), OutboundActivity.class));
-                break;
-            case R.id.button6:
-                //Recycle
-                startActivity(new Intent(getBaseContext(), RecycleActivity.class));
                 break;
         }
     }
@@ -73,7 +68,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void getTagId(String data) {
-        Toast.makeText(getBaseContext(), "bbb-----"+data, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getBaseContext(), "bbb-----" + data, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -82,7 +77,7 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    public void closeAffirmDialog() {
+    public void closeDialog() {
     }
 
     //获取固废转移单
@@ -94,7 +89,7 @@ public class MainActivity extends BaseActivity {
                 new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016", EADObject.class, null, new Response.Listener<EADObject>() {
                     @Override
                     public void onResponse(EADObject response) {
-                        if (response.getData().getCollection()!=null&&response.getData().getCollection().size() > 0) {
+                        if (response.getData().getCollection() != null && response.getData().getCollection().size() > 0) {
                             PreferencesUtils.putString(context, "affirm", new Gson().toJson(response.getData().getCollection()));
                             PreferencesUtils.putBoolean(context, "isSync", true);
                         }

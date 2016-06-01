@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="8dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingTop="8dp"
+    tools:context=".ui.MainActivity">
 
     <TableRow
         android:layout_width="match_parent"
@@ -13,16 +19,32 @@
             android:id="@+id/button1"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableLeft="@mipmap/ic_launcher"
-            android:text="@string/main_item1" />
+            android:background="@drawable/button_main"
+            android:drawableTop="@mipmap/affirm"
+            android:paddingTop="32dp"
+            android:text="@string/main_item1"
+            android:textColor="#616161" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#bdbdbd" />
 
         <Button
             android:id="@+id/button2"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableLeft="@mipmap/ic_launcher"
-            android:text="@string/main_item2" />
+            android:background="@drawable/button_main"
+            android:drawableTop="@mipmap/group"
+            android:paddingTop="32dp"
+            android:text="@string/main_item2"
+            android:textColor="#616161" />
     </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#bdbdbd" />
 
     <TableRow
         android:layout_width="match_parent"
@@ -33,16 +55,32 @@
             android:id="@+id/button3"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableLeft="@mipmap/ic_launcher"
-            android:text="@string/main_item3" />
+            android:background="@drawable/button_main"
+            android:drawableTop="@mipmap/inbound"
+            android:paddingTop="32dp"
+            android:text="@string/main_item3"
+            android:textColor="#616161" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#bdbdbd" />
 
         <Button
             android:id="@+id/button4"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableLeft="@mipmap/ic_launcher"
-            android:text="@string/main_item4" />
+            android:background="@drawable/button_main"
+            android:drawableTop="@mipmap/recycle"
+            android:paddingTop="32dp"
+            android:text="@string/main_item4"
+            android:textColor="#616161" />
     </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#bdbdbd" />
 
     <TableRow
         android:layout_width="match_parent"
@@ -53,14 +91,20 @@
             android:id="@+id/button5"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableLeft="@mipmap/ic_launcher"
-            android:text="@string/main_item5" />
+            android:background="@drawable/button_main"
+            android:drawableTop="@mipmap/outbound"
+            android:paddingTop="32dp"
+            android:text="@string/main_item5"
+            android:textColor="#616161" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#bdbdbd" />
 
         <Button
-            android:id="@+id/button6"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:drawableLeft="@mipmap/ic_launcher"
-            android:text="@string/main_item6" />
+            android:visibility="invisible" />
     </TableRow>
 </LinearLayout>

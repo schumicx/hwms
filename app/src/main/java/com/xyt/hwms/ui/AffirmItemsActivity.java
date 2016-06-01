@@ -141,7 +141,7 @@ public class AffirmItemsActivity extends BaseActivity {
     }
 
     @Override
-    public void closeAffirmDialog() {
+    public void closeDialog() {
         updateView();
         affirmDialog = null;
     }

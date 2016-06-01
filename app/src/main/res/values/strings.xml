@@ -13,11 +13,10 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
 
     <string name="main_item1">装车确认</string>
-    <string name="main_item2">组盘/组包</string>
-    <string name="main_item3">固废称重</string>
-    <string name="main_item4">入库移库</string>
+    <string name="main_item2">内部转移</string>
+    <string name="main_item3">固废入库</string>
+    <string name="main_item4">内部利用</string>
     <string name="main_item5">固废出库</string>
-    <string name="main_item6">内部利用</string>
 
     <string name="no_nfc">No NFC found on this device</string>
     <string name="nfc_disabled">NFC is not enabled. Please go to the wireless settings to enable it.</string>

@@ -140,16 +140,16 @@ public class AffirmActivity extends BaseActivity {
     }
 
     @Override
-    public void closeAffirmDialog() {
+    public void closeDialog() {
     }
 
     //获取固废转移单
     private void obtainRequest() {
         String url = Constants.SERVER + "mobile-hwit";
 //        Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
+//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));inner/outer
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016", EADObject.class, null, new Response.Listener<EADObject>() {
+                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016&transfer_type=outer", EADObject.class, null, new Response.Listener<EADObject>() {
                     @Override
                     public void onResponse(EADObject response) {
                         if (swiperefresh.isRefreshing()) {

@@ -40,7 +40,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public abstract void getBarcode(String data);
 
-    public abstract void closeAffirmDialog();
+    public abstract void closeDialog();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

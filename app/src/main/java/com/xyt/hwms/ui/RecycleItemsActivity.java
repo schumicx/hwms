@@ -86,7 +86,7 @@ public class RecycleItemsActivity extends BaseActivity {
     }
 
     @Override
-    public void closeAffirmDialog() {
+    public void closeDialog() {
     }
 
     //内部利用

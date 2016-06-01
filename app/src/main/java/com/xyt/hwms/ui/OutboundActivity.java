@@ -46,7 +46,7 @@ public class OutboundActivity extends BaseActivity {
     public void onItemClick(int position) {
         Intent intent = new Intent(getBaseContext(), OutboundItemsActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("id", "");
+        bundle.putString("id", list.get(position).get("transfer_id").toString());
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -105,7 +105,7 @@ public class OutboundActivity extends BaseActivity {
     }
 
     @Override
-    public void closeAffirmDialog() {
+    public void closeDialog() {
     }
 
     //获取出库转移单
@@ -116,12 +116,12 @@ public class OutboundActivity extends BaseActivity {
             }
             return;
         }
-        String url = Constants.SERVER + "mobile-hwit";
+        String url = Constants.SERVER + "mobile-hwot";
         Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("_username", "develop");
         params.put("_password", "whchem@2016");
-        params.put("nfc", NFCTagId);
+        params.put("car_card", NFCTagId);
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(url, EADObject.class, params, new Response.Listener<EADObject>() {
                     @Override

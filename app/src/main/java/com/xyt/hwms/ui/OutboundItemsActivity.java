@@ -37,7 +37,9 @@ public class OutboundItemsActivity extends BaseActivity {
     @BindView(R.id.empty)
     TextView empty;
     private List<Map> list = new ArrayList<>();
+    private List<Map> querylist = new ArrayList<>();
     private OutboundItemsAdapter outboundItemsAdapter;
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +49,14 @@ public class OutboundItemsActivity extends BaseActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        id = getIntent().getStringExtra("id");
+
         if (outboundItemsAdapter == null) {
             outboundItemsAdapter = new OutboundItemsAdapter(context, list);
         }
         listview.setAdapter(outboundItemsAdapter);
+
+        listRequest();
     }
 
     @Override
@@ -70,30 +76,26 @@ public class OutboundItemsActivity extends BaseActivity {
 
     @Override
     public void getTagId(String data) {
-        Toast.makeText(getBaseContext(), "xxxxxxxxxxx-----" + data, Toast.LENGTH_SHORT).show();
-        request();
     }
 
     @Override
     public void getBarcode(String data) {
         barCodeData = data;
+        request();
     }
 
     @Override
-    public void closeAffirmDialog() {
+    public void closeDialog() {
+        submitRequest();
     }
 
     //出库查询
-    private void request() {
-        String url = Constants.SERVER + "mobile-hwiu/" + "id" + "/detail";
+    private void listRequest() {
+        String url = Constants.SERVER + "mobile-hwot/" + id + "/detail";//transfer_id
         Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("_username", "develop");
         params.put("_password", "whchem@2016");
-        params.put("store_label_code", barCodeData);//库
-        params.put("position_label_code", barCodeData);//库位
-        params.put("container_label_code", barCodeData);//容器
-        params.put("label_code", barCodeData);//固废
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(url, EADObject.class, params, new Response.Listener<EADObject>() {
                     @Override
@@ -126,9 +128,54 @@ public class OutboundItemsActivity extends BaseActivity {
                 }), getLocalClassName());
     }
 
+    //出库查询
+    private void request() {
+        String url = Constants.SERVER + "mobile-store/";
+        Map<String, Object> params = new HashMap<>();
+//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
+        params.put("_username", "develop");
+        params.put("_password", "whchem@2016");
+        if (barCodeData.startsWith(Constants.LABEL_LIB)) {
+            params.put("store_label_code", barCodeData);//库
+        } else if (barCodeData.startsWith(Constants.LABEL_LSL)) {
+            params.put("position_label_code", barCodeData);//库位
+        } else if (barCodeData.startsWith(Constants.LABEL_CON)) {
+            params.put("container_label_code", barCodeData);//容器
+        } else if (barCodeData.startsWith(Constants.LABEL_HW)) {
+            params.put("label_code", barCodeData);//固废
+        }
+
+        ApplicationController.getInstance().addToRequestQueue(
+                new GsonObjectRequest<>(url, EADObject.class, params, new Response.Listener<EADObject>() {
+                    @Override
+                    public void onResponse(EADObject response) {
+                        if (response.getData().getCollection() != null && response.getData().getCollection().size() > 0) {
+                            querylist.clear();
+                            querylist.addAll(response.getData().getCollection());
+                        }
+                        OutboundDialogFragment.newInstance(querylist).show(getSupportFragmentManager(), getLocalClassName());
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        try {
+                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                        } catch (NullPointerException e) {
+                            if (!BaseUtils.isNetworkConnected(context)) {
+                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }), getLocalClassName());
+    }
+
     //出库
     private void submitRequest() {
-        String url = Constants.SERVER + "mobile-hwiu/" + "id" + "/detail";
+        String url = Constants.SERVER + "mobile-hwot/" + id + "/detail";
         Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("label_code", barCodeData);
@@ -136,10 +183,7 @@ public class OutboundItemsActivity extends BaseActivity {
                 new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", EADMsgObject.class, new Gson().toJson(params), new Response.Listener<EADMsgObject>() {
                     @Override
                     public void onResponse(EADMsgObject response) {
-                        Map m = new HashMap();
-                        m.put("label_code", barCodeData);
-                        list.add(0, m);
-                        outboundItemsAdapter.notifyDataSetChanged();
+                        listRequest();
                     }
                 }, new Response.ErrorListener() {
                     @Override
