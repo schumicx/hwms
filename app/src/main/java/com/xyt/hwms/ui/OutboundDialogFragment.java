@@ -14,6 +14,7 @@ import android.widget.ListView;
 
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.AffirmItemsAdapter;
+import com.xyt.hwms.adapter.OutboundDialogAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class OutboundDialogFragment extends DialogFragment {
 
     public ListView listview;
     private List<Map> list = new ArrayList<>();
-    private AffirmItemsAdapter affirmItemsAdapter;
+    private OutboundDialogAdapter outboundDialogAdapter;
 
     public static OutboundDialogFragment newInstance(List<Map> querylist) {
         OutboundDialogFragment fragment = new OutboundDialogFragment();
@@ -33,14 +34,14 @@ public class OutboundDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        affirmItemsAdapter = new AffirmItemsAdapter(getActivity(), list);
+        outboundDialogAdapter = new OutboundDialogAdapter(getActivity(), list);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.activity_outbound_query, null);
         listview = (ListView) view.findViewById(R.id.listview);
 
-        listview.setAdapter(affirmItemsAdapter);
+        listview.setAdapter(outboundDialogAdapter);
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
@@ -79,20 +80,4 @@ public class OutboundDialogFragment extends DialogFragment {
         });
         return super.onCreateView(inflater, container, savedInstanceState);
     }
-
-//    @Override
-//    public void onDismiss(DialogInterface dialog) {
-//        super.onDismiss(dialog);
-//        if (getActivity() != null) {
-//            ((BaseActivity) getActivity()).closeDialog();
-//        }
-//    }
-
-//    @Override
-//    public void dismiss() {
-//        super.dismiss();
-//        if (getActivity() != null) {
-//            ((BaseActivity) getActivity()).closeDialog();
-//        }
-//    }
 }
