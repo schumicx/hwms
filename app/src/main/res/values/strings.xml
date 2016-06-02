@@ -1,16 +1,17 @@
 <resources>
-    <string name="app_name">hwms</string>
+    <string name="app_name">固废管理</string>
 
-    <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+    <!--&lt;!&ndash; Strings related to login &ndash;&gt;-->
+    <string name="prompt_account">账号</string>
+    <string name="prompt_password">密码</string>
+    <string name="sign_in">登录</string>
+    <string name="next">下一步</string>
+    <string name="down">完成</string>
+    <string name="switch_login">帐号密码登录</string>
+    <!--<string name="error_invalid_password">This password is too short</string>-->
+    <!--<string name="error_incorrect_password">This password is incorrect</string>-->
+    <!--<string name="error_field_required">This field is required</string>-->
+    <!--<string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>-->
 
     <string name="main_item1">装车确认</string>
     <string name="main_item2">内部转移</string>

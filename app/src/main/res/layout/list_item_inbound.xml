@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:hint="weight"
             android:imeActionId="@+id/login"
-            android:imeActionLabel="@string/action_sign_in_short"
+            android:imeActionLabel="@string/down"
             android:imeOptions="actionUnspecified"
             android:inputType="numberDecimal"
             android:maxLines="1"

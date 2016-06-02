@@ -19,7 +19,9 @@ import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.AffirmAdapter;
 import com.xyt.hwms.bean.EADMsgObject;
-import com.xyt.hwms.bean.EADObject;
+import com.xyt.hwms.bean.Transfer;
+import com.xyt.hwms.bean.TransferList;
+import com.xyt.hwms.bean.TransferListBean;
 import com.xyt.hwms.support.utils.ApplicationController;
 import com.xyt.hwms.support.utils.BaseUtils;
 import com.xyt.hwms.support.utils.Constants;
@@ -29,7 +31,6 @@ import com.xyt.hwms.support.utils.PreferencesUtils;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,7 +44,7 @@ public class AffirmActivity extends BaseActivity {
     SwipeRefreshLayout swiperefresh;
     @BindView(R.id.empty)
     TextView empty;
-    private List<Map> list = new ArrayList<>();
+    private List<Transfer> list = new ArrayList<>();
     private AffirmAdapter affirmAdapter;
 
     @OnItemClick(R.id.listview)
@@ -62,6 +63,12 @@ public class AffirmActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if (Constants.TRANSFER_TYPE_OUTER.equals(getIntent().getStringExtra("type"))) {
+            getSupportActionBar().setTitle(R.string.main_item1);
+        } else if (Constants.TRANSFER_TYPE_INNER.equals(getIntent().getStringExtra("type"))) {
+            getSupportActionBar().setTitle(R.string.main_item2);
+        }
 
         if (affirmAdapter == null) {
             affirmAdapter = new AffirmAdapter(context, list);
@@ -87,8 +94,8 @@ public class AffirmActivity extends BaseActivity {
         swiperefresh.setProgressViewOffset(true, 0, BaseUtils.dip2px(context, 24));
 
         if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
-            Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), List.class);
-            list.addAll(Constants.AFFIRM_LIST);
+            Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class);
+            list.addAll(Constants.AFFIRM_LIST.getCollection());
             SyncDialogFragment.newInstance().show(getSupportFragmentManager(), getLocalClassName());
         } else {
             swiperefresh.setRefreshing(true);
@@ -131,12 +138,10 @@ public class AffirmActivity extends BaseActivity {
 
     @Override
     public void getTagId(String data) {
-        Toast.makeText(context, "NFC TagId:" + data, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void getBarcode(String data) {
-        Toast.makeText(context, "Barcode:" + data, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -149,18 +154,19 @@ public class AffirmActivity extends BaseActivity {
 //        Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));inner/outer
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016&transfer_type=outer", EADObject.class, null, new Response.Listener<EADObject>() {
+                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016&transfer_type=inner", TransferListBean.class, null, new Response.Listener<TransferListBean>() {
                     @Override
-                    public void onResponse(EADObject response) {
+                    public void onResponse(TransferListBean response) {
                         if (swiperefresh.isRefreshing()) {
                             swiperefresh.setRefreshing(false);
                         }
                         if (response.getData().getCollection().size() > 0) {
                             list.clear();
-                            PreferencesUtils.putString(context, "affirm", new Gson().toJson(response.getData().getCollection()));
+                            PreferencesUtils.putString(context, "affirm", new Gson().toJson(response.getData()));
                             PreferencesUtils.putBoolean(context, "isSync", true);
-                            Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), List.class);
-                            list.addAll(Constants.AFFIRM_LIST);
+                            String a = PreferencesUtils.getString(context, "affirm");
+                            Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class);
+                            list.addAll(Constants.AFFIRM_LIST.getCollection());
                         }
                         if (list.size() == 0) {
                             empty.setText("no data");
@@ -185,10 +191,13 @@ public class AffirmActivity extends BaseActivity {
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
-                        Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), List.class);
-                        list.addAll(Constants.AFFIRM_LIST);
-                        affirmAdapter.notifyDataSetChanged();
-
+                        list.clear();
+//                        String a = PreferencesUtils.getString(context, "affirm");
+                        Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class);
+                        if (Constants.AFFIRM_LIST != null) {
+                            list.addAll(Constants.AFFIRM_LIST.getCollection());
+                            affirmAdapter.notifyDataSetChanged();
+                        }
                         error.printStackTrace();
                     }
                 }), getLocalClassName());
@@ -200,11 +209,13 @@ public class AffirmActivity extends BaseActivity {
 //        Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
 //        params.put("", "gbros:{2014}");
+
+
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.PUT, url + "?_username=develop&_password=whchem@2016", EADMsgObject.class, PreferencesUtils.getString(context, "affirm"), new Response.Listener<EADMsgObject>() {
+                new GsonObjectRequest<>(Request.Method.PUT, url + "?_username=develop&_password=whchem@2016", EADMsgObject.class, new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()), new Response.Listener<EADMsgObject>() {
                     @Override
                     public void onResponse(EADMsgObject response) {
-                        if (response.getCode() == 200) {
+                        if (response.getCode() == Constants.SUCCESS) {
                             Toast.makeText(context, "success", Toast.LENGTH_SHORT).show();
                             PreferencesUtils.putString(context, "affirm", null);
                             PreferencesUtils.putBoolean(context, "isSync", true);

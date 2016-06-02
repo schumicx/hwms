@@ -82,16 +82,19 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.InboundActivity"
+            android:label="@string/main_item3"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.OutboundActivity"
+            android:label="@string/main_item5"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.OutboundItemsActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.RecycleActivity"
+            android:label="@string/main_item4"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.RecycleItemsActivity"

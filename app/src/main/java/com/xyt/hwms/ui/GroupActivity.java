@@ -12,6 +12,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.GroupAdapter;
+import com.xyt.hwms.bean.Transfer;
+import com.xyt.hwms.bean.TransferDetail;
 import com.xyt.hwms.support.utils.Constants;
 import com.xyt.hwms.support.utils.PreferencesUtils;
 
@@ -33,8 +35,8 @@ public class GroupActivity extends BaseActivity {
     TextView empty;
     @BindView(R.id.submit)
     Button submit;
-    private List<Map> list = new ArrayList<>();
-    private List<Map> listData = new ArrayList<>();
+    private List<TransferDetail> list = new ArrayList<>();
+    private List<TransferDetail> listData = new ArrayList<>();
     private GroupAdapter groupAdapter;
     private int applyIndex;
     private int position;
@@ -44,9 +46,8 @@ public class GroupActivity extends BaseActivity {
     public void onClick(View v) {
         for (int i = 0; i < listData.size(); i++) {
             for (int j = 0; j < list.size(); j++) {
-                if ((listData.get(i).get("label_code").toString()).equals(list.get(j).get("label_code").toString())) {
-//                    ((Map) ((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail")).get(i)).put("container_label_code", container.getText().toString());
-                    ((Map) listData.get(i)).put("container_label_code", container.getText().toString());
+                if (listData.get(i).getLabel_code().equals(list.get(j).getLabel_code())) {
+                     listData.get(i).setContainer_label_code(container.getText().toString());
                 }
             }
         }
@@ -68,8 +69,8 @@ public class GroupActivity extends BaseActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        applyIndex = getIntent().getIntExtra("position", 0);
-        listData = (List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail");
+        applyIndex = getIntent().getIntExtra("applyIndex", 0);
+        listData = Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail();
 
         View head = getLayoutInflater().inflate(R.layout.list_head_group, null);
         container = (EditText) head.findViewById(R.id.container);
@@ -107,7 +108,7 @@ public class GroupActivity extends BaseActivity {
             container.setText(data);
             list.clear();
             for (int i=0;i<listData.size();i++){
-                if (data.equals((String) listData.get(i).get("container_label_code"))) {
+                if (data.equals( listData.get(i).getContainer_label_code())) {
                     list.add(0, listData.get(i));
                 }
             }
@@ -116,12 +117,12 @@ public class GroupActivity extends BaseActivity {
                 affirmDialog.dismiss();
             }
             for (int i = 0; i < listData.size(); i++) {
-                if (data.equals((String) listData.get(i).get("label_code"))) {
+                if (data.equals((String) listData.get(i).getLabel_code())) {
                     this.position = i;
                     if (list.size() > 0) {
                         int k = 0;
                         for (int j = 0; j < list.size(); j++) {
-                            if (!(listData.get(i).get("label_code").toString()).equals(list.get(j).get("label_code").toString())) {
+                            if (!(listData.get(i).getLabel_code()).equals(list.get(j).getLabel_code())) {
                                 k++;
                             } else {
                                 break;
@@ -145,7 +146,7 @@ public class GroupActivity extends BaseActivity {
     @Override
     public void closeDialog() {
         for (int i = 0; i < list.size(); i++) {
-            if (Constants.WASTE_BACK.equals((String) list.get(i).get("status"))) {
+            if (Constants.WASTE_BACK.equals( list.get(i).getStatus())) {
                 list.remove(i);
                 break;
             }

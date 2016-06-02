@@ -1,5 +1,8 @@
 package com.xyt.hwms.support.utils;
 
+import com.xyt.hwms.bean.Transfer;
+import com.xyt.hwms.bean.TransferList;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,11 +19,11 @@ public class Constants {
 
     public static final int PAGESIZE = 10;
 
-    public static final int SUCCESS = 0;
+    public static final int SUCCESS = 200;
 
     public static final String TOKEN = "token";
 
-    public static List<Map> AFFIRM_LIST = new ArrayList<>();
+    public static TransferList AFFIRM_LIST;
 
     public static final String PAGE = "_page";
     public static final String SIZE = "_size";
@@ -40,4 +43,7 @@ public class Constants {
     public static final String LABEL_LSL = "LSL";   //库位
     public static final String LABEL_CON = "6";//"CON";   //容器
     public static final String LABEL_HW = "Y-HW";//"HW";     //固废
+
+    public static final String TRANSFER_TYPE_INNER="inner";
+    public static final String TRANSFER_TYPE_OUTER="outer";
 }

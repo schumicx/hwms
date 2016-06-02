@@ -32,11 +32,15 @@ public class MainActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.button1:
                 //Affirm
-                startActivity(new Intent(getBaseContext(), AffirmActivity.class));
+                Intent intent1 = new Intent(getBaseContext(), AffirmActivity.class);
+                intent1.putExtra("type",Constants.TRANSFER_TYPE_OUTER);
+                startActivity(intent1);
                 break;
             case R.id.button2:
                 //Affirm In
-                startActivity(new Intent(getBaseContext(), AffirmActivity.class));
+                Intent intent2 = new Intent(getBaseContext(), AffirmActivity.class);
+                intent2.putExtra("type",Constants.TRANSFER_TYPE_INNER);
+                startActivity(intent2);
                 break;
             case R.id.button3:
                 //Inbound
@@ -68,12 +72,10 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void getTagId(String data) {
-        Toast.makeText(getBaseContext(), "bbb-----" + data, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void getBarcode(String data) {
-        Toast.makeText(context, "aaaaaaa------Barcode:" + data, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -89,8 +91,9 @@ public class MainActivity extends BaseActivity {
                 new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016", EADObject.class, null, new Response.Listener<EADObject>() {
                     @Override
                     public void onResponse(EADObject response) {
-                        if (response.getData().getCollection() != null && response.getData().getCollection().size() > 0) {
-                            PreferencesUtils.putString(context, "affirm", new Gson().toJson(response.getData().getCollection()));
+                        if (response.getData().getCollection().size() > 0) {
+                            String a = new Gson().toJson(response.getData());
+                            PreferencesUtils.putString(context, "affirm", new Gson().toJson(response.getData()));
                             PreferencesUtils.putBoolean(context, "isSync", true);
                         }
                     }

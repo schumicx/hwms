@@ -11,13 +11,15 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.AffirmItemsAdapter;
+import com.xyt.hwms.bean.TransferDetail;
 import com.xyt.hwms.support.utils.Constants;
+import com.xyt.hwms.support.utils.PreferencesUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,10 +34,10 @@ public class AffirmItemsActivity extends BaseActivity {
     TextView verified;
     TextView unverified;
     TextView back;
-    private List<Map> list = new ArrayList<>();
+    private List<TransferDetail> list = new ArrayList<>();
     private AffirmItemsAdapter affirmItemsAdapter;
     private int applyIndex;
-    private int position;
+    //    private int position;
     private int totalNum;
     private int verifiedNum;
     private int unverifiedNum;
@@ -43,7 +45,7 @@ public class AffirmItemsActivity extends BaseActivity {
 
     @OnItemClick(R.id.listview)
     public void onItemClick(int position) {
-        this.position = position - 1;
+//        this.position = position - 1;
         affirmDialog = CacheWasteDialogFragment.newInstance(applyIndex, position - 1);
         affirmDialog.show(getSupportFragmentManager(), getLocalClassName());
     }
@@ -57,7 +59,7 @@ public class AffirmItemsActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         applyIndex = getIntent().getIntExtra("position", 0);
-        list.addAll((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail"));
+        list.addAll(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail());
 
         View head = getLayoutInflater().inflate(R.layout.list_head_affirm_items, null);
         total = (TextView) head.findViewById(R.id.total);
@@ -68,6 +70,14 @@ public class AffirmItemsActivity extends BaseActivity {
 
         totalNum = list.size();
         total.setText("总：" + totalNum);
+
+        listview.addHeaderView(head);
+
+        if (affirmItemsAdapter == null) {
+            affirmItemsAdapter = new AffirmItemsAdapter(context, list);
+        }
+        listview.setAdapter(affirmItemsAdapter);
+        updateView();
 
         operator.addTextChangedListener(new TextWatcher() {
             @Override
@@ -83,14 +93,6 @@ public class AffirmItemsActivity extends BaseActivity {
                 //////////
             }
         });
-
-        listview.addHeaderView(head);
-
-        if (affirmItemsAdapter == null) {
-            affirmItemsAdapter = new AffirmItemsAdapter(context, list);
-        }
-        listview.setAdapter(affirmItemsAdapter);
-        updateView();
     }
 
     @Override
@@ -111,7 +113,7 @@ public class AffirmItemsActivity extends BaseActivity {
             case R.id.group:
                 Intent intent = new Intent(context, GroupActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putInt("position", position);
+                bundle.putInt("applyIndex", applyIndex);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
@@ -131,9 +133,9 @@ public class AffirmItemsActivity extends BaseActivity {
             affirmDialog.dismiss();
         }
         for (int i = 0; i < list.size(); i++) {
-            if (data.equals((String) list.get(i).get("label_code"))) {
-                this.position = i;
-                affirmDialog = CacheWasteDialogFragment.newInstance(applyIndex, position);
+            if (data.equals(list.get(i).getLabel_code())) {
+//                this.position = i;
+                affirmDialog = CacheWasteDialogFragment.newInstance(applyIndex, i);
                 affirmDialog.show(getSupportFragmentManager(), getLocalClassName());
                 break;
             }
@@ -157,11 +159,11 @@ public class AffirmItemsActivity extends BaseActivity {
         verifiedNum = 0;
         unverifiedNum = 0;
         for (int i = 0; i < list.size(); i++) {
-            if (Constants.WASTE_BACK.equals(list.get(i).get("status").toString())) {
+            if (Constants.WASTE_BACK.equals(list.get(i).getStatus())) {
                 backNum++;
 
 //                ((Map) Constants.AFFIRM_LIST.get(applyIndex)).put("detail_status", 0);//////////
-            } else if (Constants.WASTE_PASS.equals(list.get(i).get("status").toString())) {
+            } else if (Constants.WASTE_PASS.equals(list.get(i).getStatus())) {
                 verifiedNum++;
 //                ((Map) Constants.AFFIRM_LIST.get(applyIndex)).put("detail_status", 1);//////////
             } else {
@@ -173,7 +175,8 @@ public class AffirmItemsActivity extends BaseActivity {
         back.setText("退" + backNum);
         verified.setText("检" + verifiedNum);
         unverified.setText("未" + unverifiedNum);
-        ((Map) Constants.AFFIRM_LIST.get(applyIndex)).put("operator", "sssssss");
+        Constants.AFFIRM_LIST.getCollection().get(applyIndex).setOperator("xxxxxxxx");
+        PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
         affirmItemsAdapter.notifyDataSetChanged();
     }
 }

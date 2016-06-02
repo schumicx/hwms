@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.xyt.hwms.R;
+import com.xyt.hwms.bean.TransferDetail;
 import com.xyt.hwms.support.utils.Constants;
 import com.xyt.hwms.support.utils.PreferencesUtils;
 
@@ -25,10 +26,10 @@ import butterknife.ButterKnife;
 public class GroupAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
-    private List<Map> list;
-    private List<Map> listData;
+    private List<TransferDetail> list;
+    private List<TransferDetail> listData;
 
-    public GroupAdapter(Context context, List<Map> list, List<Map> listData) {
+    public GroupAdapter(Context context, List<TransferDetail> list, List<TransferDetail> listData) {
         this.list = list;
         this.listData = listData;
         this.context = context;
@@ -61,19 +62,19 @@ public class GroupAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.name.setText((String) list.get(position).get("waste_detail_id"));
-        viewHolder.code.setText((String) list.get(position).get("label_code"));
-        if (Constants.WASTE_PASS.equals(list.get(position).get("status").toString())) {
-            viewHolder.name.setBackgroundColor(0xff00ff00);
-        } else if (Constants.WASTE_BACK.equals((String) list.get(position).get("status").toString())) {
-            viewHolder.name.setBackgroundColor(0xffff0000);
+        viewHolder.name.setText( list.get(position).getWaste_name());
+        viewHolder.code.setText( list.get(position).getLabel_code());
+        if (Constants.WASTE_PASS.equals(list.get(position).getStatus())) {
+            viewHolder.code.setBackgroundColor(0xff00ff00);
+        } else if (Constants.WASTE_BACK.equals( list.get(position).getStatus())) {
+            viewHolder.code.setBackgroundColor(0xffff0000);
         } else {
-            viewHolder.name.setBackgroundColor(0xffffffff);
+            viewHolder.code.setBackgroundColor(0xffffffff);
         }
         viewHolder.remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((Map) listData.get(position)).put("container_label_code", null);
+                listData.get(position).setContainer_label_code(null);
                 PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
                 list.remove(position);
                 notifyDataSetChanged();

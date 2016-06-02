@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +16,6 @@ import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.support.utils.Constants;
 import com.xyt.hwms.support.utils.PreferencesUtils;
-
-import java.util.List;
-import java.util.Map;
 
 public class CacheWasteDialogFragment extends DialogFragment {
 
@@ -37,38 +33,35 @@ public class CacheWasteDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        if (TextUtils.isEmpty((String) ((Map) ((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail")).get(wasteIndex)).get("status"))) {
-            ((Map) ((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail")).get(wasteIndex)).put("status", Constants.WASTE_PASS);
+        if (!Constants.WASTE_BACK.equals(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).getStatus())) {
+            Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setStatus(Constants.WASTE_PASS);
             PreferencesUtils.putString(getActivity(), "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
             PreferencesUtils.putBoolean(getActivity(), "isSync", false);
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        // Get the layout inflater
+
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.activity_affirm_details, null);
         detail = (TextView) view.findViewById(R.id.detail);
-        detail.setText(new Gson().toJson(((Map) ((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail")).get(wasteIndex))));
+        detail.setText(new Gson().toJson(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex)));
 
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view)
-                // Add action buttons
                 .setPositiveButton("退回", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        ((Map) ((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail")).get(wasteIndex)).put("status", Constants.WASTE_BACK);
-                        ((Map) ((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail")).get(wasteIndex)).put("container_label_code", null);
+                        Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setStatus(Constants.WASTE_BACK);
+                        Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setContainer_label_code(null);
                         PreferencesUtils.putString(getActivity(), "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
                         PreferencesUtils.putBoolean(getActivity(), "isSync", false);
-                        ((BaseActivity)getActivity()).showReasonDialog(applyIndex, wasteIndex);
+                        ((BaseActivity) getActivity()).showReasonDialog(applyIndex, wasteIndex);
                     }
                 })
                 .setNegativeButton("接受", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ((Map) ((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail")).get(wasteIndex)).put("status", Constants.WASTE_PASS);
-                        ((Map) ((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail")).get(wasteIndex)).put("back_reason", "");
-                        ((Map) ((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail")).get(wasteIndex)).put("back_reason_index", "");
+                        Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setStatus(Constants.WASTE_PASS);
+                        Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setBack_reason(null);
+                        Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setBack_reason_index(null);
                         PreferencesUtils.putString(getActivity(), "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
                         PreferencesUtils.putBoolean(getActivity(), "isSync", false);
                     }
@@ -84,18 +77,18 @@ public class CacheWasteDialogFragment extends DialogFragment {
             public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                 switch (keyCode) {
                     case KeyEvent.KEYCODE_F4:
-                        ((Map) ((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail")).get(wasteIndex)).put("status", Constants.WASTE_PASS);
-                        ((Map) ((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail")).get(wasteIndex)).put("back_reason", "");
-                        ((Map) ((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail")).get(wasteIndex)).put("back_reason_index", "");
+                        Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setStatus(Constants.WASTE_PASS);
+                        Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setBack_reason(null);
+                        Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setBack_reason_index(null);
                         PreferencesUtils.putString(getActivity(), "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
                         PreferencesUtils.putBoolean(getActivity(), "isSync", false);
                         break;
                     case KeyEvent.KEYCODE_DEL:
-                        ((Map) ((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail")).get(wasteIndex)).put("status", Constants.WASTE_BACK);
-                        ((Map) ((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail")).get(wasteIndex)).put("container_label_code", null);
+                        Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setStatus(Constants.WASTE_BACK);
+                        Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setContainer_label_code(null);
                         PreferencesUtils.putString(getActivity(), "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
                         PreferencesUtils.putBoolean(getActivity(), "isSync", false);
-                        ((BaseActivity)getActivity()).showReasonDialog(applyIndex, wasteIndex);
+                        ((BaseActivity) getActivity()).showReasonDialog(applyIndex, wasteIndex);
                         break;
                 }
                 dismiss();
@@ -110,8 +103,6 @@ public class CacheWasteDialogFragment extends DialogFragment {
         super.onDismiss(dialog);
         if (getActivity() != null) {
             ((BaseActivity) getActivity()).closeDialog();
-//            ((AffirmItemsActivity) getActivity()).updateView();
-//            ((AffirmItemsActivity) getActivity()).affirmDialog = null;
         }
     }
 
@@ -120,8 +111,6 @@ public class CacheWasteDialogFragment extends DialogFragment {
         super.dismiss();
         if (getActivity() != null) {
             ((BaseActivity) getActivity()).closeDialog();
-//            ((AffirmItemsActivity) getActivity()).updateView();
-//            ((AffirmItemsActivity) getActivity()).affirmDialog = null;
         }
     }
 }
