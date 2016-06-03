@@ -7,26 +7,9 @@ import java.util.List;
  */
 public class Transfer {
 
-    /**
-     * transfer_id : 01550a9495e58a8ae61a55063d660485
-     * apply_code : 201606010001
-     * apply_org_name : 装置（暂时没有）
-     * car_code : //车号（暂时没有）
-     * card_code : //车卡号（暂时没有）
-     * card_name : //车卡名（暂时没有）
-     * create_time : 1464762572120
-     * detail_status : 0
-     * operator : 张三
-     * phone : 15000000000
-     * duty_person : 刘广安
-     * step : //工序（暂时没有）
-     * lock : //电子锁好（暂时没有）
-     * detail : [{"waste_name":"//固废名称","category_code":"//固废代码","is_key_waste":"//重点监管","container_label_code":"CON-0001","back_reason":"xxxx","back_reason_index":1,"status":"a","label_code":"Y-HW06-MDI-20160527-0014","produce_source":"装置检修"}]
-     */
-
     private String transfer_id;
     private String apply_code;
-    private String apply_org_name;
+    private String parent_org_name;
     private String car_code;
     private String card_code;
     private String card_name;
@@ -36,8 +19,8 @@ public class Transfer {
     private String transfer_type;
     private String phone;
     private String duty_person;
-    private String step;
-    private String lock;
+    private String org_name;
+    private String lock_code;
     private List<TransferDetail> detail;
 
     public String getTransfer_id() {
@@ -56,12 +39,12 @@ public class Transfer {
         this.apply_code = apply_code;
     }
 
-    public String getApply_org_name() {
-        return apply_org_name;
+    public String getParent_org_name() {
+        return parent_org_name;
     }
 
-    public void setApply_org_name(String apply_org_name) {
-        this.apply_org_name = apply_org_name;
+    public void setParent_org_name(String parent_org_name) {
+        this.parent_org_name = parent_org_name;
     }
 
     public String getCar_code() {
@@ -136,20 +119,20 @@ public class Transfer {
         this.duty_person = duty_person;
     }
 
-    public String getStep() {
-        return step;
+    public String getOrg_name() {
+        return org_name;
     }
 
-    public void setStep(String step) {
-        this.step = step;
+    public void setOrg_name(String org_name) {
+        this.org_name = org_name;
     }
 
-    public String getLock() {
-        return lock;
+    public String getLock_code() {
+        return lock_code;
     }
 
-    public void setLock(String lock) {
-        this.lock = lock;
+    public void setLock_code(String lock_code) {
+        this.lock_code = lock_code;
     }
 
     public List<TransferDetail> getDetail() {

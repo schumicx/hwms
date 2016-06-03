@@ -69,7 +69,7 @@ public class AffirmItemsActivity extends BaseActivity {
         EditText operator = (EditText) head.findViewById(R.id.operator);
 
         totalNum = list.size();
-        total.setText("总：" + totalNum);
+        total.setText("" + totalNum);
 
         listview.addHeaderView(head);
 
@@ -172,9 +172,9 @@ public class AffirmItemsActivity extends BaseActivity {
 
 //            ((Map) Constants.AFFIRM_LIST.get(applyIndex)).put("detail_status",);
         }
-        back.setText("退" + backNum);
-        verified.setText("检" + verifiedNum);
-        unverified.setText("未" + unverifiedNum);
+        back.setText("" + backNum);
+        verified.setText("" + verifiedNum);
+        unverified.setText("" + unverifiedNum);
         Constants.AFFIRM_LIST.getCollection().get(applyIndex).setOperator("xxxxxxxx");
         PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
         affirmItemsAdapter.notifyDataSetChanged();

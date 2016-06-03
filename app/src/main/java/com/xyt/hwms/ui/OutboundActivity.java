@@ -10,9 +10,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.OutboundAdapter;
 import com.xyt.hwms.bean.EADObject;
@@ -123,7 +125,7 @@ public class OutboundActivity extends BaseActivity {
         params.put("_password", "whchem@2016");
         params.put("car_card", NFCTagId);
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(url, EADObject.class, params, new Response.Listener<EADObject>() {
+                new GsonObjectRequest<>(Request.Method.POST, url, EADObject.class, new Gson().toJson(params), new Response.Listener<EADObject>() {
                     @Override
                     public void onResponse(EADObject response) {
                         if (swiperefresh.isRefreshing()) {

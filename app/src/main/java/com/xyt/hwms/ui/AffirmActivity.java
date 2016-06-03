@@ -154,7 +154,7 @@ public class AffirmActivity extends BaseActivity {
 //        Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));inner/outer
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016&transfer_type=inner", TransferListBean.class, null, new Response.Listener<TransferListBean>() {
+                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016&transfer_type=" + getIntent().getStringExtra("type"), TransferListBean.class, null, new Response.Listener<TransferListBean>() {
                     @Override
                     public void onResponse(TransferListBean response) {
                         if (swiperefresh.isRefreshing()) {

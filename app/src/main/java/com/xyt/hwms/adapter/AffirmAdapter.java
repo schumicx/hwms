@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.xyt.hwms.R;
 import com.xyt.hwms.bean.Transfer;
-import com.xyt.hwms.support.utils.BaseUtils;
 import com.xyt.hwms.support.utils.Constants;
 import com.xyt.hwms.support.utils.DateUtils;
 
@@ -58,13 +57,12 @@ public class AffirmAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         viewHolder.code.setText("" + list.get(position).getApply_code());
-        viewHolder.org.setText(list.get(position).getApply_org_name() + "-" + list.get(position).getStep());
+        viewHolder.org.setText(list.get(position).getParent_org_name() + "-" + list.get(position).getOrg_name());
         if (Constants.TRANSFER_TYPE_OUTER.equals(list.get(position).getTransfer_type())) {
             viewHolder.text2.setVisibility(View.GONE);
-            viewHolder.text1.setText("车卡号:" + list.get(position).getCard_code() + list.get(position).getCard_name());
+            viewHolder.text1.setText(list.get(position).getCard_name());
             viewHolder.carCode.setText(list.get(position).getCar_code());
-            viewHolder.carCode.setPadding(BaseUtils.px2dip(context, 8), 0, BaseUtils.px2dip(context, 8), 0);
-            viewHolder.text3.setText("电子锁号:" + list.get(position).getLock());
+            viewHolder.text3.setText("电子锁号:" + list.get(position).getLock_code());
         } else if (Constants.TRANSFER_TYPE_INNER.equals(list.get(position).getTransfer_type())) {
             viewHolder.carCode.setVisibility(View.GONE);
             viewHolder.text1.setText(list.get(position).getDuty_person());

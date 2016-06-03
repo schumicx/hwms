@@ -3,7 +3,6 @@ package com.xyt.hwms.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
@@ -14,9 +13,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.xyt.hwms.R;
-import com.xyt.hwms.adapter.OutboundAdapter;
 import com.xyt.hwms.adapter.RecycleAdapter;
-import com.xyt.hwms.bean.EADObject;
+import com.xyt.hwms.bean.Recycle;
+import com.xyt.hwms.bean.RecycleListBean;
 import com.xyt.hwms.support.utils.ApplicationController;
 import com.xyt.hwms.support.utils.BaseUtils;
 import com.xyt.hwms.support.utils.Constants;
@@ -40,14 +39,14 @@ public class RecycleActivity extends BaseActivity {
     SwipeRefreshLayout swiperefresh;
     @BindView(R.id.empty)
     TextView empty;
-    private List<Map> list = new ArrayList<>();
+    private List<Recycle> list = new ArrayList<>();
     private RecycleAdapter recycleAdapter;
 
     @OnItemClick(R.id.listview)
     public void onItemClick(int position) {
         Intent intent = new Intent(getBaseContext(), RecycleItemsActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("id", ((Map)list.get(position)).get("inner_id").toString());
+        bundle.putString("id", list.get(position).getInner_id());
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -117,9 +116,9 @@ public class RecycleActivity extends BaseActivity {
         params.put("_username", "develop");
         params.put("_password", "whchem@2016");
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(url, EADObject.class, params, new Response.Listener<EADObject>() {
+                new GsonObjectRequest<>(url, RecycleListBean.class, params, new Response.Listener<RecycleListBean>() {
                     @Override
-                    public void onResponse(EADObject response) {
+                    public void onResponse(RecycleListBean response) {
                         if (swiperefresh.isRefreshing()) {
                             swiperefresh.setRefreshing(false);
                         }

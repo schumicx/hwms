@@ -3,41 +3,24 @@ package com.xyt.hwms.bean;
 /**
  * Created by Levin on 2016-06-02.
  */
-public class TransferDetail {
+public class RecycleDetail {
 
-    /**
-     * waste_detail_id //固废 id
-     * waste_name : //固废名称
-     * category_code : //固废代码
-     * is_key_waste : //重点监管
-     * container_label_code : CON-0001
-     * back_reason : xxxx
-     * back_reason_index : 1
-     * status : a
-     * label_code : Y-HW06-MDI-20160527-0014
-     * produce_source : 装置检修
-     */
-
-    private String transfer_detail_id;
+    private String record_id;
     private String waste_name;
     private String category_code;
     private String is_key_waste;
-    private String container_label_code;
-    private String back_reason;
-    private String back_reason_index;
-    private String status;
     private String label_code;
     private String produce_source;
     private String transfer_time;
     private String package_type;
     private String harmful_ingredient;
 
-    public String getTransfer_detail_id() {
-        return transfer_detail_id;
+    public String getRecord_id() {
+        return record_id;
     }
 
-    public void setTransfer_detail_id(String transfer_detail_id) {
-        this.transfer_detail_id = transfer_detail_id;
+    public void setRecord_id(String record_id) {
+        this.record_id = record_id;
     }
 
     public String getWaste_name() {
@@ -62,38 +45,6 @@ public class TransferDetail {
 
     public void setIs_key_waste(String is_key_waste) {
         this.is_key_waste = is_key_waste;
-    }
-
-    public String getContainer_label_code() {
-        return container_label_code;
-    }
-
-    public void setContainer_label_code(String container_label_code) {
-        this.container_label_code = container_label_code;
-    }
-
-    public String getBack_reason() {
-        return back_reason;
-    }
-
-    public void setBack_reason(String back_reason) {
-        this.back_reason = back_reason;
-    }
-
-    public String getBack_reason_index() {
-        return back_reason_index;
-    }
-
-    public void setBack_reason_index(String back_reason_index) {
-        this.back_reason_index = back_reason_index;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getLabel_code() {

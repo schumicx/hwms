@@ -15,7 +15,6 @@ import com.xyt.hwms.support.utils.Constants;
 import com.xyt.hwms.support.utils.PreferencesUtils;
 
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,15 +61,16 @@ public class GroupAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.name.setText( list.get(position).getWaste_name());
-        viewHolder.code.setText( list.get(position).getLabel_code());
+        viewHolder.name.setText(list.get(position).getWaste_name());
+        viewHolder.code.setText(list.get(position).getLabel_code());
         if (Constants.WASTE_PASS.equals(list.get(position).getStatus())) {
-            viewHolder.code.setBackgroundColor(0xff00ff00);
-        } else if (Constants.WASTE_BACK.equals( list.get(position).getStatus())) {
-            viewHolder.code.setBackgroundColor(0xffff0000);
+            viewHolder.status.setBackgroundColor(0xff5ea640);
+        } else if (Constants.WASTE_BACK.equals(list.get(position).getStatus())) {
+            viewHolder.status.setBackgroundColor(0xffff8e00);
         } else {
-            viewHolder.code.setBackgroundColor(0xffffffff);
+            viewHolder.status.setBackgroundColor(0xffccc8c3);
         }
+
         viewHolder.remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,6 +85,8 @@ public class GroupAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
+        @BindView(R.id.status)
+        TextView status;
         @BindView(R.id.name)
         TextView name;
         @BindView(R.id.code)

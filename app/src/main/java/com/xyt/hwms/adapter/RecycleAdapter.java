@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.xyt.hwms.R;
+import com.xyt.hwms.bean.Recycle;
 import com.xyt.hwms.support.utils.DateUtils;
 
 import java.util.List;
@@ -22,9 +23,9 @@ import butterknife.ButterKnife;
 public class RecycleAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
-    private List<Map> list;
+    private List<Recycle> list;
 
-    public RecycleAdapter(Context context, List<Map> list) {
+    public RecycleAdapter(Context context, List<Recycle> list) {
         this.list = list;
         this.context = context;
         this.inflater = LayoutInflater.from(context);
@@ -55,9 +56,11 @@ public class RecycleAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.code.setText((String) list.get(position).get("apply_code"));
-        viewHolder.position.setText((String) list.get(position).get("transfer_position"));
-        viewHolder.time.setText(DateUtils.getDate2(new Double((double) list.get(position).get("apply_date")).longValue()));
+        viewHolder.code.setText("" + list.get(position).getApply_code());
+        viewHolder.org.setText(list.get(position).getParent_org_name() + "-" + list.get(position).getOrg_name());
+        viewHolder.text1.setText(list.get(position).getUser_name());
+        viewHolder.text2.setText(list.get(position).getPhone());
+        viewHolder.text3.setText(DateUtils.getCnDate(list.get(position).getCreate_time()));
 
         return convertView;
     }
@@ -65,10 +68,14 @@ public class RecycleAdapter extends BaseAdapter {
     static class ViewHolder {
         @BindView(R.id.code)
         TextView code;
-        @BindView(R.id.position)
-        TextView position;
-        @BindView(R.id.time)
-        TextView time;
+        @BindView(R.id.org)
+        TextView org;
+        @BindView(R.id.text1)
+        TextView text1;
+        @BindView(R.id.text2)
+        TextView text2;
+        @BindView(R.id.text3)
+        TextView text3;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

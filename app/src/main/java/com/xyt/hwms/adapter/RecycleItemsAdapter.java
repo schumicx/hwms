@@ -16,10 +16,12 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.bean.EADMsgObject;
+import com.xyt.hwms.bean.RecycleDetail;
 import com.xyt.hwms.support.utils.ApplicationController;
 import com.xyt.hwms.support.utils.BaseUtils;
 import com.xyt.hwms.support.utils.Constants;
 import com.xyt.hwms.support.utils.GsonObjectRequest;
+import com.xyt.hwms.support.utils.PreferencesUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -35,10 +37,10 @@ import butterknife.ButterKnife;
 public class RecycleItemsAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
-    private List<Map> list;
+    private List<RecycleDetail> list;
     private String id;
 
-    public RecycleItemsAdapter(Context context, List<Map> list, String id) {
+    public RecycleItemsAdapter(Context context, List<RecycleDetail> list, String id) {
         this.id = id;
         this.list = list;
         this.context = context;
@@ -70,11 +72,13 @@ public class RecycleItemsAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.name.setText(list.get(position).get("label_code").toString());
+        viewHolder.name.setText(list.get(position).getWaste_name());
+        viewHolder.code.setText(list.get(position).getLabel_code());
+
         viewHolder.remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recallRequest(list.get(position).get("label_code").toString());
+                recallRequest(list.get(position).getLabel_code(), position);
             }
         });
 
@@ -82,7 +86,7 @@ public class RecycleItemsAdapter extends BaseAdapter {
     }
 
     //内部利用撤销
-    private void recallRequest(String labelCode) {
+    private void recallRequest(String labelCode, final int position) {
         String url = Constants.SERVER + "mobile-hwiu/" + id + "/detail/remove";
         Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
@@ -92,7 +96,7 @@ public class RecycleItemsAdapter extends BaseAdapter {
                 new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", EADMsgObject.class, new Gson().toJson(params), new Response.Listener<EADMsgObject>() {
                     @Override
                     public void onResponse(EADMsgObject response) {
-                        list.remove(0);
+                        list.remove(position);
                         notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {

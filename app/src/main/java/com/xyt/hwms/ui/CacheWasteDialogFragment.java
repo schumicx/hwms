@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.support.utils.Constants;
+import com.xyt.hwms.support.utils.DateUtils;
 import com.xyt.hwms.support.utils.PreferencesUtils;
 
 public class CacheWasteDialogFragment extends DialogFragment {
@@ -35,6 +36,7 @@ public class CacheWasteDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         if (!Constants.WASTE_BACK.equals(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).getStatus())) {
             Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setStatus(Constants.WASTE_PASS);
+            Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setTransfer_time(DateUtils.getCurrentTime1());
             PreferencesUtils.putString(getActivity(), "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
             PreferencesUtils.putBoolean(getActivity(), "isSync", false);
         }
@@ -51,6 +53,7 @@ public class CacheWasteDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setStatus(Constants.WASTE_BACK);
                         Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setContainer_label_code(null);
+                        Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setTransfer_time(DateUtils.getCurrentTime1());
                         PreferencesUtils.putString(getActivity(), "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
                         PreferencesUtils.putBoolean(getActivity(), "isSync", false);
                         ((BaseActivity) getActivity()).showReasonDialog(applyIndex, wasteIndex);
@@ -62,6 +65,7 @@ public class CacheWasteDialogFragment extends DialogFragment {
                         Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setStatus(Constants.WASTE_PASS);
                         Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setBack_reason(null);
                         Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setBack_reason_index(null);
+                        Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setTransfer_time(DateUtils.getCurrentTime1());
                         PreferencesUtils.putString(getActivity(), "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
                         PreferencesUtils.putBoolean(getActivity(), "isSync", false);
                     }
@@ -80,12 +84,14 @@ public class CacheWasteDialogFragment extends DialogFragment {
                         Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setStatus(Constants.WASTE_PASS);
                         Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setBack_reason(null);
                         Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setBack_reason_index(null);
+                        Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setTransfer_time(DateUtils.getCurrentTime1());
                         PreferencesUtils.putString(getActivity(), "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
                         PreferencesUtils.putBoolean(getActivity(), "isSync", false);
                         break;
                     case KeyEvent.KEYCODE_DEL:
                         Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setStatus(Constants.WASTE_BACK);
                         Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setContainer_label_code(null);
+                        Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setTransfer_time(DateUtils.getCurrentTime1());
                         PreferencesUtils.putString(getActivity(), "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
                         PreferencesUtils.putBoolean(getActivity(), "isSync", false);
                         ((BaseActivity) getActivity()).showReasonDialog(applyIndex, wasteIndex);

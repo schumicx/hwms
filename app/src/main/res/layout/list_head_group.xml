@@ -7,14 +7,17 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp">
 
         <EditText
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="container No."
-            android:imeActionId="@+id/login"
+            android:hint="容器"
+            android:imeActionId="@+id/container"
             android:imeActionLabel="@string/down"
             android:imeOptions="actionUnspecified"
             android:inputType="text"

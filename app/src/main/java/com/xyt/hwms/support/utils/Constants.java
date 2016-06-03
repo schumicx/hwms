@@ -12,6 +12,7 @@ public class Constants {
 //    public static final String BASE_URL = "http://ead.xiyouqi.cn:8080";
 //    public static final String BASE_URL = "http://10.10.102.154:8080";
     public static final String BASE_URL = "http://10.10.11.159:8080";
+//    public static final String BASE_URL = "http://192.168.1.108:8080";
     //生产
 //    public static final String BASE_URL = "http://120.25.153.217";
 
@@ -41,7 +42,7 @@ public class Constants {
 
     public static final String LABEL_LIB = "LIB";   //仓库
     public static final String LABEL_LSL = "LSL";   //库位
-    public static final String LABEL_CON = "6";//"CON";   //容器
+    public static final String LABEL_CON = "CON";   //容器
     public static final String LABEL_HW = "Y-HW";//"HW";     //固废
 
     public static final String TRANSFER_TYPE_INNER="inner";

@@ -16,6 +16,8 @@ import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.RecycleItemsAdapter;
 import com.xyt.hwms.bean.EADMsgObject;
 import com.xyt.hwms.bean.EADObject;
+import com.xyt.hwms.bean.RecycleDetail;
+import com.xyt.hwms.bean.RecycleDetailListBean;
 import com.xyt.hwms.support.utils.ApplicationController;
 import com.xyt.hwms.support.utils.BaseUtils;
 import com.xyt.hwms.support.utils.Constants;
@@ -37,7 +39,7 @@ public class RecycleItemsActivity extends BaseActivity {
     ListView listview;
     @BindView(R.id.empty)
     TextView empty;
-    private List<Map> list = new ArrayList<>();
+    private List<RecycleDetail> list = new ArrayList<>();
     private RecycleItemsAdapter recycleItemsAdapter;
 
     private String id;
@@ -96,9 +98,9 @@ public class RecycleItemsActivity extends BaseActivity {
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
 //        params.put("", "gbros:{2014}");
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016", EADObject.class, null, new Response.Listener<EADObject>() {
+                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016", RecycleDetailListBean.class, null, new Response.Listener<RecycleDetailListBean>() {
                     @Override
-                    public void onResponse(EADObject response) {
+                    public void onResponse(RecycleDetailListBean response) {
                         if (response.getData().getCollection() != null && response.getData().getCollection().size() > 0) {
                             list.clear();
                             list.addAll(response.getData().getCollection());
@@ -137,9 +139,9 @@ public class RecycleItemsActivity extends BaseActivity {
                 new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", EADMsgObject.class, new Gson().toJson(params), new Response.Listener<EADMsgObject>() {
                     @Override
                     public void onResponse(EADMsgObject response) {
-                        Map m = new HashMap();
-                        m.put("label_code", barCodeData);
-                        list.add(0, m);
+//                        Map m = new HashMap();
+//                        m.put("label_code", barCodeData);
+//                        list.add(m);
                         recycleItemsAdapter.notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {

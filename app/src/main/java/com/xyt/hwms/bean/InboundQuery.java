@@ -1,36 +1,67 @@
 package com.xyt.hwms.bean;
 
+import java.io.Serializable;
+
 /**
- * Created by Levin on 2016-06-02.
+ * Created by Levin on 2016-05-17.
  */
-public class TransferDetail {
+public class InboundQuery extends BaseBean implements Serializable {
 
-    /**
-     * waste_detail_id //固废 id
-     * waste_name : //固废名称
-     * category_code : //固废代码
-     * is_key_waste : //重点监管
-     * container_label_code : CON-0001
-     * back_reason : xxxx
-     * back_reason_index : 1
-     * status : a
-     * label_code : Y-HW06-MDI-20160527-0014
-     * produce_source : 装置检修
-     */
-
+    private String opera_record_id;
+    private String store_label_code;
+    private String position_label_code;
+    private Float total_weight;
+    private Float weight;
     private String transfer_detail_id;
     private String waste_name;
     private String category_code;
     private String is_key_waste;
     private String container_label_code;
-    private String back_reason;
-    private String back_reason_index;
     private String status;
     private String label_code;
     private String produce_source;
-    private String transfer_time;
     private String package_type;
     private String harmful_ingredient;
+
+    public String getOpera_record_id() {
+        return opera_record_id;
+    }
+
+    public void setOpera_record_id(String opera_record_id) {
+        this.opera_record_id = opera_record_id;
+    }
+
+    public String getStore_label_code() {
+        return store_label_code;
+    }
+
+    public void setStore_label_code(String store_label_code) {
+        this.store_label_code = store_label_code;
+    }
+
+    public String getPosition_label_code() {
+        return position_label_code;
+    }
+
+    public void setPosition_label_code(String position_label_code) {
+        this.position_label_code = position_label_code;
+    }
+
+    public Float getTotal_weight() {
+        return total_weight;
+    }
+
+    public void setTotal_weight(Float total_weight) {
+        this.total_weight = total_weight;
+    }
+
+    public Float getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Float weight) {
+        this.weight = weight;
+    }
 
     public String getTransfer_detail_id() {
         return transfer_detail_id;
@@ -72,22 +103,6 @@ public class TransferDetail {
         this.container_label_code = container_label_code;
     }
 
-    public String getBack_reason() {
-        return back_reason;
-    }
-
-    public void setBack_reason(String back_reason) {
-        this.back_reason = back_reason;
-    }
-
-    public String getBack_reason_index() {
-        return back_reason_index;
-    }
-
-    public void setBack_reason_index(String back_reason_index) {
-        this.back_reason_index = back_reason_index;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -110,14 +125,6 @@ public class TransferDetail {
 
     public void setProduce_source(String produce_source) {
         this.produce_source = produce_source;
-    }
-
-    public String getTransfer_time() {
-        return transfer_time;
-    }
-
-    public void setTransfer_time(String transfer_time) {
-        this.transfer_time = transfer_time;
     }
 
     public String getPackage_type() {

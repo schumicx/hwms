@@ -12,8 +12,11 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.xyt.hwms.R;
+import com.xyt.hwms.bean.InboundQuery;
 
 import java.util.List;
 import java.util.Map;
@@ -27,11 +30,11 @@ import butterknife.ButterKnife;
 public class InboundAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
-    private List<Map> list;
+    private List<InboundQuery> list;
     private EditText weight;
 
 
-    public InboundAdapter(Context context, List<Map> list, EditText weight) {
+    public InboundAdapter(Context context, List<InboundQuery> list, EditText weight) {
         this.list = list;
         this.weight = weight;
         this.context = context;
@@ -64,9 +67,9 @@ public class InboundAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.name.setText((String) list.get(position).get("waste_detail_id"));
-        viewHolder.code.setText((String) list.get(position).get("label_code"));
-        viewHolder.itemWeight.setText(String.valueOf(list.get(position).get("itemWeight")).equals("null") ? "" : String.valueOf(list.get(position).get("itemWeight")));
+        viewHolder.name.setText( list.get(position).getWaste_name());
+        viewHolder.code.setText( list.get(position).getLabel_code());
+        viewHolder.itemWeight.setText(String.valueOf(list.get(position).getWeight()).equals("null") ? "" : String.valueOf(list.get(position).getWeight()));
 
         viewHolder.itemWeight.addTextChangedListener(new TextWatcher() {
             @Override
@@ -77,7 +80,7 @@ public class InboundAdapter extends BaseAdapter {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (viewHolder.itemWeight.isFocused()) {
-                    list.get(position).put("itemWeight",s.toString());
+                    list.get(position).setWeight(Float.valueOf(s.toString()));
                     jisuan();
                 }
             }
@@ -105,13 +108,20 @@ public class InboundAdapter extends BaseAdapter {
             }
         });
 
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context,new Gson().toJson(list.get(position)),Toast.LENGTH_LONG).show();
+            }
+        });
+
         return convertView;
     }
 
     public void jisuan() {
         double x = 0;
         for (int i=0;i<list.size();i++){
-            x+=String.valueOf(list.get(i).get("itemWeight")).equals("")||String.valueOf(list.get(i).get("itemWeight")).equals("null")?0:Double.valueOf(list.get(i).get("itemWeight").toString());
+            x+=String.valueOf(list.get(i).getWeight()).equals("")||String.valueOf(list.get(i).getWeight()).equals("null")?0:Double.valueOf(list.get(i).getWeight());
         }
         weight.setText(""+x);
     }

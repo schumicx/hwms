@@ -27,7 +27,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="OK"
+        android:layout_margin="4dp"
+        android:background="@drawable/button_submit"
+        android:text="确定"
+        android:textColor="@android:color/white"
         android:textStyle="bold" />
 
 </RelativeLayout>

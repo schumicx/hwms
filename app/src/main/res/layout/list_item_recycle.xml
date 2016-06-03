@@ -2,27 +2,54 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:descendantFocusability="blocksDescendants">
+    android:descendantFocusability="blocksDescendants"
+    android:paddingBottom="8dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="8dp">
 
     <TextView
         android:id="@+id/code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:singleLine="true"
-        android:text="XXXX" />
+        android:text="转移单号：XXX"
+        android:textColor="#2c557e"
+        android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/position"
+        android:id="@+id/org"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/code"
+        android:layout_marginTop="8dp"
         android:singleLine="true"
-        android:text="装置" />
+        android:text="装置：XXX-XXX" />
 
     <TextView
-        android:id="@+id/time"
+        android:id="@+id/text1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/position"
-        android:text="时间" />
+        android:layout_below="@+id/org"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
+        android:singleLine="true"
+        android:text="XXXX" />
+
+    <TextView
+        android:id="@+id/text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text1"
+        android:singleLine="true"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/text3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/text1"
+        android:singleLine="true"
+        android:text="XXXX" />
 </RelativeLayout>
