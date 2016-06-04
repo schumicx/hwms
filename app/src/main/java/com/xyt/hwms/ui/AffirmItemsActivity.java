@@ -27,7 +27,7 @@ import butterknife.OnItemClick;
 
 public class AffirmItemsActivity extends BaseActivity {
 
-    public CacheWasteDialogFragment affirmDialog;
+    public CacheWasteDialogFragment cacheWasteDialogFragment;
     @BindView(R.id.listview)
     ListView listview;
     TextView total;
@@ -46,8 +46,8 @@ public class AffirmItemsActivity extends BaseActivity {
     @OnItemClick(R.id.listview)
     public void onItemClick(int position) {
 //        this.position = position - 1;
-        affirmDialog = CacheWasteDialogFragment.newInstance(applyIndex, position - 1);
-        affirmDialog.show(getSupportFragmentManager(), getLocalClassName());
+        cacheWasteDialogFragment = CacheWasteDialogFragment.newInstance(applyIndex, position - 1);
+        cacheWasteDialogFragment.show(getSupportFragmentManager(), getLocalClassName());
     }
 
     @Override
@@ -129,14 +129,14 @@ public class AffirmItemsActivity extends BaseActivity {
 
     @Override
     public void getBarcode(String data) {
-        if (affirmDialog != null) {
-            affirmDialog.dismiss();
+        if (cacheWasteDialogFragment != null) {
+            cacheWasteDialogFragment.dismiss();
         }
         for (int i = 0; i < list.size(); i++) {
             if (data.equals(list.get(i).getLabel_code())) {
 //                this.position = i;
-                affirmDialog = CacheWasteDialogFragment.newInstance(applyIndex, i);
-                affirmDialog.show(getSupportFragmentManager(), getLocalClassName());
+                cacheWasteDialogFragment = CacheWasteDialogFragment.newInstance(applyIndex, i);
+                cacheWasteDialogFragment.show(getSupportFragmentManager(), getLocalClassName());
                 break;
             }
         }
@@ -145,7 +145,7 @@ public class AffirmItemsActivity extends BaseActivity {
     @Override
     public void closeDialog() {
         updateView();
-        affirmDialog = null;
+        cacheWasteDialogFragment = null;
     }
 
     public void updateView() {

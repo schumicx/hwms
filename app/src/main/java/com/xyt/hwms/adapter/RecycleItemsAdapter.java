@@ -39,9 +39,11 @@ public class RecycleItemsAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private List<RecycleDetail> list;
     private String id;
+    private TextView empty;
 
-    public RecycleItemsAdapter(Context context, List<RecycleDetail> list, String id) {
+    public RecycleItemsAdapter(Context context, List<RecycleDetail> list, String id, TextView empty) {
         this.id = id;
+        this.empty = empty;
         this.list = list;
         this.context = context;
         this.inflater = LayoutInflater.from(context);
@@ -78,7 +80,7 @@ public class RecycleItemsAdapter extends BaseAdapter {
         viewHolder.remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recallRequest(list.get(position).getLabel_code(), position);
+                recallRequest(position);
             }
         });
 
@@ -86,17 +88,20 @@ public class RecycleItemsAdapter extends BaseAdapter {
     }
 
     //内部利用撤销
-    private void recallRequest(String labelCode, final int position) {
+    private void recallRequest(final int position) {
         String url = Constants.SERVER + "mobile-hwiu/" + id + "/detail/remove";
         Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
-        params.put("label_code", labelCode);
+        params.put("label_code", list.get(position).getLabel_code());
 //        params.put("record_id", );
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", EADMsgObject.class, new Gson().toJson(params), new Response.Listener<EADMsgObject>() {
                     @Override
                     public void onResponse(EADMsgObject response) {
                         list.remove(position);
+                        if (list.size()==0){
+                            empty.setVisibility(View.VISIBLE);
+                        }
                         notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {

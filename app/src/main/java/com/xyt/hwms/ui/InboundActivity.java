@@ -25,7 +25,6 @@ import com.xyt.hwms.support.utils.ApplicationController;
 import com.xyt.hwms.support.utils.BaseUtils;
 import com.xyt.hwms.support.utils.Constants;
 import com.xyt.hwms.support.utils.GsonObjectRequest;
-import com.xyt.hwms.support.utils.PreferencesUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -36,10 +35,10 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnItemClick;
 
 public class InboundActivity extends BaseActivity {
 
-    public WasteDialogFragment wasteDialog;
     @BindView(R.id.listview)
     ListView listview;
     @BindView(R.id.empty)
@@ -56,13 +55,10 @@ public class InboundActivity extends BaseActivity {
     private InboundAdapter inboundAdapter;
     private String labelCode;
 
-    /*@OnItemClick(R.id.listview)
+    @OnItemClick(R.id.listview)
     public void onItemClick(int position) {
-//        this.position = position - 1;
-        Toast.makeText(context,new Gson().toJson(list.get(position)),Toast.LENGTH_LONG).show();
-        wasteDialog = WasteDialogFragment.newInstance();
-        wasteDialog.show(getSupportFragmentManager(), getLocalClassName());
-    }*/
+        Toast.makeText(context, "xxxxxxxxxxxxxxxxxxxxxxxxxxx" + new Gson().toJson(list.get(position - 1)), Toast.LENGTH_LONG).show();
+    }
 
     @OnClick(R.id.submit)
     public void onClick(View v) {
@@ -145,15 +141,14 @@ public class InboundActivity extends BaseActivity {
         } else if (data.startsWith(Constants.LABEL_CON)) {
             if (!TextUtils.isEmpty(container.getText().toString()) && !barCodeData.equals(container.getText().toString())) {
                 labelCode = null;
+                store.getText().clear();
+                position.getText().clear();
             }
             container.getText().clear();
             container.setText(data);
             getRequest();
         } else if (data.startsWith(Constants.LABEL_HW)) {
             labelCode = data;
-            if (wasteDialog != null) {
-                wasteDialog.dismiss();
-            }
             getRequest();
         }
         inboundAdapter.notifyDataSetChanged();
@@ -161,14 +156,16 @@ public class InboundActivity extends BaseActivity {
 
     @Override
     public void closeDialog() {
-        for (int i = 0; i < list.size(); i++) {
-            if (Constants.WASTE_BACK.equals(list.get(i).getStatus())) {
-                list.remove(i);
-                break;
-            }
-        }
-        updateView();
-        wasteDialog = null;
+//        updateView();
+    }
+
+    public void backWaste(InboundQuery inboundQuery, int index) {
+//        updateView();
+        backRequest(inboundQuery, index);
+    }
+
+    public void showReasonDialog(InboundQuery inboundQuery) {
+        ReasonDialogFragment.newInstance(inboundQuery).show(getSupportFragmentManager(), getLocalClassName());
     }
 
     public void updateView() {
@@ -250,6 +247,41 @@ public class InboundActivity extends BaseActivity {
                     @Override
                     public void onResponse(InboundQueryBean response) {
                         ///////////////////////////////////////////////////
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        try {
+                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                        } catch (NullPointerException e) {
+                            if (!BaseUtils.isNetworkConnected(context)) {
+                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }), getLocalClassName());
+    }
+
+    //固废退回
+    private void backRequest(final InboundQuery inboundQuery, int index) {
+        String url = Constants.SERVER + "mobile-get-in/back";
+        Map<String, Object> params = new HashMap<>();
+//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
+//        params.put("store_label_code", store.getText().toString());//库
+        params.put("transfer_detail_id", inboundQuery.getTransfer_detail_id());
+        params.put("status", Constants.WASTE_BACK);
+        params.put("back_reason", getResources().getStringArray(R.array.reason)[index]);
+        params.put("back_reason_index", index);
+        ApplicationController.getInstance().addToRequestQueue(
+                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", InboundQueryBean.class, new Gson().toJson(params), new Response.Listener<InboundQueryBean>() {
+                    @Override
+                    public void onResponse(InboundQueryBean response) {
+                        list.remove(inboundQuery);
+                        inboundAdapter.notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {
                     @Override

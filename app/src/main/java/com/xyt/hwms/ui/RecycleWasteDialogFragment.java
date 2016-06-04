@@ -12,39 +12,36 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.xyt.hwms.R;
+import com.xyt.hwms.bean.RecycleDetail;
 
-public class WasteDialogFragment extends DialogFragment {
+public class RecycleWasteDialogFragment extends DialogFragment {
 
     public TextView detail;
+    private RecycleDetail recycleDetail;
 
-    public static WasteDialogFragment newInstance() {
-        WasteDialogFragment fragment = new WasteDialogFragment();
+    public static RecycleWasteDialogFragment newInstance(RecycleDetail recycleDetail) {
+        RecycleWasteDialogFragment fragment = new RecycleWasteDialogFragment();
+        fragment.recycleDetail = recycleDetail;
         return fragment;
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        // Get the layout inflater
+
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.activity_affirm_details, null);
         detail = (TextView) view.findViewById(R.id.detail);
-        detail.setText("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+        detail.setText(new Gson().toJson(recycleDetail));
 
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view)
                 // Add action buttons
-                .setPositiveButton("退回", new DialogInterface.OnClickListener() {
+                .setPositiveButton("移除", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        ((BaseActivity)getActivity()).showReasonDialog();
-                    }
-                })
-                .setNegativeButton("接受", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                        ((RecycleItemsActivity) getActivity()).recallRequest(recycleDetail);
                     }
                 });
         return builder.create();
@@ -60,7 +57,7 @@ public class WasteDialogFragment extends DialogFragment {
                     case KeyEvent.KEYCODE_F4:
                         break;
                     case KeyEvent.KEYCODE_DEL:
-                        ((BaseActivity)getActivity()).showReasonDialog();
+                        ((RecycleItemsActivity) getActivity()).recallRequest(recycleDetail);
                         break;
                 }
                 dismiss();
@@ -75,8 +72,6 @@ public class WasteDialogFragment extends DialogFragment {
         super.onDismiss(dialog);
         if (getActivity() != null) {
             ((BaseActivity) getActivity()).closeDialog();
-//            ((AffirmItemsActivity) getActivity()).updateView();
-//            ((AffirmItemsActivity) getActivity()).affirmDialog = null;
         }
     }
 
@@ -85,8 +80,6 @@ public class WasteDialogFragment extends DialogFragment {
         super.dismiss();
         if (getActivity() != null) {
             ((BaseActivity) getActivity()).closeDialog();
-//            ((AffirmItemsActivity) getActivity()).updateView();
-//            ((AffirmItemsActivity) getActivity()).affirmDialog = null;
         }
     }
 }

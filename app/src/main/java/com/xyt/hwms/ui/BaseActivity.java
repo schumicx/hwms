@@ -138,10 +138,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         CacheReasonDialogFragment.newInstance(applyIndex, position).show(getSupportFragmentManager(), getLocalClassName());
     }
 
-    public void showReasonDialog() {
-        ReasonDialogFragment.newInstance().show(getSupportFragmentManager(), getLocalClassName());
-    }
-
     private void resolveIntent(Intent intent) {
         String action = intent.getAction();
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(action) || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action) || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {

@@ -53,7 +53,7 @@
             android:id="@+id/item_weight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="weight"
+            android:hint="重量"
             android:imeActionId="@+id/login"
             android:imeActionLabel="@string/down"
             android:imeOptions="actionUnspecified"

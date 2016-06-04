@@ -15,9 +15,9 @@ import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.RecycleItemsAdapter;
 import com.xyt.hwms.bean.EADMsgObject;
-import com.xyt.hwms.bean.EADObject;
 import com.xyt.hwms.bean.RecycleDetail;
 import com.xyt.hwms.bean.RecycleDetailListBean;
+import com.xyt.hwms.bean.RecycleScanBean;
 import com.xyt.hwms.support.utils.ApplicationController;
 import com.xyt.hwms.support.utils.BaseUtils;
 import com.xyt.hwms.support.utils.Constants;
@@ -31,10 +31,11 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnItemClick;
 
 public class RecycleItemsActivity extends BaseActivity {
 
-
+    public RecycleWasteDialogFragment recycleWasteDialogFragment;
     @BindView(R.id.listview)
     ListView listview;
     @BindView(R.id.empty)
@@ -43,6 +44,12 @@ public class RecycleItemsActivity extends BaseActivity {
     private RecycleItemsAdapter recycleItemsAdapter;
 
     private String id;
+
+    @OnItemClick(R.id.listview)
+    public void onItemClick(int position) {
+        recycleWasteDialogFragment = RecycleWasteDialogFragment.newInstance(list.get(position));
+        recycleWasteDialogFragment.show(getSupportFragmentManager(), getLocalClassName());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +62,7 @@ public class RecycleItemsActivity extends BaseActivity {
         id = getIntent().getStringExtra("id");
 
         if (recycleItemsAdapter == null) {
-            recycleItemsAdapter = new RecycleItemsAdapter(context, list, id);
+            recycleItemsAdapter = new RecycleItemsAdapter(context, list, id, empty);
         }
         listview.setAdapter(recycleItemsAdapter);
 
@@ -83,12 +90,17 @@ public class RecycleItemsActivity extends BaseActivity {
 
     @Override
     public void getBarcode(String data) {
+        if (recycleWasteDialogFragment != null) {
+            recycleWasteDialogFragment.dismiss();
+        }
         barCodeData = data;
         submitRequest();
     }
 
     @Override
     public void closeDialog() {
+//        updateView();
+        recycleWasteDialogFragment = null;
     }
 
     //内部利用
@@ -136,12 +148,17 @@ public class RecycleItemsActivity extends BaseActivity {
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("label_code", barCodeData);
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", EADMsgObject.class, new Gson().toJson(params), new Response.Listener<EADMsgObject>() {
+                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", RecycleScanBean.class, new Gson().toJson(params), new Response.Listener<RecycleScanBean>() {
                     @Override
-                    public void onResponse(EADMsgObject response) {
-//                        Map m = new HashMap();
-//                        m.put("label_code", barCodeData);
-//                        list.add(m);
+                    public void onResponse(RecycleScanBean response) {
+                        if (response.getData() != null) {
+                            list.add(0, response.getData());
+                        }
+                        if (list.size() > 0) {
+                            empty.setVisibility(View.GONE);
+                        }
+                        recycleWasteDialogFragment = RecycleWasteDialogFragment.newInstance(response.getData());
+                        recycleWasteDialogFragment.show(getSupportFragmentManager(), getLocalClassName());
                         recycleItemsAdapter.notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {
@@ -162,17 +179,22 @@ public class RecycleItemsActivity extends BaseActivity {
                 }), getLocalClassName());
     }
 
-    //固废详情
-    private void getWaste(String id) {
-        String url = Constants.SERVER + "mobile-waste";
-//        Map<String, Object> params = new HashMap<>();
+    //内部利用撤销
+    public void recallRequest(final RecycleDetail recycleDetail) {
+        String url = Constants.SERVER + "mobile-hwiu/" + id + "/detail/remove";
+        Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
-//        params.put("", "gbros:{2014}");
+        params.put("label_code", recycleDetail.getLabel_code());
+//        params.put("record_id", );
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016&label_code=" + id, EADObject.class, null, new Response.Listener<EADObject>() {
+                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", EADMsgObject.class, new Gson().toJson(params), new Response.Listener<EADMsgObject>() {
                     @Override
-                    public void onResponse(EADObject response) {
-                        //////////
+                    public void onResponse(EADMsgObject response) {
+                        list.remove(recycleDetail);
+                        recycleItemsAdapter.notifyDataSetChanged();
+                        if (list.size() < 1) {
+                            empty.setVisibility(View.VISIBLE);
+                        }
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -189,6 +211,36 @@ public class RecycleItemsActivity extends BaseActivity {
                             e.printStackTrace();
                         }
                     }
-                }), getLocalClassName());
+                }), "xxxx");
     }
+
+    /*//固废详情
+    private void getWaste(String id) {
+        String url = Constants.SERVER + "mobile-waste";
+//        Map<String, Object> params = new HashMap<>();
+//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
+//        params.put("", "gbros:{2014}");
+        ApplicationController.getInstance().addToRequestQueue(
+                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016&label_code=" + id, EADObject.class, null, new Response.Listener<EADObject>() {
+                    @Override
+                    public void onResponse(EADObject response) {
+                        //////////
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        try {
+                            Toast.makeText(context, *//*new Gson().fromJson(*//*new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))*//*, BaseBean.class).getContent()*//*, Toast.LENGTH_SHORT).show();
+                        } catch (NullPointerException e) {
+                            if (!BaseUtils.isNetworkConnected(context)) {
+                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }), getLocalClassName());
+    }*/
 }
