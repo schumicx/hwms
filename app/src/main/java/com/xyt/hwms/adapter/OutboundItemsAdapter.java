@@ -5,10 +5,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.google.gson.Gson;
 import com.xyt.hwms.R;
+import com.xyt.hwms.bean.BaseBean;
+import com.xyt.hwms.bean.Outbound;
+import com.xyt.hwms.support.utils.ApplicationController;
+import com.xyt.hwms.support.utils.BaseUtils;
+import com.xyt.hwms.support.utils.Constants;
+import com.xyt.hwms.support.utils.GsonObjectRequest;
 
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,9 +36,13 @@ import butterknife.ButterKnife;
 public class OutboundItemsAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
-    private List<Map> list;
+    private List<Outbound> list;
+    private String id;
+    private TextView empty;
 
-    public OutboundItemsAdapter(Context context, List<Map> list) {
+    public OutboundItemsAdapter(Context context, List<Outbound> list, String id, TextView empty) {
+        this.id = id;
+        this.empty = empty;
         this.list = list;
         this.context = context;
         this.inflater = LayoutInflater.from(context);
@@ -55,14 +74,61 @@ public class OutboundItemsAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.name.setText(list.get(position).get("label_code").toString());
+        viewHolder.name.setText(list.get(position).getObject_name());
+        viewHolder.code.setText(list.get(position).getLabel_code());
+
+        viewHolder.remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recallRequest(position);
+            }
+        });
 
         return convertView;
+    }
+
+    //出库撤销
+    private void recallRequest(final int position) {
+        String url = Constants.SERVER + "mobile-out-store/remove";
+        Map<String, Object> params = new HashMap<>();
+//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
+        params.put("out_record_id", list.get(position).getOut_record_id());
+//        params.put("record_id", );
+        ApplicationController.getInstance().addToRequestQueue(
+                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
+                    @Override
+                    public void onResponse(BaseBean response) {
+                        list.remove(position);
+                        if (list.size() == 0) {
+                            empty.setVisibility(View.VISIBLE);
+                        }
+                        notifyDataSetChanged();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        try {
+                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
+                        } catch (NullPointerException e) {
+                            if (!BaseUtils.isNetworkConnected(context)) {
+                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }), "xxxx");
     }
 
     static class ViewHolder {
         @BindView(R.id.name)
         TextView name;
+        @BindView(R.id.code)
+        TextView code;
+        @BindView(R.id.remove)
+        Button remove;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

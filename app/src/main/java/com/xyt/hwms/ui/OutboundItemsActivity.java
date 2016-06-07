@@ -1,6 +1,7 @@
 package com.xyt.hwms.ui;
 
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
@@ -14,8 +15,11 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.OutboundItemsAdapter;
-import com.xyt.hwms.bean.EADMsgObject;
-import com.xyt.hwms.bean.EADObject;
+import com.xyt.hwms.bean.BaseBean;
+import com.xyt.hwms.bean.Outbound;
+import com.xyt.hwms.bean.OutboundDetail;
+import com.xyt.hwms.bean.OutboundDetailListBean;
+import com.xyt.hwms.bean.OutboundListBean;
 import com.xyt.hwms.support.utils.ApplicationController;
 import com.xyt.hwms.support.utils.BaseUtils;
 import com.xyt.hwms.support.utils.Constants;
@@ -36,8 +40,8 @@ public class OutboundItemsActivity extends BaseActivity {
     ListView listview;
     @BindView(R.id.empty)
     TextView empty;
-    private List<Map> list = new ArrayList<>();
-    private List<Map> querylist = new ArrayList<>();
+    private List<Outbound> list = new ArrayList<>();
+    private List<OutboundDetail> querylist = new ArrayList<>();
     private OutboundItemsAdapter outboundItemsAdapter;
     private String id;
 
@@ -52,11 +56,17 @@ public class OutboundItemsActivity extends BaseActivity {
         id = getIntent().getStringExtra("id");
 
         if (outboundItemsAdapter == null) {
-            outboundItemsAdapter = new OutboundItemsAdapter(context, list);
+            outboundItemsAdapter = new OutboundItemsAdapter(context, list, id, empty);
         }
         listview.setAdapter(outboundItemsAdapter);
 
         listRequest();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_complete, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -68,6 +78,9 @@ public class OutboundItemsActivity extends BaseActivity {
             case android.R.id.home:
                 finish();
                 return true;
+            case R.id.complete:
+                completeRequest();
+                break;
             default:
                 break;
         }
@@ -86,20 +99,21 @@ public class OutboundItemsActivity extends BaseActivity {
 
     @Override
     public void closeDialog() {
-        submitRequest();
+        listRequest();
     }
 
     //出库查询
     private void listRequest() {
-        String url = Constants.SERVER + "mobile-hwot/" + id + "/detail";//transfer_id
+        String url = Constants.SERVER + "mobile-out-store";
         Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("_username", "develop");
         params.put("_password", "whchem@2016");
+        params.put("transfer_id", id);
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(url, EADObject.class, params, new Response.Listener<EADObject>() {
+                new GsonObjectRequest<>(url, OutboundListBean.class, params, new Response.Listener<OutboundListBean>() {
                     @Override
-                    public void onResponse(EADObject response) {
+                    public void onResponse(OutboundListBean response) {
                         if (response.getData().getCollection() != null && response.getData().getCollection().size() > 0) {
                             list.clear();
                             list.addAll(response.getData().getCollection());
@@ -128,9 +142,9 @@ public class OutboundItemsActivity extends BaseActivity {
                 }), getLocalClassName());
     }
 
-    //出库查询
+    //出库明细查询
     private void request() {
-        String url = Constants.SERVER + "mobile-store/";
+        String url = Constants.SERVER + "mobile-get-in/";
         Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("_username", "develop");
@@ -146,9 +160,9 @@ public class OutboundItemsActivity extends BaseActivity {
         }
 
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(url, EADObject.class, params, new Response.Listener<EADObject>() {
+                new GsonObjectRequest<>(url, OutboundDetailListBean.class, params, new Response.Listener<OutboundDetailListBean>() {
                     @Override
-                    public void onResponse(EADObject response) {
+                    public void onResponse(OutboundDetailListBean response) {
                         if (response.getData().getCollection() != null && response.getData().getCollection().size() > 0) {
                             querylist.clear();
                             querylist.addAll(response.getData().getCollection());
@@ -174,16 +188,48 @@ public class OutboundItemsActivity extends BaseActivity {
     }
 
     //出库
-    private void submitRequest() {
-        String url = Constants.SERVER + "mobile-hwot/" + id + "/detail";
+    public void submitRequest() {
+        String url = Constants.SERVER + "mobile-out-store";
         Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("label_code", barCodeData);
+        params.put("transfer_id", id);
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", EADMsgObject.class, new Gson().toJson(params), new Response.Listener<EADMsgObject>() {
+                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
                     @Override
-                    public void onResponse(EADMsgObject response) {
+                    public void onResponse(BaseBean response) {
                         listRequest();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        try {
+                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                        } catch (NullPointerException e) {
+                            if (!BaseUtils.isNetworkConnected(context)) {
+                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }), getLocalClassName());
+    }
+
+    //出库完成
+    public void completeRequest() {
+        String url = Constants.SERVER + "mobile-hwot/finish";
+        Map<String, Object> params = new HashMap<>();
+//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
+//        params.put("label_code", barCodeData);
+        params.put("transfer_id", id);
+        ApplicationController.getInstance().addToRequestQueue(
+                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
+                    @Override
+                    public void onResponse(BaseBean response) {
+                        finish();
                     }
                 }, new Response.ErrorListener() {
                     @Override

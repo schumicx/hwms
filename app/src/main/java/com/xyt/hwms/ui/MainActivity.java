@@ -13,7 +13,8 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.bean.EADMsgObject;
-import com.xyt.hwms.bean.EADObject;
+import com.xyt.hwms.bean.TransferList;
+import com.xyt.hwms.bean.TransferListBean;
 import com.xyt.hwms.support.utils.ApplicationController;
 import com.xyt.hwms.support.utils.BaseUtils;
 import com.xyt.hwms.support.utils.Constants;
@@ -33,13 +34,13 @@ public class MainActivity extends BaseActivity {
             case R.id.button1:
                 //Affirm
                 Intent intent1 = new Intent(getBaseContext(), AffirmActivity.class);
-                intent1.putExtra("type",Constants.TRANSFER_TYPE_OUTER);
+                intent1.putExtra("type", Constants.TRANSFER_TYPE_OUTER);
                 startActivity(intent1);
                 break;
             case R.id.button2:
                 //Affirm In
                 Intent intent2 = new Intent(getBaseContext(), AffirmActivity.class);
-                intent2.putExtra("type",Constants.TRANSFER_TYPE_INNER);
+                intent2.putExtra("type", Constants.TRANSFER_TYPE_INNER);
                 startActivity(intent2);
                 break;
             case R.id.button3:
@@ -86,13 +87,12 @@ public class MainActivity extends BaseActivity {
     private void obtainRequest() {
         String url = Constants.SERVER + "mobile-hwit";
 //        Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
+//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));inner/outer
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016", EADObject.class, null, new Response.Listener<EADObject>() {
+                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016&transfer_type=" + getIntent().getStringExtra("type"), TransferListBean.class, null, new Response.Listener<TransferListBean>() {
                     @Override
-                    public void onResponse(EADObject response) {
+                    public void onResponse(TransferListBean response) {
                         if (response.getData().getCollection().size() > 0) {
-                            String a = new Gson().toJson(response.getData());
                             PreferencesUtils.putString(context, "affirm", new Gson().toJson(response.getData()));
                             PreferencesUtils.putBoolean(context, "isSync", true);
                         }
@@ -111,7 +111,6 @@ public class MainActivity extends BaseActivity {
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
-
                         error.printStackTrace();
                     }
                 }), getLocalClassName());
@@ -123,11 +122,13 @@ public class MainActivity extends BaseActivity {
 //        Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
 //        params.put("", "gbros:{2014}");
+
+
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.PUT, url + "?_username=develop&_password=whchem@2016", EADMsgObject.class, PreferencesUtils.getString(context, "affirm"), new Response.Listener<EADMsgObject>() {
+                new GsonObjectRequest<>(Request.Method.PUT, url + "?_username=develop&_password=whchem@2016", EADMsgObject.class, new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()), new Response.Listener<EADMsgObject>() {
                     @Override
                     public void onResponse(EADMsgObject response) {
-                        if (response.getCode() == 200) {
+                        if (response.getCode() == Constants.SUCCESS) {
                             Toast.makeText(context, "success", Toast.LENGTH_SHORT).show();
                             PreferencesUtils.putString(context, "affirm", null);
                             PreferencesUtils.putBoolean(context, "isSync", true);

@@ -43,7 +43,7 @@ public class Constants {
     public static final String LABEL_LIB = "LIB";   //仓库
     public static final String LABEL_LSL = "LSL";   //库位
     public static final String LABEL_CON = "CON";   //容器
-    public static final String LABEL_HW = "Y-HW";//"HW";     //固废
+    public static final String LABEL_HW = "HW";     //固废
 
     public static final String TRANSFER_TYPE_INNER="inner";
     public static final String TRANSFER_TYPE_OUTER="outer";

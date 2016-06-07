@@ -20,8 +20,6 @@ import com.xyt.hwms.support.utils.PreferencesUtils;
 
 public class CacheWasteDialogFragment extends DialogFragment {
 
-    public TextView detail;
-
     private int applyIndex;
     private int wasteIndex;
 
@@ -42,9 +40,25 @@ public class CacheWasteDialogFragment extends DialogFragment {
         }
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.activity_affirm_details, null);
-        detail = (TextView) view.findViewById(R.id.detail);
-        detail.setText(new Gson().toJson(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex)));
+        View view = inflater.inflate(R.layout.dialog_waste, null);
+
+        TextView wasteName = (TextView) view.findViewById(R.id.waste_name);
+        TextView categoryCode = (TextView) view.findViewById(R.id.category_code);
+        TextView labelCode = (TextView) view.findViewById(R.id.label_code);
+        TextView packageType = (TextView) view.findViewById(R.id.package_type);
+        TextView status = (TextView) view.findViewById(R.id.status);
+        TextView isKeyWaste = (TextView) view.findViewById(R.id.is_key_waste);
+        TextView harmfulIngredient = (TextView) view.findViewById(R.id.harmful_ingredient);
+        TextView produceSource = (TextView) view.findViewById(R.id.produce_source);
+
+        wasteName.setText(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).getWaste_name());
+        categoryCode.setText(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).getCategory_code());
+        labelCode.setText(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).getLabel_code());
+        packageType.setText(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).getPackage_type());
+        status.setText(Constants.WASTE_PASS.equals(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).getStatus()) ? "已验证" : Constants.WASTE_BACK.equals(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).getStatus()) ? "退回" : "未验证");
+        isKeyWaste.setText("1".equals(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).getIs_key_waste()) ? "是" : "否");
+        harmfulIngredient.setText(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).getHarmful_ingredient());
+        produceSource.setText(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).getProduce_source());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view)

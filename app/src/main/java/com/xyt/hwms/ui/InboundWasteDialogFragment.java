@@ -15,14 +15,10 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.bean.InboundQuery;
-import com.xyt.hwms.bean.RecycleDetail;
 import com.xyt.hwms.support.utils.Constants;
-import com.xyt.hwms.support.utils.DateUtils;
-import com.xyt.hwms.support.utils.PreferencesUtils;
 
 public class InboundWasteDialogFragment extends DialogFragment {
 
-    public TextView detail;
     private InboundQuery inboundQuery;
 
     public static InboundWasteDialogFragment newInstance(InboundQuery inboundQuery) {
@@ -35,9 +31,25 @@ public class InboundWasteDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.activity_affirm_details, null);
-        detail = (TextView) view.findViewById(R.id.detail);
-        detail.setText(new Gson().toJson(inboundQuery));
+        View view = inflater.inflate(R.layout.dialog_waste, null);
+
+        TextView wasteName = (TextView) view.findViewById(R.id.waste_name);
+        TextView categoryCode = (TextView) view.findViewById(R.id.category_code);
+        TextView labelCode = (TextView) view.findViewById(R.id.label_code);
+        TextView packageType = (TextView) view.findViewById(R.id.package_type);
+        TextView status = (TextView) view.findViewById(R.id.status);
+        TextView isKeyWaste = (TextView) view.findViewById(R.id.is_key_waste);
+        TextView harmfulIngredient = (TextView) view.findViewById(R.id.harmful_ingredient);
+        TextView produceSource = (TextView) view.findViewById(R.id.produce_source);
+
+        wasteName.setText(inboundQuery.getWaste_name());
+        categoryCode.setText(inboundQuery.getCategory_code());
+        labelCode.setText(inboundQuery.getLabel_code());
+        packageType.setText(inboundQuery.getPackage_type());
+        status.setText(Constants.WASTE_PASS.equals(inboundQuery.getStatus()) ? "已验证" : Constants.WASTE_BACK.equals(inboundQuery.getStatus()) ? "退回" : "未验证");
+        isKeyWaste.setText("1".equals(inboundQuery.getIs_key_waste()) ? "是" : "否");
+        harmfulIngredient.setText(inboundQuery.getHarmful_ingredient());
+        produceSource.setText(inboundQuery.getProduce_source());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view)

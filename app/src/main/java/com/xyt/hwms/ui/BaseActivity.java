@@ -99,6 +99,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                         data = d99;
                     }
                     getBarcode(new String(data, 0, length));
+                    Toast.makeText(getBaseContext(), new String(data, 0, length), Toast.LENGTH_SHORT).show();
                 }
                 STATE_ISDECODING = false;
             }

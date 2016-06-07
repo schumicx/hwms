@@ -1,6 +1,7 @@
 package com.xyt.hwms.ui;
 
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
@@ -14,6 +15,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.RecycleItemsAdapter;
+import com.xyt.hwms.bean.BaseBean;
 import com.xyt.hwms.bean.EADMsgObject;
 import com.xyt.hwms.bean.RecycleDetail;
 import com.xyt.hwms.bean.RecycleDetailListBean;
@@ -70,6 +72,12 @@ public class RecycleItemsActivity extends BaseActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_complete, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -78,6 +86,9 @@ public class RecycleItemsActivity extends BaseActivity {
             case android.R.id.home:
                 finish();
                 return true;
+            case R.id.complete:
+                completeRequest();
+                break;
             default:
                 break;
         }
@@ -212,6 +223,37 @@ public class RecycleItemsActivity extends BaseActivity {
                         }
                     }
                 }), "xxxx");
+    }
+
+    //内部利用完成
+    public void completeRequest() {
+        String url = Constants.SERVER + "mobile-hwiu/finish";
+        Map<String, Object> params = new HashMap<>();
+//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
+//        params.put("label_code", barCodeData);
+        params.put("inner_id", id);
+        ApplicationController.getInstance().addToRequestQueue(
+                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
+                    @Override
+                    public void onResponse(BaseBean response) {
+                        finish();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        try {
+                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                        } catch (NullPointerException e) {
+                            if (!BaseUtils.isNetworkConnected(context)) {
+                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }), getLocalClassName());
     }
 
     /*//固废详情

@@ -17,7 +17,8 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.OutboundAdapter;
-import com.xyt.hwms.bean.EADObject;
+import com.xyt.hwms.bean.OutboundTranfer;
+import com.xyt.hwms.bean.OutboundTranferBean;
 import com.xyt.hwms.support.utils.ApplicationController;
 import com.xyt.hwms.support.utils.BaseUtils;
 import com.xyt.hwms.support.utils.Constants;
@@ -41,14 +42,14 @@ public class OutboundActivity extends BaseActivity {
     SwipeRefreshLayout swiperefresh;
     @BindView(R.id.empty)
     TextView empty;
-    private List<Map> list = new ArrayList<>();
+    private List<OutboundTranfer> list = new ArrayList<>();
     private OutboundAdapter outboundAdapter;
 
     @OnItemClick(R.id.listview)
     public void onItemClick(int position) {
         Intent intent = new Intent(getBaseContext(), OutboundItemsActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("id", list.get(position).get("transfer_id").toString());
+        bundle.putString("id", list.get(position).getTransfer_id());
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -118,22 +119,20 @@ public class OutboundActivity extends BaseActivity {
             }
             return;
         }
-        String url = Constants.SERVER + "mobile-hwot";
+        String url = Constants.SERVER + "mobile-hwot/record";
         Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
-        params.put("_username", "develop");
-        params.put("_password", "whchem@2016");
-        params.put("car_card", NFCTagId);
+        params.put("card_id", NFCTagId);
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.POST, url, EADObject.class, new Gson().toJson(params), new Response.Listener<EADObject>() {
+                new GsonObjectRequest<>(Request.Method.POST, url+"?_username=develop&_password=whchem@2016", OutboundTranferBean.class, new Gson().toJson(params), new Response.Listener<OutboundTranferBean>() {
                     @Override
-                    public void onResponse(EADObject response) {
+                    public void onResponse(OutboundTranferBean response) {
                         if (swiperefresh.isRefreshing()) {
                             swiperefresh.setRefreshing(false);
                         }
-                        if (response.getData().getCollection().size() > 0) {
+                        if (response.getData().size() > 0) {
                             list.clear();
-                            list.addAll(response.getData().getCollection());
+                            list.addAll(response.getData());
                         }
                         if (list.size() == 0) {
                             empty.setText("no data");

@@ -8,10 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.xyt.hwms.R;
-import com.xyt.hwms.support.utils.Constants;
+import com.xyt.hwms.bean.OutboundDetail;
 
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,9 +21,9 @@ import butterknife.ButterKnife;
 public class OutboundDialogAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
-    private List<Map> list;
+    private List<OutboundDetail> list;
 
-    public OutboundDialogAdapter(Context context, List<Map> list) {
+    public OutboundDialogAdapter(Context context, List<OutboundDetail> list) {
         this.list = list;
         this.context = context;
         this.inflater = LayoutInflater.from(context);
@@ -56,8 +55,8 @@ public class OutboundDialogAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.name.setText((String) list.get(position).get("waste_detail_id"));
-        viewHolder.code.setText((String) list.get(position).get("label_code"));
+        viewHolder.name.setText(list.get(position).getWaste_name());
+        viewHolder.code.setText(list.get(position).getLabel_code());
 
         return convertView;
     }

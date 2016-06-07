@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.xyt.hwms.R;
-import com.xyt.hwms.adapter.AffirmItemsAdapter;
 import com.xyt.hwms.adapter.OutboundDialogAdapter;
+import com.xyt.hwms.bean.OutboundDetail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +23,10 @@ import java.util.Map;
 public class OutboundDialogFragment extends DialogFragment {
 
     public ListView listview;
-    private List<Map> list = new ArrayList<>();
+    private List<OutboundDetail> list = new ArrayList<>();
     private OutboundDialogAdapter outboundDialogAdapter;
 
-    public static OutboundDialogFragment newInstance(List<Map> querylist) {
+    public static OutboundDialogFragment newInstance(List<OutboundDetail> querylist) {
         OutboundDialogFragment fragment = new OutboundDialogFragment();
         fragment.list.addAll(querylist);
         return fragment;
@@ -38,7 +38,7 @@ public class OutboundDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.activity_outbound_query, null);
+        View view = inflater.inflate(R.layout.dialog_outbound_query, null);
         listview = (ListView) view.findViewById(R.id.listview);
 
         listview.setAdapter(outboundDialogAdapter);
@@ -47,15 +47,16 @@ public class OutboundDialogFragment extends DialogFragment {
         // Pass null as the parent view because its going in the dialog layout
         builder.setView(view)
                 // Add action buttons
-                .setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                .setPositiveButton("出库", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
+                        ((OutboundItemsActivity)getActivity()).submitRequest();
                     }
                 })
-                .setNegativeButton("出库", new DialogInterface.OnClickListener() {
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ((BaseActivity)getActivity()).closeDialog();
+
                     }
                 });
         return builder.create();
@@ -69,9 +70,10 @@ public class OutboundDialogFragment extends DialogFragment {
             public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                 switch (keyCode) {
                     case KeyEvent.KEYCODE_F4:
-                        ((BaseActivity)getActivity()).closeDialog();
+
                         break;
                     case KeyEvent.KEYCODE_DEL:
+                        ((OutboundItemsActivity)getActivity()).submitRequest();
                         break;
                 }
                 dismiss();
@@ -79,5 +81,21 @@ public class OutboundDialogFragment extends DialogFragment {
             }
         });
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (getActivity() != null) {
+            ((BaseActivity) getActivity()).closeDialog();
+        }
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        if (getActivity() != null) {
+            ((BaseActivity) getActivity()).closeDialog();
+        }
     }
 }

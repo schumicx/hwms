@@ -122,7 +122,7 @@ public class RecycleActivity extends BaseActivity {
                         if (swiperefresh.isRefreshing()) {
                             swiperefresh.setRefreshing(false);
                         }
-                        if (response.getData().getCollection().size() > 0) {
+                        if ( response.getData().getCollection() != null && response.getData().getCollection().size() > 0) {
                             list.clear();
                             list.addAll(response.getData().getCollection());
                         }

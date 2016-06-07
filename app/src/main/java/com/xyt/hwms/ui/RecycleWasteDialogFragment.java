@@ -6,19 +6,19 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.bean.RecycleDetail;
 
 public class RecycleWasteDialogFragment extends DialogFragment {
 
-    public TextView detail;
     private RecycleDetail recycleDetail;
 
     public static RecycleWasteDialogFragment newInstance(RecycleDetail recycleDetail) {
@@ -31,9 +31,25 @@ public class RecycleWasteDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.activity_affirm_details, null);
-        detail = (TextView) view.findViewById(R.id.detail);
-        detail.setText(new Gson().toJson(recycleDetail));
+        View view = inflater.inflate(R.layout.dialog_waste, null);
+
+        TextView wasteName = (TextView) view.findViewById(R.id.waste_name);
+        TextView categoryCode = (TextView) view.findViewById(R.id.category_code);
+        TextView labelCode = (TextView) view.findViewById(R.id.label_code);
+        TextView packageType = (TextView) view.findViewById(R.id.package_type);
+        TextView isKeyWaste = (TextView) view.findViewById(R.id.is_key_waste);
+        TextView harmfulIngredient = (TextView) view.findViewById(R.id.harmful_ingredient);
+        TextView produceSource = (TextView) view.findViewById(R.id.produce_source);
+
+        wasteName.setText(recycleDetail.getWaste_name());
+        categoryCode.setText(recycleDetail.getCategory_code());
+        labelCode.setText(recycleDetail.getLabel_code());
+        packageType.setText(recycleDetail.getPackage_type());
+        isKeyWaste.setText("1".equals(recycleDetail.getIs_key_waste()) ? "是" : "否");
+        harmfulIngredient.setText(recycleDetail.getHarmful_ingredient());
+        produceSource.setText(recycleDetail.getProduce_source());
+
+        view.findViewById(R.id.linearlayout_status).setVisibility(View.GONE);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view)
