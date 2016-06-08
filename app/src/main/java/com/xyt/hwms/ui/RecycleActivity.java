@@ -76,6 +76,11 @@ public class RecycleActivity extends BaseActivity {
         });
 
         swiperefresh.setProgressViewOffset(true, 0, BaseUtils.dip2px(context, 24));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         swiperefresh.setRefreshing(true);
         request();
     }

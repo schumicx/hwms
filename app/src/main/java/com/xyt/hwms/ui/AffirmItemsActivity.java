@@ -90,9 +90,16 @@ public class AffirmItemsActivity extends BaseActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                //////////
+                Constants.AFFIRM_LIST.getCollection().get(applyIndex).setOperator(s.toString());
+                PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateView();
     }
 
     @Override
@@ -175,8 +182,19 @@ public class AffirmItemsActivity extends BaseActivity {
         back.setText("" + backNum);
         verified.setText("" + verifiedNum);
         unverified.setText("" + unverifiedNum);
-        Constants.AFFIRM_LIST.getCollection().get(applyIndex).setOperator("xxxxxxxx");
+
+        if (totalNum == unverifiedNum) {
+            Constants.AFFIRM_LIST.getCollection().get(applyIndex).setDetail_status("0");
+        }
+        if (totalNum > unverifiedNum) {
+            Constants.AFFIRM_LIST.getCollection().get(applyIndex).setDetail_status("-1");
+        }
+        if (unverifiedNum == 0) {
+            Constants.AFFIRM_LIST.getCollection().get(applyIndex).setDetail_status("1");
+        }
+
         PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
+
         affirmItemsAdapter.notifyDataSetChanged();
     }
 }

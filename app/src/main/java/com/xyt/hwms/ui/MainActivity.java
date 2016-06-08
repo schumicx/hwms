@@ -12,7 +12,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
 import com.xyt.hwms.R;
-import com.xyt.hwms.bean.EADMsgObject;
+import com.xyt.hwms.bean.BaseBean;
 import com.xyt.hwms.bean.TransferList;
 import com.xyt.hwms.bean.TransferListBean;
 import com.xyt.hwms.support.utils.ApplicationController;
@@ -64,10 +64,21 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
-            SyncDialogFragment.newInstance().show(getSupportFragmentManager(), getLocalClassName());
-        } else {
-            obtainRequest();
+//        if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
+//            SyncDialogFragment.newInstance().show(getSupportFragmentManager(), getLocalClassName());
+//        } else {
+//            obtainRequest();
+//        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (BaseUtils.isNetworkConnected(context)) {
+            if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
+                syncRequest();
+            }
+
         }
     }
 
@@ -101,7 +112,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         try {
-                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), EADMsgObject.class).getContent(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
                             if (!BaseUtils.isNetworkConnected(context)) {
                                 Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
@@ -125,24 +136,23 @@ public class MainActivity extends BaseActivity {
 
 
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.PUT, url + "?_username=develop&_password=whchem@2016", EADMsgObject.class, new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()), new Response.Listener<EADMsgObject>() {
+                new GsonObjectRequest<>(Request.Method.PUT, url + "?_username=develop&_password=whchem@2016", BaseBean.class, new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()), new Response.Listener<BaseBean>() {
                     @Override
-                    public void onResponse(EADMsgObject response) {
-                        if (response.getCode() == Constants.SUCCESS) {
-                            Toast.makeText(context, "success", Toast.LENGTH_SHORT).show();
-                            PreferencesUtils.putString(context, "affirm", null);
-                            PreferencesUtils.putBoolean(context, "isSync", true);
-                            Constants.AFFIRM_LIST = null;
-                            obtainRequest();
-                        } else {
-                            Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
-                        }
+                    public void onResponse(BaseBean response) {
+                        Toast.makeText(context, "success", Toast.LENGTH_SHORT).show();
+                        PreferencesUtils.putString(context, "affirm", null);
+                        PreferencesUtils.putBoolean(context, "isSync", true);
+                        Constants.AFFIRM_LIST = null;
+                        obtainRequest();
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
+                            SyncDialogFragment.newInstance().show(getSupportFragmentManager(), getLocalClassName());
+                        }
                         try {
-                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), EADMsgObject.class).getContent(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
                             if (!BaseUtils.isNetworkConnected(context)) {
                                 Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();

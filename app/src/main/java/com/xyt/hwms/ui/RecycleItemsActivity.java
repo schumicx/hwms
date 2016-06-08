@@ -16,7 +16,6 @@ import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.RecycleItemsAdapter;
 import com.xyt.hwms.bean.BaseBean;
-import com.xyt.hwms.bean.EADMsgObject;
 import com.xyt.hwms.bean.RecycleDetail;
 import com.xyt.hwms.bean.RecycleDetailListBean;
 import com.xyt.hwms.bean.RecycleScanBean;
@@ -198,9 +197,9 @@ public class RecycleItemsActivity extends BaseActivity {
         params.put("label_code", recycleDetail.getLabel_code());
 //        params.put("record_id", );
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", EADMsgObject.class, new Gson().toJson(params), new Response.Listener<EADMsgObject>() {
+                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
                     @Override
-                    public void onResponse(EADMsgObject response) {
+                    public void onResponse(BaseBean response) {
                         list.remove(recycleDetail);
                         recycleItemsAdapter.notifyDataSetChanged();
                         if (list.size() < 1) {

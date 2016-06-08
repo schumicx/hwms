@@ -29,7 +29,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="100"
                 android:textColor="#00aaf5"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -59,7 +58,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="20"
                 android:textColor="#5EA640"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -89,7 +87,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="88"
                 android:textColor="#CCC8C3"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -119,7 +116,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="888"
                 android:textColor="#FF8E00"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -147,8 +143,7 @@
             android:imeOptions="actionUnspecified"
             android:inputType="text"
             android:maxLines="1"
-            android:singleLine="true"
-            android:text="sss" />
+            android:singleLine="true" />
 
     </android.support.design.widget.TextInputLayout>
 

@@ -81,6 +81,15 @@ public class OutboundActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (!TextUtils.isEmpty(NFCTagId)) {
+            swiperefresh.setRefreshing(true);
+            request();
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -124,7 +133,7 @@ public class OutboundActivity extends BaseActivity {
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("card_id", NFCTagId);
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.POST, url+"?_username=develop&_password=whchem@2016", OutboundTranferBean.class, new Gson().toJson(params), new Response.Listener<OutboundTranferBean>() {
+                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", OutboundTranferBean.class, new Gson().toJson(params), new Response.Listener<OutboundTranferBean>() {
                     @Override
                     public void onResponse(OutboundTranferBean response) {
                         if (swiperefresh.isRefreshing()) {

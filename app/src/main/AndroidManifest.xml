@@ -80,6 +80,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.GroupActivity"
+            android:label="@string/group_site"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.InboundActivity"
@@ -92,6 +93,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.OutboundItemsActivity"
+            android:label="@string/outbound_items"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.RecycleActivity"
@@ -99,6 +101,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.RecycleItemsActivity"
+            android:label="@string/recycle_items"
             android:screenOrientation="portrait" />
     </application>
 

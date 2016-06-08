@@ -18,7 +18,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.AffirmAdapter;
-import com.xyt.hwms.bean.EADMsgObject;
+import com.xyt.hwms.bean.BaseBean;
 import com.xyt.hwms.bean.Transfer;
 import com.xyt.hwms.bean.TransferList;
 import com.xyt.hwms.bean.TransferListBean;
@@ -106,6 +106,12 @@ public class AffirmActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        affirmAdapter.notifyDataSetChanged();
+        if (BaseUtils.isNetworkConnected(context)) {
+            if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
+                syncRequest();
+            }
+        }
     }
 
     @Override
@@ -124,7 +130,7 @@ public class AffirmActivity extends BaseActivity {
                 finish();
                 return true;
             case R.id.sync:
-                if (!PreferencesUtils.getBoolean(context, "isSync", false)) {
+                if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
                     syncRequest();
                 } else {
                     Toast.makeText(context, "最新,无需同步", Toast.LENGTH_SHORT).show();
@@ -181,7 +187,7 @@ public class AffirmActivity extends BaseActivity {
                             swiperefresh.setRefreshing(false);
                         }
                         try {
-                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), EADMsgObject.class).getContent(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
                             if (!BaseUtils.isNetworkConnected(context)) {
                                 Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
@@ -212,24 +218,20 @@ public class AffirmActivity extends BaseActivity {
 
 
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.PUT, url + "?_username=develop&_password=whchem@2016", EADMsgObject.class, new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()), new Response.Listener<EADMsgObject>() {
+                new GsonObjectRequest<>(Request.Method.PUT, url + "?_username=develop&_password=whchem@2016", BaseBean.class, new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()), new Response.Listener<BaseBean>() {
                     @Override
-                    public void onResponse(EADMsgObject response) {
-                        if (response.getCode() == Constants.SUCCESS) {
-                            Toast.makeText(context, "success", Toast.LENGTH_SHORT).show();
-                            PreferencesUtils.putString(context, "affirm", null);
-                            PreferencesUtils.putBoolean(context, "isSync", true);
-                            Constants.AFFIRM_LIST = null;
-                            obtainRequest();
-                        } else {
-                            Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
-                        }
+                    public void onResponse(BaseBean response) {
+                        Toast.makeText(context, "success", Toast.LENGTH_SHORT).show();
+                        PreferencesUtils.putString(context, "affirm", null);
+                        PreferencesUtils.putBoolean(context, "isSync", true);
+                        Constants.AFFIRM_LIST = null;
+                        obtainRequest();
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         try {
-                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), EADMsgObject.class).getContent(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
                             if (!BaseUtils.isNetworkConnected(context)) {
                                 Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();

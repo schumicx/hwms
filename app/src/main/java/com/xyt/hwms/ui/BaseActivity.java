@@ -98,7 +98,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                         d99[d] = 0;
                         data = d99;
                     }
-                    getBarcode(new String(data, 0, length));
+                    getBarcode(new String(data, 0, length).trim());
                     Toast.makeText(getBaseContext(), new String(data, 0, length), Toast.LENGTH_SHORT).show();
                 }
                 STATE_ISDECODING = false;

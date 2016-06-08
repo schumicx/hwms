@@ -18,6 +18,15 @@
         android:textColor="#2c557e"
         android:textSize="16sp" />
 
+    <ImageView
+        android:id="@+id/warning"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginLeft="4dp"
+        android:layout_toRightOf="@+id/name"
+        android:src="@mipmap/warning"
+        android:tint="#ff0000" />
+
     <TextView
         android:id="@+id/code"
         android:layout_width="wrap_content"
@@ -25,7 +34,6 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/name"
         android:layout_toLeftOf="@+id/remove"
-        android:layout_toRightOf="@+id/status"
         android:singleLine="true"
         android:text="XXXX" />
 

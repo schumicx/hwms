@@ -15,7 +15,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
 import com.xyt.hwms.R;
-import com.xyt.hwms.bean.EADMsgObject;
+import com.xyt.hwms.bean.BaseBean;
 import com.xyt.hwms.bean.RecycleDetail;
 import com.xyt.hwms.support.utils.ApplicationController;
 import com.xyt.hwms.support.utils.BaseUtils;
@@ -95,9 +95,9 @@ public class RecycleItemsAdapter extends BaseAdapter {
         params.put("label_code", list.get(position).getLabel_code());
 //        params.put("record_id", );
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", EADMsgObject.class, new Gson().toJson(params), new Response.Listener<EADMsgObject>() {
+                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
                     @Override
-                    public void onResponse(EADMsgObject response) {
+                    public void onResponse(BaseBean response) {
                         list.remove(position);
                         if (list.size()==0){
                             empty.setVisibility(View.VISIBLE);

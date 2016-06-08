@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/complete"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/complete"
         android:orderInCategory="100"
         android:title="@string/app_name"
         app:showAsAction="always" />
