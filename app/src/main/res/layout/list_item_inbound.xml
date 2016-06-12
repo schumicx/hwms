@@ -25,7 +25,8 @@
         android:layout_marginLeft="4dp"
         android:layout_toRightOf="@+id/name"
         android:src="@mipmap/warning"
-        android:tint="#ff0000" />
+        android:tint="#ff0000"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/code"

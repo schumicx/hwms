@@ -11,7 +11,23 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.google.gson.Gson;
+import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.mobsandgeeks.saripaar.annotation.Password;
 import com.xyt.hwms.R;
+import com.xyt.hwms.bean.BaseBean;
+import com.xyt.hwms.bean.TransferListBean;
+import com.xyt.hwms.support.utils.ApplicationController;
+import com.xyt.hwms.support.utils.BaseUtils;
+import com.xyt.hwms.support.utils.Constants;
+import com.xyt.hwms.support.utils.GsonObjectRequest;
+import com.xyt.hwms.support.utils.PreferencesUtils;
+
+import java.io.UnsupportedEncodingException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,8 +46,10 @@ public class LoginActivity extends BaseActivity {
     @BindView(R.id.nfc_login_form)
     LinearLayout nfcLoginForm;
     @BindView(R.id.account)
+    @NotEmpty(message = "请输入账号")
     EditText account;
     @BindView(R.id.password)
+    @Password(min = 1, message = "请输入密码")
     EditText password;
     @BindView(R.id.sign_in_button)
     Button signInButton;
@@ -42,7 +60,8 @@ public class LoginActivity extends BaseActivity {
 
     @OnClick(R.id.sign_in_button)
     public void onClick(View view) {
-        startActivity(new Intent(getBaseContext(), MainActivity.class));
+//        validator.validate();
+        startActivity(new Intent(context, MainActivity.class));
         finish();
     }
 
@@ -65,9 +84,14 @@ public class LoginActivity extends BaseActivity {
     }
 
     @Override
+    public void onValidationSucceeded() {
+        loginRequest();
+    }
+
+    @Override
     public void getTagId(String data) {
         if (!switchLogin.isChecked()) {
-            startActivity(new Intent(getBaseContext(), MainActivity.class));
+            startActivity(new Intent(context, MainActivity.class));
             finish();
         } else {
             Toast.makeText(context, "switch login!", Toast.LENGTH_SHORT).show();
@@ -80,6 +104,37 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void closeDialog() {
+    }
+
+    //登录接口
+    private void loginRequest() {
+        String url = Constants.SERVER + "mobile-login";
+//        Map<String, Object> params = new HashMap<>();
+//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));inner/outer
+        ApplicationController.getInstance().addToRequestQueue(
+                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016", BaseBean.class, null, new Response.Listener<BaseBean>() {
+                    @Override
+                    public void onResponse(BaseBean response) {
+                        startActivity(new Intent(context, MainActivity.class));
+                        finish();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        try {
+                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
+                        } catch (NullPointerException e) {
+                            if (!BaseUtils.isNetworkConnected(context)) {
+                                Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                        error.printStackTrace();
+                    }
+                }), getLocalClassName());
     }
 }
 

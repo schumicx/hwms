@@ -75,6 +75,7 @@ public class AffirmActivity extends BaseActivity {
         }
         listview.setAdapter(affirmAdapter);
 
+        swiperefresh.setProgressViewOffset(true, 0, BaseUtils.dip2px(context, 24));
         swiperefresh.setColorSchemeResources(android.R.color.holo_red_light,
                 android.R.color.holo_green_light,
                 android.R.color.holo_blue_bright,
@@ -91,12 +92,16 @@ public class AffirmActivity extends BaseActivity {
             }
         });
 
-        swiperefresh.setProgressViewOffset(true, 0, BaseUtils.dip2px(context, 24));
+        Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class);
+        if (Constants.AFFIRM_LIST != null && Constants.AFFIRM_LIST.getCollection().size() > 0 && Constants.AFFIRM_LIST.getCollection().get(0).getTransfer_type().equals(getIntent().getStringExtra("type"))) {
+            list.addAll(Constants.AFFIRM_LIST.getCollection());
+            affirmAdapter.notifyDataSetChanged();
+        }
 
         if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
-            Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class);
-            list.addAll(Constants.AFFIRM_LIST.getCollection());
-            SyncDialogFragment.newInstance().show(getSupportFragmentManager(), getLocalClassName());
+//            Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class);
+//            list.addAll(Constants.AFFIRM_LIST.getCollection());
+//            SyncDialogFragment.newInstance().show(getSupportFragmentManager(), getLocalClassName());
         } else {
             swiperefresh.setRefreshing(true);
             obtainRequest();
@@ -106,12 +111,10 @@ public class AffirmActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        affirmAdapter.notifyDataSetChanged();
-        if (BaseUtils.isNetworkConnected(context)) {
-            if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
-                syncRequest();
-            }
+        if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
+            syncRequest();
         }
+        affirmAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -170,9 +173,11 @@ public class AffirmActivity extends BaseActivity {
                             list.clear();
                             PreferencesUtils.putString(context, "affirm", new Gson().toJson(response.getData()));
                             PreferencesUtils.putBoolean(context, "isSync", true);
-                            String a = PreferencesUtils.getString(context, "affirm");
+//                            String a = PreferencesUtils.getString(context, "affirm");
                             Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class);
-                            list.addAll(Constants.AFFIRM_LIST.getCollection());
+                            if (Constants.AFFIRM_LIST.getCollection().get(0).getTransfer_type().equals(getIntent().getStringExtra("type"))) {
+                                list.addAll(Constants.AFFIRM_LIST.getCollection());
+                            }
                         }
                         if (list.size() == 0) {
                             empty.setText("no data");
@@ -198,9 +203,8 @@ public class AffirmActivity extends BaseActivity {
                             e.printStackTrace();
                         }
                         list.clear();
-//                        String a = PreferencesUtils.getString(context, "affirm");
                         Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class);
-                        if (Constants.AFFIRM_LIST != null) {
+                        if (Constants.AFFIRM_LIST != null && Constants.AFFIRM_LIST.getCollection().size() > 0 && Constants.AFFIRM_LIST.getCollection().get(0).getTransfer_type().equals(getIntent().getStringExtra("type"))) {
                             list.addAll(Constants.AFFIRM_LIST.getCollection());
                             affirmAdapter.notifyDataSetChanged();
                         }
@@ -214,9 +218,6 @@ public class AffirmActivity extends BaseActivity {
         String url = Constants.SERVER + "mobile-hwit";
 //        Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
-//        params.put("", "gbros:{2014}");
-
-
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.PUT, url + "?_username=develop&_password=whchem@2016", BaseBean.class, new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()), new Response.Listener<BaseBean>() {
                     @Override

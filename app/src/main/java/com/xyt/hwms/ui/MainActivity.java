@@ -28,6 +28,8 @@ import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity {
 
+    private static long back_pressed;
+
     @OnClick({R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -64,21 +66,18 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-//        if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
+        if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
 //            SyncDialogFragment.newInstance().show(getSupportFragmentManager(), getLocalClassName());
-//        } else {
-//            obtainRequest();
-//        }
+        } else {
+            obtainRequest();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (BaseUtils.isNetworkConnected(context)) {
-            if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
-                syncRequest();
-            }
-
+        if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
+            syncRequest();
         }
     }
 
@@ -100,7 +99,7 @@ public class MainActivity extends BaseActivity {
 //        Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));inner/outer
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016&transfer_type=" + getIntent().getStringExtra("type"), TransferListBean.class, null, new Response.Listener<TransferListBean>() {
+                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016&transfer_type=inner/outer", TransferListBean.class, null, new Response.Listener<TransferListBean>() {
                     @Override
                     public void onResponse(TransferListBean response) {
                         if (response.getData().getCollection().size() > 0) {
@@ -132,9 +131,6 @@ public class MainActivity extends BaseActivity {
         String url = Constants.SERVER + "mobile-hwit";
 //        Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
-//        params.put("", "gbros:{2014}");
-
-
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.PUT, url + "?_username=develop&_password=whchem@2016", BaseBean.class, new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()), new Response.Listener<BaseBean>() {
                     @Override
@@ -164,5 +160,15 @@ public class MainActivity extends BaseActivity {
                         }
                     }
                 }), getLocalClassName());
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (back_pressed + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed();
+        } else {
+            Toast.makeText(context, "xxx", Toast.LENGTH_SHORT).show();
+        }
+        back_pressed = System.currentTimeMillis();
     }
 }

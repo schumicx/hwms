@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,8 +80,9 @@ public class InboundAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.name.setText( list.get(position).getWaste_name());
-        viewHolder.code.setText( list.get(position).getLabel_code());
+        viewHolder.warning.setVisibility("1".equals(list.get(position).getIs_key_waste()) ? View.VISIBLE : View.GONE);
+        viewHolder.name.setText(list.get(position).getWaste_name());
+        viewHolder.code.setText(list.get(position).getLabel_code());
         viewHolder.itemWeight.setText(String.valueOf(list.get(position).getWeight()).equals("null") ? "" : String.valueOf(list.get(position).getWeight()));
 
         viewHolder.itemWeight.addTextChangedListener(new TextWatcher() {
@@ -103,14 +105,6 @@ public class InboundAdapter extends BaseAdapter {
             }
         });
 
-
-//        if (Constants.WASTE_PASS.equals(list.get(position).get("status").toString())) {
-//            viewHolder.name.setBackgroundColor(0xff00ff00);
-//        } else if (Constants.WASTE_BACK.equals((String) list.get(position).get("status").toString())) {
-//            viewHolder.name.setBackgroundColor(0xffff0000);
-//        } else {
-//            viewHolder.name.setBackgroundColor(0xffffffff);
-//        }
         viewHolder.remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,7 +115,7 @@ public class InboundAdapter extends BaseAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentActivity activity = (FragmentActivity)(context);
+                FragmentActivity activity = (FragmentActivity) (context);
                 FragmentManager fm = activity.getSupportFragmentManager();
                 InboundWasteDialogFragment.newInstance(list.get(position)).show(fm, "xxx");
             }
@@ -138,25 +132,10 @@ public class InboundAdapter extends BaseAdapter {
 
     public void jisuan() {
         double x = 0;
-        for (int i=0;i<list.size();i++){
-            x+=String.valueOf(list.get(i).getWeight()).equals("")||String.valueOf(list.get(i).getWeight()).equals("null")?0:Double.valueOf(list.get(i).getWeight());
+        for (int i = 0; i < list.size(); i++) {
+            x += String.valueOf(list.get(i).getWeight()).equals("") || String.valueOf(list.get(i).getWeight()).equals("null") ? 0 : Double.valueOf(list.get(i).getWeight());
         }
-        weight.setText(""+x);
-    }
-
-    static class ViewHolder {
-        @BindView(R.id.name)
-        TextView name;
-        @BindView(R.id.code)
-        TextView code;
-        @BindView(R.id.remove)
-        Button remove;
-        @BindView(R.id.item_weight)
-        EditText itemWeight;
-
-        ViewHolder(View view) {
-            ButterKnife.bind(this, view);
-        }
+        weight.setText("" + x);
     }
 
     //解除组盘
@@ -164,9 +143,6 @@ public class InboundAdapter extends BaseAdapter {
         String url = Constants.SERVER + "mobile-get-in/relieve";
         Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
-//        params.put("store_label_code", store.getText().toString());//库
-//        params.put("position_label_code", position.getText().toString());//库位
-//        params.put("container_label_code", container.getText().toString());//容器
         params.put("label_code", list.get(position).getLabel_code());//固废
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
@@ -179,7 +155,7 @@ public class InboundAdapter extends BaseAdapter {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         try {
-                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
                             if (!BaseUtils.isNetworkConnected(context)) {
                                 Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
@@ -191,5 +167,22 @@ public class InboundAdapter extends BaseAdapter {
                         }
                     }
                 }), "xxxx");
+    }
+
+    static class ViewHolder {
+        @BindView(R.id.warning)
+        ImageView warning;
+        @BindView(R.id.name)
+        TextView name;
+        @BindView(R.id.code)
+        TextView code;
+        @BindView(R.id.remove)
+        Button remove;
+        @BindView(R.id.item_weight)
+        EditText itemWeight;
+
+        ViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
     }
 }

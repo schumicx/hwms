@@ -13,26 +13,32 @@ import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.mobsandgeeks.saripaar.ValidationError;
+import com.mobsandgeeks.saripaar.Validator;
 import com.motorolasolutions.adc.decoder.BarCodeReader;
 import com.xyt.hwms.R;
 import com.xyt.hwms.support.utils.ApplicationController;
 import com.xyt.hwms.support.utils.Constants;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements Validator.ValidationListener {
 
     public boolean STATE_ISDECODING = false;
     protected Context context;
-    protected int pageNum = Constants.STARTPAGE;
-    protected int visibleLastIndex = 0;
-    protected int curPageSize = 0;
+//    protected int pageNum = Constants.STARTPAGE;
+//    protected int visibleLastIndex = 0;
+//    protected int curPageSize = 0;
     protected String NFCTagId;
     protected String barCodeData;
+    protected Validator validator;
     private NfcAdapter mAdapter;
     private PendingIntent mPendingIntent;
 
@@ -46,6 +52,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.context = this;
+        validator = new Validator(this);
+        validator.setValidationListener(this);
 
         resolveIntent(getIntent());
 
@@ -109,6 +117,26 @@ public abstract class BaseActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onValidationSucceeded() {
+
+    }
+
+    @Override
+    public void onValidationFailed(List<ValidationError> errors) {
+        for (ValidationError error : errors) {
+            View view = error.getView();
+            String message = error.getCollatedErrorMessage(this);
+
+            // Display error messages ;)
+            if (view instanceof EditText) {
+                ((EditText) view).setError(message);
+            } else {
+                Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override

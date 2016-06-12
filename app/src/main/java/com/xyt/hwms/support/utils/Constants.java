@@ -1,11 +1,6 @@
 package com.xyt.hwms.support.utils;
 
-import com.xyt.hwms.bean.Transfer;
 import com.xyt.hwms.bean.TransferList;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class Constants {
     //测试
