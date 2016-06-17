@@ -95,7 +95,7 @@ public class OutboundItemsAdapter extends BaseAdapter {
         params.put("out_record_id", list.get(position).getOut_record_id());
 //        params.put("record_id", );
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
+                new GsonObjectRequest<>(Request.Method.POST, url, BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
                     @Override
                     public void onResponse(BaseBean response) {
                         list.remove(position);
@@ -111,15 +111,15 @@ public class OutboundItemsAdapter extends BaseAdapter {
                             Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
                             if (!BaseUtils.isNetworkConnected(context)) {
-                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
                             }
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
                     }
-                }), "xxxx");
+                }), "outbounditemsadapter");
     }
 
     static class ViewHolder {

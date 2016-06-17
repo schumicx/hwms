@@ -3,6 +3,7 @@ package com.xyt.hwms.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,11 +11,16 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.mobsandgeeks.saripaar.ValidationError;
+import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.AffirmItemsAdapter;
 import com.xyt.hwms.bean.TransferDetail;
+import com.xyt.hwms.bean.User;
+import com.xyt.hwms.support.utils.ApplicationController;
 import com.xyt.hwms.support.utils.Constants;
 import com.xyt.hwms.support.utils.PreferencesUtils;
 
@@ -30,14 +36,15 @@ public class AffirmItemsActivity extends BaseActivity {
     public CacheWasteDialogFragment cacheWasteDialogFragment;
     @BindView(R.id.listview)
     ListView listview;
-    TextView total;
-    TextView verified;
-    TextView unverified;
-    TextView back;
+    @NotEmpty(trim = true, message = "请输入操作人账号")
+    EditText operator;
+    private TextView total;
+    private TextView verified;
+    private TextView unverified;
+    private TextView back;
     private List<TransferDetail> list = new ArrayList<>();
     private AffirmItemsAdapter affirmItemsAdapter;
     private int applyIndex;
-    //    private int position;
     private int totalNum;
     private int verifiedNum;
     private int unverifiedNum;
@@ -45,7 +52,6 @@ public class AffirmItemsActivity extends BaseActivity {
 
     @OnItemClick(R.id.listview)
     public void onItemClick(int position) {
-//        this.position = position - 1;
         cacheWasteDialogFragment = CacheWasteDialogFragment.newInstance(applyIndex, position - 1);
         cacheWasteDialogFragment.show(getSupportFragmentManager(), getLocalClassName());
     }
@@ -66,10 +72,31 @@ public class AffirmItemsActivity extends BaseActivity {
         verified = (TextView) head.findViewById(R.id.verified);
         unverified = (TextView) head.findViewById(R.id.unverified);
         back = (TextView) head.findViewById(R.id.back);
-        EditText operator = (EditText) head.findViewById(R.id.operator);
+        operator = (EditText) head.findViewById(R.id.operator);
 
         totalNum = list.size();
         total.setText("" + totalNum);
+//        if(TextUtils.isEmpty(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getOperator().trim())){
+//            Constants.AFFIRM_LIST.getCollection().get(applyIndex).setOperator("xxxx".trim());
+//            PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
+//            PreferencesUtils.putBoolean(context, "isSync", false);
+//        }
+        if (TextUtils.isEmpty(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getOperator()) || Constants.TRANSFER_TYPE_INNER.equals(getIntent().getStringExtra("type"))) {
+            operator.setText(new Gson().fromJson(PreferencesUtils.getString(ApplicationController.getInstance(), "user"), User.class).getAccount());
+            Constants.AFFIRM_LIST.getCollection().get(applyIndex).setOperator(operator.getText().toString().trim());
+            PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
+//            PreferencesUtils.putBoolean(context, "isSync", false);
+        } else {
+            operator.setText(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getOperator());
+        }
+
+        if (Constants.TRANSFER_TYPE_INNER.equals(getIntent().getStringExtra("type"))) {
+            operator.setFocusableInTouchMode(false);
+            operator.setLongClickable(false);
+        } else {
+            operator.setFocusableInTouchMode(true);
+            operator.setLongClickable(true);
+        }
 
         listview.addHeaderView(head);
 
@@ -90,8 +117,9 @@ public class AffirmItemsActivity extends BaseActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                Constants.AFFIRM_LIST.getCollection().get(applyIndex).setOperator(s.toString());
+                Constants.AFFIRM_LIST.getCollection().get(applyIndex).setOperator(s.toString().trim());
                 PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
+                PreferencesUtils.putBoolean(context, "isSync", false);
             }
         });
     }
@@ -103,8 +131,27 @@ public class AffirmItemsActivity extends BaseActivity {
     }
 
     @Override
+    public void onValidationSucceeded() {
+        for (int i = 0; i < list.size(); i++) {
+            if (barCodeData.equals(list.get(i).getLabel_code())) {
+                cacheWasteDialogFragment = CacheWasteDialogFragment.newInstance(applyIndex, i);
+                cacheWasteDialogFragment.show(getSupportFragmentManager(), getLocalClassName());
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void onValidationFailed(List<ValidationError> errors) {
+        super.onValidationFailed(errors);
+        Toast.makeText(context, "操作人不能为空!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_group, menu);
+        if (Constants.TRANSFER_TYPE_INNER.equals(getIntent().getStringExtra("type"))) {
+            getMenuInflater().inflate(R.menu.menu_group, menu);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -136,17 +183,11 @@ public class AffirmItemsActivity extends BaseActivity {
 
     @Override
     public void getBarcode(String data) {
+        barCodeData = data;
         if (cacheWasteDialogFragment != null) {
             cacheWasteDialogFragment.dismiss();
         }
-        for (int i = 0; i < list.size(); i++) {
-            if (data.equals(list.get(i).getLabel_code())) {
-//                this.position = i;
-                cacheWasteDialogFragment = CacheWasteDialogFragment.newInstance(applyIndex, i);
-                cacheWasteDialogFragment.show(getSupportFragmentManager(), getLocalClassName());
-                break;
-            }
-        }
+        validator.validate();
     }
 
     @Override
@@ -156,28 +197,18 @@ public class AffirmItemsActivity extends BaseActivity {
     }
 
     public void updateView() {
-//        if (Constants.WASTE_BACK.equals(((Map) ((List) ((Map) Constants.AFFIRM_LIST.get(applyIndex)).get("detail")).get(position)).get("status").toString())) {
-//            if(reasonDialog == null) {
-//                reasonDialog = ReasonDialogFragment.newInstance(applyIndex, position);
-//                reasonDialog.show(getSupportFragmentManager(), getLocalClassName());
-//            }
-//        }
+        affirmItemsAdapter.notifyDataSetChanged();
         backNum = 0;
         verifiedNum = 0;
         unverifiedNum = 0;
         for (int i = 0; i < list.size(); i++) {
             if (Constants.WASTE_BACK.equals(list.get(i).getStatus())) {
                 backNum++;
-
-//                ((Map) Constants.AFFIRM_LIST.get(applyIndex)).put("detail_status", 0);//////////
             } else if (Constants.WASTE_PASS.equals(list.get(i).getStatus())) {
                 verifiedNum++;
-//                ((Map) Constants.AFFIRM_LIST.get(applyIndex)).put("detail_status", 1);//////////
             } else {
                 unverifiedNum++;
             }
-
-//            ((Map) Constants.AFFIRM_LIST.get(applyIndex)).put("detail_status",);
         }
         back.setText("" + backNum);
         verified.setText("" + verifiedNum);
@@ -192,9 +223,6 @@ public class AffirmItemsActivity extends BaseActivity {
         if (unverifiedNum == 0) {
             Constants.AFFIRM_LIST.getCollection().get(applyIndex).setDetail_status("1");
         }
-
         PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
-
-        affirmItemsAdapter.notifyDataSetChanged();
     }
 }

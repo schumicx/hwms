@@ -12,8 +12,10 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.RecycleAdapter;
+import com.xyt.hwms.bean.BaseBean;
 import com.xyt.hwms.bean.Recycle;
 import com.xyt.hwms.bean.RecycleListBean;
 import com.xyt.hwms.support.utils.ApplicationController;
@@ -64,6 +66,7 @@ public class RecycleActivity extends BaseActivity {
         }
         listview.setAdapter(recycleAdapter);
 
+        swiperefresh.setProgressViewOffset(true, 0, BaseUtils.dip2px(context, 24));
         swiperefresh.setColorSchemeResources(android.R.color.holo_red_light,
                 android.R.color.holo_green_light,
                 android.R.color.holo_blue_bright,
@@ -74,8 +77,6 @@ public class RecycleActivity extends BaseActivity {
                 request();
             }
         });
-
-        swiperefresh.setProgressViewOffset(true, 0, BaseUtils.dip2px(context, 24));
     }
 
     @Override
@@ -106,7 +107,6 @@ public class RecycleActivity extends BaseActivity {
 
     @Override
     public void getBarcode(String data) {
-        Toast.makeText(context, "Barcode:" + data, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -118,8 +118,6 @@ public class RecycleActivity extends BaseActivity {
         String url = Constants.SERVER + "mobile-hwiu";
         Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
-        params.put("_username", "develop");
-        params.put("_password", "whchem@2016");
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(url, RecycleListBean.class, params, new Response.Listener<RecycleListBean>() {
                     @Override
@@ -127,13 +125,14 @@ public class RecycleActivity extends BaseActivity {
                         if (swiperefresh.isRefreshing()) {
                             swiperefresh.setRefreshing(false);
                         }
-                        if ( response.getData().getCollection() != null && response.getData().getCollection().size() > 0) {
-                            list.clear();
+                        list.clear();
+                        if (response.getData().getCollection() != null && response.getData().getCollection().size() > 0) {
                             list.addAll(response.getData().getCollection());
                         }
                         if (list.size() == 0) {
-                            empty.setText("no data");
                             empty.setVisibility(View.VISIBLE);
+                        } else {
+                            empty.setVisibility(View.GONE);
                         }
                         recycleAdapter.notifyDataSetChanged();
                     }
@@ -144,12 +143,12 @@ public class RecycleActivity extends BaseActivity {
                             swiperefresh.setRefreshing(false);
                         }
                         try {
-                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
                             if (!BaseUtils.isNetworkConnected(context)) {
-                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
                             }
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();

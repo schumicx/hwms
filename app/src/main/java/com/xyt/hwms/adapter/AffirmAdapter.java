@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xyt.hwms.R;
@@ -24,9 +25,11 @@ public class AffirmAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
     private List<Transfer> list;
+    private String type;
 
-    public AffirmAdapter(Context context, List<Transfer> list) {
+    public AffirmAdapter(Context context, List<Transfer> list, String type) {
         this.list = list;
+        this.type = type;
         this.context = context;
         this.inflater = LayoutInflater.from(context);
     }
@@ -58,6 +61,7 @@ public class AffirmAdapter extends BaseAdapter {
         }
         viewHolder.code.setText("" + list.get(position).getApply_code());
         viewHolder.org.setText(list.get(position).getParent_org_name() + "-" + list.get(position).getOrg_name());
+
         if (Constants.TRANSFER_TYPE_OUTER.equals(list.get(position).getTransfer_type())) {
             viewHolder.text2.setVisibility(View.GONE);
             viewHolder.text1.setText(list.get(position).getCard_name());
@@ -67,7 +71,16 @@ public class AffirmAdapter extends BaseAdapter {
             viewHolder.carCode.setVisibility(View.GONE);
             viewHolder.text1.setText(list.get(position).getDuty_person());
             viewHolder.text2.setText(list.get(position).getPhone());
-            viewHolder.text3.setText(DateUtils.getCnDate(list.get(position).getCreate_time()));
+            viewHolder.text3.setText(DateUtils.getTime(list.get(position).getCreate_time()));
+        }
+        if (!type.equals(list.get(position).getTransfer_type())) {
+            viewHolder.code.setVisibility(View.GONE);
+            viewHolder.org.setVisibility(View.GONE);
+            viewHolder.text1.setVisibility(View.GONE);
+            viewHolder.text2.setVisibility(View.GONE);
+            viewHolder.text3.setVisibility(View.GONE);
+            viewHolder.carCode.setVisibility(View.GONE);
+            viewHolder.line.setVisibility(View.GONE);
         }
 
         return convertView;
@@ -75,6 +88,8 @@ public class AffirmAdapter extends BaseAdapter {
 
 
     static class ViewHolder {
+        @BindView(R.id.item_layout)
+        RelativeLayout itemLayout;
         @BindView(R.id.code)
         TextView code;
         @BindView(R.id.org)
@@ -87,6 +102,8 @@ public class AffirmAdapter extends BaseAdapter {
         TextView carCode;
         @BindView(R.id.text3)
         TextView text3;
+        @BindView(R.id.line)
+        View line;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

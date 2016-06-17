@@ -1,11 +1,12 @@
 package com.xyt.hwms.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Levin on 2016-05-20.
  */
-public class Transfer {
+public class Transfer implements Serializable {
 
     private String transfer_id;
     private String apply_code;

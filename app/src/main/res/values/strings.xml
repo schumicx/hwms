@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">固废管理</string>
+    <!--<string name="app_name">裴总威武</string>-->
 
     <!--&lt;!&ndash; Strings related to login &ndash;&gt;-->
     <string name="prompt_account">账号</string>
@@ -24,10 +25,10 @@
     <string name="outbound_items">出库明细</string>
     <string name="recycle_items">内部利用明细</string>
 
-    <string name="no_nfc">No NFC found on this device</string>
-    <string name="nfc_disabled">NFC is not enabled. Please go to the wireless settings to enable it.</string>
+    <string name="no_nfc">此设备上没有NFC刷卡器!</string>
+    <string name="nfc_disabled">NFC刷卡器已关闭，请在无线设置中启用!</string>
 
-    <string name="no_internet">网络连接失败,请检查您的网络</string>
-    <string name="no_connection">服务器连接异常</string>
+    <string name="no_internet">网络连接失败,请检查您的网络!</string>
+    <string name="no_connection">服务器连接异常!</string>
 
 </resources>

@@ -18,17 +18,18 @@ import com.xyt.hwms.bean.OutboundDetail;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class OutboundDialogFragment extends DialogFragment {
 
     public ListView listview;
     private List<OutboundDetail> list = new ArrayList<>();
+    private boolean isOperate;
     private OutboundDialogAdapter outboundDialogAdapter;
 
-    public static OutboundDialogFragment newInstance(List<OutboundDetail> querylist) {
+    public static OutboundDialogFragment newInstance(List<OutboundDetail> querylist, boolean isOperate) {
         OutboundDialogFragment fragment = new OutboundDialogFragment();
         fragment.list.addAll(querylist);
+        fragment.isOperate = isOperate;
         return fragment;
     }
 
@@ -45,20 +46,22 @@ public class OutboundDialogFragment extends DialogFragment {
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        builder.setView(view)
-                // Add action buttons
-                .setPositiveButton("出库", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        ((OutboundItemsActivity)getActivity()).submitRequest();
-                    }
-                })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
+        builder.setView(view);
+        // Add action buttons
+        if (isOperate) {
+            builder.setPositiveButton("出库", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    ((OutboundItemsActivity) getActivity()).submitRequest();
+                }
+            });
+        } else {
+            builder.setNegativeButton("关闭", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+        }
         return builder.create();
     }
 
@@ -73,7 +76,7 @@ public class OutboundDialogFragment extends DialogFragment {
 
                         break;
                     case KeyEvent.KEYCODE_DEL:
-                        ((OutboundItemsActivity)getActivity()).submitRequest();
+                        ((OutboundItemsActivity) getActivity()).submitRequest();
                         break;
                 }
                 dismiss();

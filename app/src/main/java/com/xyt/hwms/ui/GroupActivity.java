@@ -1,6 +1,7 @@
 package com.xyt.hwms.ui;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -12,14 +13,12 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.GroupAdapter;
-import com.xyt.hwms.bean.Transfer;
 import com.xyt.hwms.bean.TransferDetail;
 import com.xyt.hwms.support.utils.Constants;
 import com.xyt.hwms.support.utils.PreferencesUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,14 +43,21 @@ public class GroupActivity extends BaseActivity {
 
     @OnClick(R.id.submit)
     public void onClick(View v) {
-        for (int i = 0; i < listData.size(); i++) {
-            for (int j = 0; j < list.size(); j++) {
-                if (listData.get(i).getLabel_code().equals(list.get(j).getLabel_code())) {
-                     listData.get(i).setContainer_label_code(container.getText().toString());
+        if (list.size() > 0) {
+            for (int i = 0; i < list.size(); i++) {
+                for (int j = 0; j < listData.size(); j++) {
+                    if (listData.get(j).getLabel_code().equals(list.get(i).getLabel_code())) {
+                        listData.get(j).setContainer_label_code(container.getText().toString());
+                        break;
+                    }
                 }
             }
+            PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
+            Toast.makeText(context, "组盘成功!", Toast.LENGTH_SHORT).show();
+            list.clear();
+            groupAdapter.notifyDataSetChanged();
         }
-        PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
+        container.getText().clear();
     }
 
     @OnItemClick(R.id.listview)
@@ -99,7 +105,6 @@ public class GroupActivity extends BaseActivity {
 
     @Override
     public void getTagId(String data) {
-        Toast.makeText(getBaseContext(), "aaa-----" + data, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -107,8 +112,8 @@ public class GroupActivity extends BaseActivity {
         if (data.startsWith(Constants.LABEL_CON)) {
             container.setText(data);
             list.clear();
-            for (int i=0;i<listData.size();i++){
-                if (data.equals( listData.get(i).getContainer_label_code())) {
+            for (int i = 0; i < listData.size(); i++) {
+                if (data.equals(listData.get(i).getContainer_label_code())) {
                     list.add(0, listData.get(i));
                 }
             }
@@ -116,8 +121,12 @@ public class GroupActivity extends BaseActivity {
             if (affirmDialog != null) {
                 affirmDialog.dismiss();
             }
+            if (TextUtils.isEmpty(container.getText().toString().trim())) {
+                Toast.makeText(context, "请先扫描容器!", Toast.LENGTH_SHORT).show();
+                return;
+            }
             for (int i = 0; i < listData.size(); i++) {
-                if (data.equals((String) listData.get(i).getLabel_code())) {
+                if (data.equals(listData.get(i).getLabel_code())) {
                     this.position = i;
                     if (list.size() > 0) {
                         int k = 0;
@@ -146,26 +155,12 @@ public class GroupActivity extends BaseActivity {
     @Override
     public void closeDialog() {
         for (int i = 0; i < list.size(); i++) {
-            if (Constants.WASTE_BACK.equals( list.get(i).getStatus())) {
+            if (Constants.WASTE_BACK.equals(list.get(i).getStatus())) {
                 list.remove(i);
                 break;
             }
         }
-        updateView();
-        affirmDialog = null;
-    }
-
-    public void updateView() {
-//        for (int i = 0; i < list.size(); i++) {
-//            if (Constants.WASTE_BACK.equals(list.get(i).get("status").toString())) {
-////                ((Map) Constants.AFFIRM_LIST.get(applyIndex)).put("detail_status", 0);//////////
-//            } else if (Constants.WASTE_PASS.equals(list.get(i).get("status").toString())) {
-////                ((Map) Constants.AFFIRM_LIST.get(applyIndex)).put("detail_status", 1);//////////
-//            } else {
-//
-//            }
-////            ((Map) Constants.AFFIRM_LIST.get(applyIndex)).put("detail_status",);
-//        }
         groupAdapter.notifyDataSetChanged();
+        affirmDialog = null;
     }
 }

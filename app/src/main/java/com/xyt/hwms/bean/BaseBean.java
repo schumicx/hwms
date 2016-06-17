@@ -9,6 +9,7 @@ public class BaseBean implements Serializable {
     private int code;
     private String content;
     private String error;
+    private String type;
 
     public BaseBean() {
     }
@@ -35,5 +36,13 @@ public class BaseBean implements Serializable {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

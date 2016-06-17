@@ -120,16 +120,17 @@ public class RecycleItemsActivity extends BaseActivity {
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
 //        params.put("", "gbros:{2014}");
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016", RecycleDetailListBean.class, null, new Response.Listener<RecycleDetailListBean>() {
+                new GsonObjectRequest<>(Request.Method.GET, url, RecycleDetailListBean.class, null, new Response.Listener<RecycleDetailListBean>() {
                     @Override
                     public void onResponse(RecycleDetailListBean response) {
+                        list.clear();
                         if (response.getData().getCollection() != null && response.getData().getCollection().size() > 0) {
-                            list.clear();
                             list.addAll(response.getData().getCollection());
                         }
                         if (list.size() == 0) {
-                            empty.setText("no data");
                             empty.setVisibility(View.VISIBLE);
+                        }else {
+                            empty.setVisibility(View.GONE);
                         }
                         recycleItemsAdapter.notifyDataSetChanged();
                     }
@@ -137,12 +138,12 @@ public class RecycleItemsActivity extends BaseActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         try {
-                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
                             if (!BaseUtils.isNetworkConnected(context)) {
-                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
                             }
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
@@ -158,7 +159,7 @@ public class RecycleItemsActivity extends BaseActivity {
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("label_code", barCodeData);
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", RecycleScanBean.class, new Gson().toJson(params), new Response.Listener<RecycleScanBean>() {
+                new GsonObjectRequest<>(Request.Method.POST, url, RecycleScanBean.class, new Gson().toJson(params), new Response.Listener<RecycleScanBean>() {
                     @Override
                     public void onResponse(RecycleScanBean response) {
                         if (response.getData() != null) {
@@ -175,12 +176,12 @@ public class RecycleItemsActivity extends BaseActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         try {
-                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
                             if (!BaseUtils.isNetworkConnected(context)) {
-                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
                             }
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
@@ -197,7 +198,7 @@ public class RecycleItemsActivity extends BaseActivity {
         params.put("label_code", recycleDetail.getLabel_code());
 //        params.put("record_id", );
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
+                new GsonObjectRequest<>(Request.Method.POST, url, BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
                     @Override
                     public void onResponse(BaseBean response) {
                         list.remove(recycleDetail);
@@ -210,18 +211,18 @@ public class RecycleItemsActivity extends BaseActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         try {
-                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
                             if (!BaseUtils.isNetworkConnected(context)) {
-                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
                             }
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
                     }
-                }), "xxxx");
+                }), getLocalClassName());
     }
 
     //内部利用完成
@@ -232,7 +233,7 @@ public class RecycleItemsActivity extends BaseActivity {
 //        params.put("label_code", barCodeData);
         params.put("inner_id", id);
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
+                new GsonObjectRequest<>(Request.Method.POST, url, BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
                     @Override
                     public void onResponse(BaseBean response) {
                         finish();
@@ -241,12 +242,12 @@ public class RecycleItemsActivity extends BaseActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         try {
-                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
                             if (!BaseUtils.isNetworkConnected(context)) {
-                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
                             }
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
@@ -262,7 +263,7 @@ public class RecycleItemsActivity extends BaseActivity {
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
 //        params.put("", "gbros:{2014}");
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016&label_code=" + id, EADObject.class, null, new Response.Listener<EADObject>() {
+                new GsonObjectRequest<>(Request.Method.GET, url, EADObject.class, null, new Response.Listener<EADObject>() {
                     @Override
                     public void onResponse(EADObject response) {
                         //////////

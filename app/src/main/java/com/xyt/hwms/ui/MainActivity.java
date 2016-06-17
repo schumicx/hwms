@@ -15,6 +15,7 @@ import com.xyt.hwms.R;
 import com.xyt.hwms.bean.BaseBean;
 import com.xyt.hwms.bean.TransferList;
 import com.xyt.hwms.bean.TransferListBean;
+import com.xyt.hwms.bean.User;
 import com.xyt.hwms.support.utils.ApplicationController;
 import com.xyt.hwms.support.utils.BaseUtils;
 import com.xyt.hwms.support.utils.Constants;
@@ -32,6 +33,7 @@ public class MainActivity extends BaseActivity {
 
     @OnClick({R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5})
     public void onClick(View view) {
+//        String role = new Gson().fromJson(PreferencesUtils.getString(ApplicationController.getInstance(), "user"), User.class).getRole_code();
         switch (view.getId()) {
             case R.id.button1:
                 //Affirm
@@ -99,7 +101,7 @@ public class MainActivity extends BaseActivity {
 //        Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));inner/outer
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.GET, url + "?_username=develop&_password=whchem@2016&transfer_type=inner/outer", TransferListBean.class, null, new Response.Listener<TransferListBean>() {
+                new GsonObjectRequest<>(Request.Method.GET, url, TransferListBean.class, null, new Response.Listener<TransferListBean>() {
                     @Override
                     public void onResponse(TransferListBean response) {
                         if (response.getData().getCollection().size() > 0) {
@@ -132,10 +134,10 @@ public class MainActivity extends BaseActivity {
 //        Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.PUT, url + "?_username=develop&_password=whchem@2016", BaseBean.class, new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()), new Response.Listener<BaseBean>() {
+                new GsonObjectRequest<>(Request.Method.PUT, url, BaseBean.class, new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()), new Response.Listener<BaseBean>() {
                     @Override
                     public void onResponse(BaseBean response) {
-                        Toast.makeText(context, "success", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "同步成功!", Toast.LENGTH_SHORT).show();
                         PreferencesUtils.putString(context, "affirm", null);
                         PreferencesUtils.putBoolean(context, "isSync", true);
                         Constants.AFFIRM_LIST = null;
@@ -167,7 +169,7 @@ public class MainActivity extends BaseActivity {
         if (back_pressed + 2000 > System.currentTimeMillis()) {
             super.onBackPressed();
         } else {
-            Toast.makeText(context, "xxx", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "再按一次退出", Toast.LENGTH_SHORT).show();
         }
         back_pressed = System.currentTimeMillis();
     }

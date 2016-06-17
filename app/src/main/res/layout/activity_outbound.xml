@@ -22,8 +22,11 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:gravity="center"
-        android:visibility="gone" />
+        android:drawableTop="@mipmap/card"
+        android:drawableTint="#bdbdbd"
+        android:text="请刷车卡"
+        android:textColor="#bdbdbd"
+        android:gravity="center" />
 
 </RelativeLayout>
 

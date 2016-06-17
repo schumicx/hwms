@@ -17,6 +17,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.adapter.OutboundAdapter;
+import com.xyt.hwms.bean.BaseBean;
 import com.xyt.hwms.bean.OutboundTranfer;
 import com.xyt.hwms.bean.OutboundTranferBean;
 import com.xyt.hwms.support.utils.ApplicationController;
@@ -67,6 +68,7 @@ public class OutboundActivity extends BaseActivity {
         }
         listview.setAdapter(outboundAdapter);
 
+        swiperefresh.setProgressViewOffset(true, 0, BaseUtils.dip2px(context, 24));
         swiperefresh.setColorSchemeResources(android.R.color.holo_red_light,
                 android.R.color.holo_green_light,
                 android.R.color.holo_blue_bright,
@@ -77,7 +79,6 @@ public class OutboundActivity extends BaseActivity {
                 request();
             }
         });
-        swiperefresh.setProgressViewOffset(true, 0, BaseUtils.dip2px(context, 24));
     }
 
     @Override
@@ -108,12 +109,12 @@ public class OutboundActivity extends BaseActivity {
     public void getTagId(String data) {
         NFCTagId = data;
         swiperefresh.setRefreshing(true);
+        list.clear();
         request();
     }
 
     @Override
     public void getBarcode(String data) {
-        Toast.makeText(context, "Barcode:" + data, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -133,19 +134,20 @@ public class OutboundActivity extends BaseActivity {
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("card_id", NFCTagId);
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", OutboundTranferBean.class, new Gson().toJson(params), new Response.Listener<OutboundTranferBean>() {
+                new GsonObjectRequest<>(Request.Method.POST, url, OutboundTranferBean.class, new Gson().toJson(params), new Response.Listener<OutboundTranferBean>() {
                     @Override
                     public void onResponse(OutboundTranferBean response) {
                         if (swiperefresh.isRefreshing()) {
                             swiperefresh.setRefreshing(false);
                         }
+                        list.clear();
                         if (response.getData().size() > 0) {
-                            list.clear();
                             list.addAll(response.getData());
                         }
                         if (list.size() == 0) {
-                            empty.setText("no data");
                             empty.setVisibility(View.VISIBLE);
+                        } else {
+                            empty.setVisibility(View.GONE);
                         }
                         outboundAdapter.notifyDataSetChanged();
                     }
@@ -155,13 +157,17 @@ public class OutboundActivity extends BaseActivity {
                         if (swiperefresh.isRefreshing()) {
                             swiperefresh.setRefreshing(false);
                         }
+                        if (list.size() == 0) {
+                            empty.setVisibility(View.VISIBLE);
+                        }
+                        outboundAdapter.notifyDataSetChanged();
                         try {
-                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
                             if (!BaseUtils.isNetworkConnected(context)) {
-                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
                             }
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();

@@ -59,7 +59,7 @@ public class OutboundAdapter extends BaseAdapter {
         viewHolder.org.setText(list.get(position).getParent_org_name() + "-" + list.get(position).getOrg_name());
         viewHolder.text1.setText(list.get(position).getUser_name());
         viewHolder.text2.setText(list.get(position).getPhone());
-        viewHolder.text3.setText(DateUtils.getCnDate(list.get(position).getCreate_time()));
+        viewHolder.text3.setText(DateUtils.getTime(list.get(position).getCreate_time()));
 
         return convertView;
     }

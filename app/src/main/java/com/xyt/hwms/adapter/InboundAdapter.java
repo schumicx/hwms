@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ import com.xyt.hwms.support.utils.GsonObjectRequest;
 import com.xyt.hwms.ui.InboundWasteDialogFragment;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,8 +85,12 @@ public class InboundAdapter extends BaseAdapter {
         viewHolder.warning.setVisibility("1".equals(list.get(position).getIs_key_waste()) ? View.VISIBLE : View.GONE);
         viewHolder.name.setText(list.get(position).getWaste_name());
         viewHolder.code.setText(list.get(position).getLabel_code());
-        viewHolder.itemWeight.setText(String.valueOf(list.get(position).getWeight()).equals("null") ? "" : String.valueOf(list.get(position).getWeight()));
 
+        if (list.get(position).getWeight() != null) {
+            viewHolder.itemWeight.setText(new DecimalFormat("#0.00").format(Double.valueOf(list.get(position).getWeight())));
+        } else {
+            viewHolder.itemWeight.getText().clear();
+        }
         viewHolder.itemWeight.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -93,15 +99,19 @@ public class InboundAdapter extends BaseAdapter {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (viewHolder.itemWeight.isFocused()) {
-                    list.get(position).setWeight(Float.valueOf(s.toString()));
-                    jisuan();
-                }
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                if (viewHolder.itemWeight.isFocused()) {
+                    if (!TextUtils.isEmpty(s.toString())) {
+                        list.get(position).setWeight(Float.valueOf(s.toString()));
+                    } else {
+                        list.get(position).setWeight(null);
+                    }
+                    calculate();
+                }
             }
         });
 
@@ -117,25 +127,23 @@ public class InboundAdapter extends BaseAdapter {
             public void onClick(View v) {
                 FragmentActivity activity = (FragmentActivity) (context);
                 FragmentManager fm = activity.getSupportFragmentManager();
-                InboundWasteDialogFragment.newInstance(list.get(position)).show(fm, "xxx");
+                InboundWasteDialogFragment.newInstance(list.get(position)).show(fm, "inboundwastedialogfragment");
             }
         });
 
         return convertView;
     }
 
-    @Override
-    public void notifyDataSetChanged() {
-        jisuan();
-        super.notifyDataSetChanged();
-    }
-
-    public void jisuan() {
-        double x = 0;
+    public void calculate() {
+        float temp = 0;
         for (int i = 0; i < list.size(); i++) {
-            x += String.valueOf(list.get(i).getWeight()).equals("") || String.valueOf(list.get(i).getWeight()).equals("null") ? 0 : Double.valueOf(list.get(i).getWeight());
+            if (list.get(i).getWeight() != null) {
+                temp += list.get(i).getWeight();
+            }
         }
-        weight.setText("" + x);
+//        if (temp > 0) {
+            weight.setText(new DecimalFormat("#0.00").format(Double.valueOf(temp)));
+//        }
     }
 
     //解除组盘
@@ -145,10 +153,11 @@ public class InboundAdapter extends BaseAdapter {
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("label_code", list.get(position).getLabel_code());//固废
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
+                new GsonObjectRequest<>(Request.Method.POST, url, BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
                     @Override
                     public void onResponse(BaseBean response) {
                         list.remove(position);
+                        calculate();
                         notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {
@@ -158,15 +167,15 @@ public class InboundAdapter extends BaseAdapter {
                             Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
                             if (!BaseUtils.isNetworkConnected(context)) {
-                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
                             }
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
                     }
-                }), "xxxx");
+                }), "inboundadapter");
     }
 
     static class ViewHolder {

@@ -5,6 +5,6 @@
         android:id="@+id/sync"
         android:icon="@mipmap/sync"
         android:orderInCategory="100"
-        android:title="@string/app_name"
+        android:title="同步"
         app:showAsAction="always" />
 </menu>

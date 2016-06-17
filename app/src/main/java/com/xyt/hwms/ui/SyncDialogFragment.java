@@ -16,13 +16,13 @@ public class SyncDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("no Sync")
+        builder.setMessage("转移单数据未同步，点击同步按钮进行同步!")
                 .setPositiveButton("同步", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        if(getActivity() instanceof AffirmActivity) {
+                        if (getActivity() instanceof AffirmActivity) {
                             ((AffirmActivity) getActivity()).syncRequest();
-                        } else if(getActivity() instanceof MainActivity) {
+                        } else if (getActivity() instanceof MainActivity) {
                             ((MainActivity) getActivity()).syncRequest();
                         }
                     }

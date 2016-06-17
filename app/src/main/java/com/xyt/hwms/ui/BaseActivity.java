@@ -33,7 +33,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Validato
 
     public boolean STATE_ISDECODING = false;
     protected Context context;
-//    protected int pageNum = Constants.STARTPAGE;
+    //    protected int pageNum = Constants.STARTPAGE;
 //    protected int visibleLastIndex = 0;
 //    protected int curPageSize = 0;
     protected String NFCTagId;
@@ -59,7 +59,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Validato
 
         mAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mAdapter == null) {
-            Toast.makeText(getBaseContext(), getText(R.string.no_nfc), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, getText(R.string.no_nfc), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -106,8 +106,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Validato
                         d99[d] = 0;
                         data = d99;
                     }
-                    getBarcode(new String(data, 0, length).trim());
-                    Toast.makeText(getBaseContext(), new String(data, 0, length), Toast.LENGTH_SHORT).show();
+                    if (new String(data, 0, length).trim().startsWith(Constants.LABEL_LIB) || new String(data, 0, length).trim().startsWith(Constants.LABEL_LSL) || new String(data, 0, length).trim().startsWith(Constants.LABEL_CON) || new String(data, 0, length).trim().startsWith(Constants.LABEL_HW)) {
+                        getBarcode(new String(data, 0, length).trim());
+                    } else {
+                        Toast.makeText(context, "请扫描固废系统定义的标签!", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 STATE_ISDECODING = false;
             }
@@ -134,7 +137,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Validato
             if (view instanceof EditText) {
                 ((EditText) view).setError(message);
             } else {
-                Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -172,7 +175,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Validato
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(action) || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action) || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
             Parcelable tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
-            Toast.makeText(getBaseContext(), dumpTagData(tag).get("tagId"), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getBaseContext(), dumpTagData(tag).get("tagId"), Toast.LENGTH_SHORT).show();
             getTagId(dumpTagData(tag).get("tagId"));
         }
     }

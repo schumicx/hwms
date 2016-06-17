@@ -23,6 +23,10 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:gravity="center"
+        android:drawableTop="@mipmap/empty"
+        android:drawableTint="#757575"
+        android:text="没有转移单"
+        android:textColor="#757575"
         android:visibility="gone" />
 
 </RelativeLayout>

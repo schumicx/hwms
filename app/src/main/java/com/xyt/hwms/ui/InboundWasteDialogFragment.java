@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.xyt.hwms.R;
 import com.xyt.hwms.bean.InboundQuery;
 import com.xyt.hwms.support.utils.Constants;
@@ -82,20 +81,4 @@ public class InboundWasteDialogFragment extends DialogFragment {
         });
         return super.onCreateView(inflater, container, savedInstanceState);
     }
-
-//    @Override
-//    public void onDismiss(DialogInterface dialog) {
-//        super.onDismiss(dialog);
-//        if (getActivity() != null) {
-//            ((BaseActivity) getActivity()).closeDialog();
-//        }
-//    }
-//
-//    @Override
-//    public void dismiss() {
-//        super.dismiss();
-//        if (getActivity() != null) {
-//            ((BaseActivity) getActivity()).closeDialog();
-//        }
-//    }
 }

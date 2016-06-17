@@ -33,6 +33,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnItemClick;
 
 public class OutboundItemsActivity extends BaseActivity {
 
@@ -44,6 +45,11 @@ public class OutboundItemsActivity extends BaseActivity {
     private List<OutboundDetail> querylist = new ArrayList<>();
     private OutboundItemsAdapter outboundItemsAdapter;
     private String id;
+
+    @OnItemClick(R.id.listview)
+    public void onItemClick(int position) {
+        request(list.get(position).getLabel_code(), false);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +100,7 @@ public class OutboundItemsActivity extends BaseActivity {
     @Override
     public void getBarcode(String data) {
         barCodeData = data;
-        request();
+        request(barCodeData, true);
     }
 
     @Override
@@ -107,20 +113,19 @@ public class OutboundItemsActivity extends BaseActivity {
         String url = Constants.SERVER + "mobile-out-store";
         Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
-        params.put("_username", "develop");
-        params.put("_password", "whchem@2016");
         params.put("transfer_id", id);
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(url, OutboundListBean.class, params, new Response.Listener<OutboundListBean>() {
                     @Override
                     public void onResponse(OutboundListBean response) {
+                        list.clear();
                         if (response.getData().getCollection() != null && response.getData().getCollection().size() > 0) {
-                            list.clear();
                             list.addAll(response.getData().getCollection());
                         }
                         if (list.size() == 0) {
-                            empty.setText("no data");
                             empty.setVisibility(View.VISIBLE);
+                        } else {
+                            empty.setVisibility(View.GONE);
                         }
                         outboundItemsAdapter.notifyDataSetChanged();
                     }
@@ -128,12 +133,12 @@ public class OutboundItemsActivity extends BaseActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         try {
-                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
                             if (!BaseUtils.isNetworkConnected(context)) {
-                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
                             }
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
@@ -143,12 +148,10 @@ public class OutboundItemsActivity extends BaseActivity {
     }
 
     //出库明细查询
-    private void request() {
-        String url = Constants.SERVER + "mobile-get-in/";
+    private void request(String barCodeData, final boolean isOperate) {
+        String url = Constants.SERVER + (isOperate ? "mobile-get-in" : "mobile-get-out");
         Map<String, Object> params = new HashMap<>();
 //        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
-        params.put("_username", "develop");
-        params.put("_password", "whchem@2016");
         if (barCodeData.startsWith(Constants.LABEL_LIB)) {
             params.put("store_label_code", barCodeData);//库
         } else if (barCodeData.startsWith(Constants.LABEL_LSL)) {
@@ -158,27 +161,32 @@ public class OutboundItemsActivity extends BaseActivity {
         } else if (barCodeData.startsWith(Constants.LABEL_HW)) {
             params.put("label_code", barCodeData);//固废
         }
+        if (isOperate) {
+            params.put("status", 1);
+        }
 
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(url, OutboundDetailListBean.class, params, new Response.Listener<OutboundDetailListBean>() {
                     @Override
                     public void onResponse(OutboundDetailListBean response) {
+                        querylist.clear();
                         if (response.getData().getCollection() != null && response.getData().getCollection().size() > 0) {
-                            querylist.clear();
                             querylist.addAll(response.getData().getCollection());
+                            OutboundDialogFragment.newInstance(querylist, isOperate).show(getSupportFragmentManager(), getLocalClassName());
+                        } else {
+                            Toast.makeText(context, "该固废以出库!", Toast.LENGTH_SHORT).show();
                         }
-                        OutboundDialogFragment.newInstance(querylist).show(getSupportFragmentManager(), getLocalClassName());
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         try {
-                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
                             if (!BaseUtils.isNetworkConnected(context)) {
-                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
                             }
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
@@ -195,7 +203,7 @@ public class OutboundItemsActivity extends BaseActivity {
         params.put("label_code", barCodeData);
         params.put("transfer_id", id);
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
+                new GsonObjectRequest<>(Request.Method.POST, url, BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
                     @Override
                     public void onResponse(BaseBean response) {
                         listRequest();
@@ -204,12 +212,12 @@ public class OutboundItemsActivity extends BaseActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         try {
-                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
                             if (!BaseUtils.isNetworkConnected(context)) {
-                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
                             }
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
@@ -226,7 +234,7 @@ public class OutboundItemsActivity extends BaseActivity {
 //        params.put("label_code", barCodeData);
         params.put("transfer_id", id);
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.POST, url + "?_username=develop&_password=whchem@2016", BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
+                new GsonObjectRequest<>(Request.Method.POST, url, BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
                     @Override
                     public void onResponse(BaseBean response) {
                         finish();
@@ -235,12 +243,12 @@ public class OutboundItemsActivity extends BaseActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         try {
-                            Toast.makeText(context, /*new Gson().fromJson(*/new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))/*, BaseBean.class).getContent()*/, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
                             if (!BaseUtils.isNetworkConnected(context)) {
-                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.no_connection, Toast.LENGTH_SHORT).show();
                             }
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();

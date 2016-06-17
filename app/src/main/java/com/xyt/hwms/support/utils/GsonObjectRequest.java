@@ -12,6 +12,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonRequest;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.xyt.hwms.bean.User;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -33,6 +34,10 @@ public class GsonObjectRequest<T> extends JsonRequest<T> {
         this(Method.GET, url + transferParams(mapRequest), clazz, null, listener, errorListener);
     }
 
+    public GsonObjectRequest(String url, Class<T> clazz, String jsonRequest, Listener<T> listener, ErrorListener errorListener) {
+        this(jsonRequest == null ? Method.GET : Method.POST, url, clazz, jsonRequest, listener, errorListener);
+    }
+
     private static String transferParams(Map mapRequest) {
         StringBuilder sb = new StringBuilder();
         if (mapRequest != null) {
@@ -44,10 +49,6 @@ public class GsonObjectRequest<T> extends JsonRequest<T> {
             }
         }
         return sb.toString();
-    }
-
-    public GsonObjectRequest(String url, Class<T> clazz, String jsonRequest, Listener<T> listener, ErrorListener errorListener) {
-        this(jsonRequest == null ? Method.GET : Method.POST, url, clazz, jsonRequest, listener, errorListener);
     }
 
     public int getStatusCode() {
@@ -74,12 +75,19 @@ public class GsonObjectRequest<T> extends JsonRequest<T> {
         }
     }
 
-//    @Override
-//    public Map<String, String> getHeaders() throws AuthFailureError {
-//        Map<String, String> headers = new HashMap<String, String>();
-//        headers.put("Charset", "UTF-8");
-//        headers.put("Content-Type", "application/x-javascript");
-//        headers.put("Accept-Encoding", "gzip,deflate");
-//        return super.getHeaders();
-//    }
+    @Override
+    public Map<String, String> getHeaders() throws AuthFailureError {
+        Long timestamp = DateUtils.getTime();
+        String account = "";
+        try {
+            account = new Gson().fromJson(PreferencesUtils.getString(ApplicationController.getInstance(), "user"), User.class).getAccount();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        Map<String, String> headers = new HashMap<>();
+        headers.put("token", MD5Utils.getMD5(account + timestamp + Constants.KEY));
+        headers.put("userId", account);
+        headers.put("time", String.valueOf(timestamp));
+        return headers;
+    }
 }
