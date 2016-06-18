@@ -16,11 +16,12 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:drawableTop="@mipmap/scan"
         android:drawableTint="#757575"
+        android:drawableTop="@mipmap/scan"
+        android:gravity="center"
         android:text="请扫描"
         android:textColor="#757575"
-        android:gravity="center" />
+        android:visibility="gone" />
 
 </RelativeLayout>
 

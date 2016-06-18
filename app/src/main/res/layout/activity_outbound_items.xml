@@ -20,6 +20,7 @@
         android:text="请扫描"
         android:textColor="#757575"
         android:layout_centerVertical="true"
+        android:visibility="gone"
         android:gravity="center" />
 
 </RelativeLayout>

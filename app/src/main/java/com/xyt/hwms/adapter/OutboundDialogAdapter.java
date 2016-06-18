@@ -54,7 +54,7 @@ public class OutboundDialogAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-
+        viewHolder.status.setVisibility(View.GONE);
         viewHolder.name.setText(list.get(position).getWaste_name());
         viewHolder.code.setText(list.get(position).getLabel_code());
 
@@ -62,6 +62,8 @@ public class OutboundDialogAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
+        @BindView(R.id.status)
+        TextView status;
         @BindView(R.id.name)
         TextView name;
         @BindView(R.id.code)

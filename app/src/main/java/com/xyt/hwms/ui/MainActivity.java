@@ -15,7 +15,6 @@ import com.xyt.hwms.R;
 import com.xyt.hwms.bean.BaseBean;
 import com.xyt.hwms.bean.TransferList;
 import com.xyt.hwms.bean.TransferListBean;
-import com.xyt.hwms.bean.User;
 import com.xyt.hwms.support.utils.ApplicationController;
 import com.xyt.hwms.support.utils.BaseUtils;
 import com.xyt.hwms.support.utils.Constants;
@@ -31,33 +30,38 @@ public class MainActivity extends BaseActivity {
 
     private static long back_pressed;
 
-    @OnClick({R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5})
+    @OnClick({R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6})
     public void onClick(View view) {
 //        String role = new Gson().fromJson(PreferencesUtils.getString(ApplicationController.getInstance(), "user"), User.class).getRole_code();
         switch (view.getId()) {
             case R.id.button1:
                 //Affirm
-                Intent intent1 = new Intent(getBaseContext(), AffirmActivity.class);
+                Intent intent1 = new Intent(context, AffirmActivity.class);
                 intent1.putExtra("type", Constants.TRANSFER_TYPE_OUTER);
                 startActivity(intent1);
                 break;
             case R.id.button2:
                 //Affirm In
-                Intent intent2 = new Intent(getBaseContext(), AffirmActivity.class);
+                Intent intent2 = new Intent(context, AffirmActivity.class);
                 intent2.putExtra("type", Constants.TRANSFER_TYPE_INNER);
                 startActivity(intent2);
                 break;
             case R.id.button3:
                 //Inbound
-                startActivity(new Intent(getBaseContext(), InboundActivity.class));
+                startActivity(new Intent(context, InboundActivity.class));
                 break;
             case R.id.button4:
                 //Recycle
-                startActivity(new Intent(getBaseContext(), RecycleActivity.class));
+                startActivity(new Intent(context, RecycleActivity.class));
                 break;
             case R.id.button5:
                 //Outbound
-                startActivity(new Intent(getBaseContext(), OutboundActivity.class));
+                startActivity(new Intent(context, OutboundActivity.class));
+                break;
+            case R.id.button6:
+                //Logout
+                startActivity(new Intent(context, LoginActivity.class));
+                finish();
                 break;
         }
     }
