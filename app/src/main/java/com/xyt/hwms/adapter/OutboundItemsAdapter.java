@@ -91,9 +91,7 @@ public class OutboundItemsAdapter extends BaseAdapter {
     private void recallRequest(final int position) {
         String url = Constants.SERVER + "mobile-out-store/remove";
         Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("out_record_id", list.get(position).getOut_record_id());
-//        params.put("record_id", );
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.POST, url, BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
                     @Override

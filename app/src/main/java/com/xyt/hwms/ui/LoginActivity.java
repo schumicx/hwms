@@ -66,8 +66,6 @@ public class LoginActivity extends BaseActivity {
     @OnClick(R.id.sign_in_button)
     public void onClick(View view) {
         validator.validate();
-//        startActivity(new Intent(context, MainActivity.class));
-//        finish();
     }
 
     @OnCheckedChanged(R.id.switch_login)
@@ -88,11 +86,6 @@ public class LoginActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         cardSyncRequest();
-        /*if (STATE_ISDECODING == false) {
-            Constants.decode_start = SystemClock.elapsedRealtime();
-            ApplicationController.getInstance().doDecode();
-            STATE_ISDECODING = true;
-        }*/
     }
 
     @Override

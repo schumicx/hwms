@@ -33,9 +33,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Validato
 
     public boolean STATE_ISDECODING = false;
     protected Context context;
-    //    protected int pageNum = Constants.STARTPAGE;
-//    protected int visibleLastIndex = 0;
-//    protected int curPageSize = 0;
     protected String NFCTagId;
     protected String barCodeData;
     protected Validator validator;
@@ -175,7 +172,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Validato
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(action) || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action) || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
             Parcelable tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
-//            Toast.makeText(getBaseContext(), dumpTagData(tag).get("tagId"), Toast.LENGTH_SHORT).show();
             getTagId(dumpTagData(tag).get("tagId"));
         }
     }

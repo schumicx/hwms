@@ -90,9 +90,7 @@ public class RecycleItemsAdapter extends BaseAdapter {
     private void recallRequest(final int position) {
         String url = Constants.SERVER + "mobile-hwiu/" + id + "/detail/remove";
         Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("label_code", list.get(position).getLabel_code());
-//        params.put("record_id", );
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.POST, url, BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
                     @Override

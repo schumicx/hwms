@@ -117,7 +117,6 @@ public class RecycleActivity extends BaseActivity {
     private void request() {
         String url = Constants.SERVER + "mobile-hwiu";
         Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(url, RecycleListBean.class, params, new Response.Listener<RecycleListBean>() {
                     @Override

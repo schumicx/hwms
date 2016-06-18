@@ -74,8 +74,7 @@
                         android:imeOptions="actionUnspecified"
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
-                        android:singleLine="true"
-                        android:text="develop" />
+                        android:singleLine="true" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -93,8 +92,7 @@
                         android:imeOptions="actionUnspecified"
                         android:inputType="textPassword"
                         android:maxLines="1"
-                        android:singleLine="true"
-                        android:text="whchem@2016" />
+                        android:singleLine="true" />
 
                 </android.support.design.widget.TextInputLayout>
 

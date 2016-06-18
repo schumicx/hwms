@@ -112,7 +112,6 @@ public class OutboundItemsActivity extends BaseActivity {
     private void listRequest() {
         String url = Constants.SERVER + "mobile-out-store";
         Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("transfer_id", id);
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(url, OutboundListBean.class, params, new Response.Listener<OutboundListBean>() {
@@ -151,7 +150,6 @@ public class OutboundItemsActivity extends BaseActivity {
     private void request(String barCodeData, final boolean isOperate) {
         String url = Constants.SERVER + (isOperate ? "mobile-get-in" : "mobile-get-out");
         Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         if (barCodeData.startsWith(Constants.LABEL_LIB)) {
             params.put("store_label_code", barCodeData);//库
         } else if (barCodeData.startsWith(Constants.LABEL_LSL)) {
@@ -199,7 +197,6 @@ public class OutboundItemsActivity extends BaseActivity {
     public void submitRequest() {
         String url = Constants.SERVER + "mobile-out-store";
         Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("label_code", barCodeData);
         params.put("transfer_id", id);
         ApplicationController.getInstance().addToRequestQueue(
@@ -230,8 +227,6 @@ public class OutboundItemsActivity extends BaseActivity {
     public void completeRequest() {
         String url = Constants.SERVER + "mobile-hwot/finish";
         Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
-//        params.put("label_code", barCodeData);
         params.put("transfer_id", id);
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.POST, url, BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {

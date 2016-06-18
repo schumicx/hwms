@@ -95,11 +95,6 @@ public class InboundActivity extends BaseActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if (weight.isFocused()) {
-//                    if (list.size() <= 0) {
-//                        Toast.makeText(context, "请先完成组盘!", Toast.LENGTH_SHORT).show();
-//                        weight.getText().clear();
-//                        return;
-//                    }
                     if (!TextUtils.isEmpty(s.toString())) {
                         for (int i = 0; i < list.size(); i++) {
                             list.get(i).setWeight(Float.valueOf(s.toString()) / list.size());
@@ -166,11 +161,9 @@ public class InboundActivity extends BaseActivity {
 
     @Override
     public void closeDialog() {
-//        updateView();
     }
 
     public void backWaste(InboundQuery inboundQuery, int index) {
-//        updateView();
         backRequest(inboundQuery, index);
     }
 
@@ -182,7 +175,6 @@ public class InboundActivity extends BaseActivity {
     private void getRequest() {
         String url = Constants.SERVER + "mobile-get-in";
         Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("store_label_code", store.getText().toString());//库
         params.put("position_label_code", position.getText().toString());//库位
         params.put("container_label_code", container.getText().toString());//容器
@@ -193,22 +185,9 @@ public class InboundActivity extends BaseActivity {
                     public void onResponse(InboundQueryBean response) {
                         list.clear();
                         if (response.getData().size() > 0) {
-//                            if (TextUtils.isEmpty(store.getText().toString())) {
                             store.setText(response.getData().get(0).getStore_label_code());
-//                            }
-//                            if (TextUtils.isEmpty(position.getText().toString())) {
                             position.setText(response.getData().get(0).getPosition_label_code());
-//                            }
-//                            if (TextUtils.isEmpty(container.getText().toString())) {
                             container.setText(response.getData().get(0).getContainer_label_code());
-//                            }
-//                            if (TextUtils.isEmpty(weight.getText().toString())) {
-//                            }
-                            /*if (response.getData().get(0).getTotal_weight() != null) {
-                                weight.setText("" + response.getData().get(0).getTotal_weight());
-                            } else {
-                                weight.getText().clear();
-                            }*/
                             if (!TextUtils.isEmpty(response.getData().get(0).getLabel_code())) {
                                 list.addAll(response.getData());
                             }
@@ -244,12 +223,10 @@ public class InboundActivity extends BaseActivity {
     private void submitRequest() {
         String url = Constants.SERVER + "mobile-get-in/weight";
         Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("list", list);
         params.put("store_label_code", store.getText().toString());//库
         params.put("position_label_code", position.getText().toString());//库位
         params.put("container_label_code", container.getText().toString());//容器
-//        params.put("label_code", labelCode);//固废
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.POST, url, BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
                     @Override
@@ -285,8 +262,6 @@ public class InboundActivity extends BaseActivity {
     private void backRequest(final InboundQuery inboundQuery, int index) {
         String url = Constants.SERVER + "mobile-get-in/back";
         Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
-//        params.put("store_label_code", store.getText().toString());//库
         params.put("transfer_detail_id", inboundQuery.getTransfer_detail_id());
         params.put("status", Constants.WASTE_BACK);
         params.put("back_reason", getResources().getStringArray(R.array.reason)[index]);

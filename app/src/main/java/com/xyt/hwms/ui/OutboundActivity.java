@@ -131,7 +131,6 @@ public class OutboundActivity extends BaseActivity {
         }
         String url = Constants.SERVER + "mobile-hwot/record";
         Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("card_id", NFCTagId);
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.POST, url, OutboundTranferBean.class, new Gson().toJson(params), new Response.Listener<OutboundTranferBean>() {

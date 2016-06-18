@@ -56,7 +56,7 @@ public class RecycleAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.code.setText("" + list.get(position).getApply_code());
+        viewHolder.code.setText(list.get(position).getApply_code());
         viewHolder.org.setText(list.get(position).getParent_org_name() + "-" + list.get(position).getOrg_name());
         viewHolder.text1.setText(list.get(position).getUser_name());
         viewHolder.text2.setText(list.get(position).getPhone());

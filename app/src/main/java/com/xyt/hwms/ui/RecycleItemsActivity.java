@@ -109,16 +109,12 @@ public class RecycleItemsActivity extends BaseActivity {
 
     @Override
     public void closeDialog() {
-//        updateView();
         recycleWasteDialogFragment = null;
     }
 
     //内部利用
     private void request() {
         String url = Constants.SERVER + "mobile-hwiu/" + id + "/detail";
-//        Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
-//        params.put("", "gbros:{2014}");
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.GET, url, RecycleDetailListBean.class, null, new Response.Listener<RecycleDetailListBean>() {
                     @Override
@@ -156,7 +152,6 @@ public class RecycleItemsActivity extends BaseActivity {
     private void submitRequest() {
         String url = Constants.SERVER + "mobile-hwiu/" + id + "/detail";
         Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("label_code", barCodeData);
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.POST, url, RecycleScanBean.class, new Gson().toJson(params), new Response.Listener<RecycleScanBean>() {
@@ -194,9 +189,7 @@ public class RecycleItemsActivity extends BaseActivity {
     public void recallRequest(final RecycleDetail recycleDetail) {
         String url = Constants.SERVER + "mobile-hwiu/" + id + "/detail/remove";
         Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("label_code", recycleDetail.getLabel_code());
-//        params.put("record_id", );
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.POST, url, BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
                     @Override
@@ -229,8 +222,6 @@ public class RecycleItemsActivity extends BaseActivity {
     public void completeRequest() {
         String url = Constants.SERVER + "mobile-hwiu/finish";
         Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
-//        params.put("label_code", barCodeData);
         params.put("inner_id", id);
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.POST, url, BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
@@ -255,34 +246,4 @@ public class RecycleItemsActivity extends BaseActivity {
                     }
                 }), getLocalClassName());
     }
-
-    /*//固废详情
-    private void getWaste(String id) {
-        String url = Constants.SERVER + "mobile-waste";
-//        Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
-//        params.put("", "gbros:{2014}");
-        ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.GET, url, EADObject.class, null, new Response.Listener<EADObject>() {
-                    @Override
-                    public void onResponse(EADObject response) {
-                        //////////
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        try {
-                            Toast.makeText(context, *//*new Gson().fromJson(*//*new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers))*//*, BaseBean.class).getContent()*//*, Toast.LENGTH_SHORT).show();
-                        } catch (NullPointerException e) {
-                            if (!BaseUtils.isNetworkConnected(context)) {
-                                Toast.makeText(context, "网络连接失败,请检查您的网络", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(context, "服务器连接异常", Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }), getLocalClassName());
-    }*/
 }

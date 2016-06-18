@@ -14,7 +14,6 @@
         android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
         android:singleLine="true"
-        android:text="转移单号：XXX"
         android:textColor="#2c557e"
         android:textSize="16sp" />
 
@@ -26,8 +25,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
-        android:singleLine="true"
-        android:text="装置：XXX-XXX" />
+        android:singleLine="true" />
 
     <TextView
         android:id="@+id/text1"
@@ -38,8 +36,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="4dp"
-        android:singleLine="true"
-        android:text="XXXX" />
+        android:singleLine="true" />
 
     <TextView
         android:id="@+id/car_code"
@@ -52,7 +49,6 @@
         android:background="@drawable/text_car_code"
         android:gravity="center"
         android:singleLine="true"
-        android:text="XXXX"
         android:textColor="@android:color/white"
         android:textSize="12sp" />
 
@@ -64,8 +60,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:singleLine="true"
-        android:text="xxx" />
+        android:singleLine="true" />
 
     <TextView
         android:id="@+id/text3"
@@ -75,8 +70,7 @@
         android:layout_below="@+id/text1"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:singleLine="true"
-        android:text="XXXX" />
+        android:singleLine="true" />
 
     <View
         android:id="@+id/line"

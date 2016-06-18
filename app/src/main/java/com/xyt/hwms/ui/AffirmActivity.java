@@ -94,18 +94,9 @@ public class AffirmActivity extends BaseActivity {
         });
 
         Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class);
-        if (Constants.AFFIRM_LIST != null && Constants.AFFIRM_LIST.getCollection().size() > 0 /*&& Constants.AFFIRM_LIST.getCollection().get(0).getTransfer_type().equals(getIntent().getStringExtra("type"))*/) {
+        if (Constants.AFFIRM_LIST != null && Constants.AFFIRM_LIST.getCollection().size() > 0) {
             list.addAll(Constants.AFFIRM_LIST.getCollection());
             affirmAdapter.notifyDataSetChanged();
-        }
-
-        if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
-//            Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class);
-//            list.addAll(Constants.AFFIRM_LIST.getCollection());
-//            SyncDialogFragment.newInstance().show(getSupportFragmentManager(), getLocalClassName());
-        } else {
-//            swiperefresh.setRefreshing(true);
-//            obtainRequest();
         }
     }
 
@@ -161,8 +152,6 @@ public class AffirmActivity extends BaseActivity {
     //获取固废转移单
     private void obtainRequest() {
         String url = Constants.SERVER + "mobile-hwit";
-//        Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));inner/outer
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.GET, url, TransferListBean.class, null, new Response.Listener<TransferListBean>() {
                     @Override
@@ -174,9 +163,7 @@ public class AffirmActivity extends BaseActivity {
                         if (response.getData().getCollection().size() > 0) {
                             PreferencesUtils.putString(context, "affirm", new Gson().toJson(response.getData()));
                             PreferencesUtils.putBoolean(context, "isSync", true);
-//                            String a = PreferencesUtils.getString(context, "affirm");
                             Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class);
-//                            if (Constants.AFFIRM_LIST.getCollection().get(0).getTransfer_type().equals(getIntent().getStringExtra("type"))) {
                             list.addAll(Constants.AFFIRM_LIST.getCollection());
 //                            }
                         }
@@ -218,8 +205,6 @@ public class AffirmActivity extends BaseActivity {
     //同步固废转移单
     public void syncRequest() {
         String url = Constants.SERVER + "mobile-hwit";
-//        Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.PUT, url, BaseBean.class, new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()), new Response.Listener<BaseBean>() {
                     @Override

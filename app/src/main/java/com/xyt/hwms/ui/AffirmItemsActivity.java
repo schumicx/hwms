@@ -76,16 +76,10 @@ public class AffirmItemsActivity extends BaseActivity {
 
         totalNum = list.size();
         total.setText("" + totalNum);
-//        if(TextUtils.isEmpty(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getOperator().trim())){
-//            Constants.AFFIRM_LIST.getCollection().get(applyIndex).setOperator("xxxx".trim());
-//            PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
-//            PreferencesUtils.putBoolean(context, "isSync", false);
-//        }
         if (TextUtils.isEmpty(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getOperator()) || Constants.TRANSFER_TYPE_INNER.equals(getIntent().getStringExtra("type"))) {
             operator.setText(new Gson().fromJson(PreferencesUtils.getString(ApplicationController.getInstance(), "user"), User.class).getAccount());
             Constants.AFFIRM_LIST.getCollection().get(applyIndex).setOperator(operator.getText().toString().trim());
             PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
-//            PreferencesUtils.putBoolean(context, "isSync", false);
         } else {
             operator.setText(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getOperator());
         }

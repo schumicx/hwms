@@ -32,7 +32,6 @@ public class MainActivity extends BaseActivity {
 
     @OnClick({R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6})
     public void onClick(View view) {
-//        String role = new Gson().fromJson(PreferencesUtils.getString(ApplicationController.getInstance(), "user"), User.class).getRole_code();
         switch (view.getId()) {
             case R.id.button1:
                 //Affirm
@@ -73,7 +72,6 @@ public class MainActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
-//            SyncDialogFragment.newInstance().show(getSupportFragmentManager(), getLocalClassName());
         } else {
             obtainRequest();
         }
@@ -102,8 +100,6 @@ public class MainActivity extends BaseActivity {
     //获取固废转移单
     private void obtainRequest() {
         String url = Constants.SERVER + "mobile-hwit";
-//        Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));inner/outer
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.GET, url, TransferListBean.class, null, new Response.Listener<TransferListBean>() {
                     @Override
@@ -135,8 +131,6 @@ public class MainActivity extends BaseActivity {
     //同步固废转移单
     public void syncRequest() {
         String url = Constants.SERVER + "mobile-hwit";
-//        Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.PUT, url, BaseBean.class, new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()), new Response.Listener<BaseBean>() {
                     @Override

@@ -141,16 +141,13 @@ public class InboundAdapter extends BaseAdapter {
                 temp += list.get(i).getWeight();
             }
         }
-//        if (temp > 0) {
-            weight.setText(new DecimalFormat("#0.00").format(Double.valueOf(temp)));
-//        }
+        weight.setText(new DecimalFormat("#0.00").format(Double.valueOf(temp)));
     }
 
     //解除组盘
     private void removeRequest(final int position) {
         String url = Constants.SERVER + "mobile-get-in/relieve";
         Map<String, Object> params = new HashMap<>();
-//        params.put("tokenId", PreferencesUtils.getString(context, Constants.TOKEN));
         params.put("label_code", list.get(position).getLabel_code());//固废
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.POST, url, BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
