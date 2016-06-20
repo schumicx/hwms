@@ -794,9 +794,4 @@ public class DateUtils {
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         return dateFormat.parse(dateString);
     }
-
-    public static void main(String [] args){
-        System.out.println(DateUtils.getTime(1463328000000l));
-    }
-
 }

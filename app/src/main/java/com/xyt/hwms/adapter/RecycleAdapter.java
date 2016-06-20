@@ -12,7 +12,6 @@ import com.xyt.hwms.bean.Recycle;
 import com.xyt.hwms.support.utils.DateUtils;
 
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

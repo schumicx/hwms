@@ -67,10 +67,8 @@ public class GsonObjectRequest<T> extends JsonRequest<T> {
             Log.d("Gson_log", jsonString);
             return Response.success(mGson.fromJson(jsonString, mClazz), HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
-            Log.d("eee", "UnsupportedEncodingException");
             return Response.error(new ParseError(e));
         } catch (JsonSyntaxException e) {
-            Log.d("eeeeee", "JsonSyntaxException");
             return Response.error(new ParseError(e));
         }
     }

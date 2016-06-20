@@ -213,18 +213,18 @@ public class BarCodeReader {
 
     /**
      * Creates a new BarCodeReader object to access a particular hardware reader.
-     * <p/>
+     * <p>
      * <p>You must call {@link #release()} when you are done using the reader,
      * otherwise it will remain locked and be unavailable to other applications.
-     * <p/>
+     * <p>
      * <p>Your application should only have one BarCodeReader object active at a time
      * for a particular hardware reader.
-     * <p/>
+     * <p>
      * <p>Callbacks from other methods are delivered to the event loop of the
      * thread which called open().  If this thread has no event loop, then
      * callbacks are delivered to the main application event loop.  If there
      * is no main application event loop, callbacks are not delivered.
-     * <p/>
+     * <p>
      * <p class="caution"><b>Caution:</b> On some devices, this method may
      * take a long time to complete.  It is best to call this method from a
      * worker thread (possibly using {@link android.os.AsyncTask}) to avoid
@@ -264,18 +264,18 @@ public class BarCodeReader {
 
     /**
      * Creates a new BarCodeReader object to access a particular hardware reader.
-     * <p/>
+     * <p>
      * <p>You must call {@link #release()} when you are done using the reader,
      * otherwise it will remain locked and be unavailable to other applications.
-     * <p/>
+     * <p>
      * <p>Your application should only have one BarCodeReader object active at a time
      * for a particular hardware reader.
-     * <p/>
+     * <p>
      * <p>Callbacks from other methods are delivered to the event loop of the
      * thread which called open().  If this thread has no event loop, then
      * callbacks are delivered to the main application event loop.  If there
      * is no main application event loop, callbacks are not delivered.
-     * <p/>
+     * <p>
      * <p class="caution"><b>Caution:</b> On some devices, this method may
      * take a long time to complete.  It is best to call this method from a
      * worker thread (possibly using {@link android.os.AsyncTask}) to avoid
@@ -354,7 +354,7 @@ public class BarCodeReader {
      * Re-locks the reader to prevent other processes from accessing it.
      * BarCodeReader objects are locked by default unless {@link #unlock()} is
      * called.  Normally {@link #reconnect()} is used instead.
-     * <p/>
+     * <p>
      * <p>If you are not recording video, you probably do not need this method.
      *
      * @throws RuntimeException if the reader cannot be re-locked (for
@@ -369,10 +369,10 @@ public class BarCodeReader {
      * between processes, you can call this method to release the reader
      * temporarily for another process to use; once the other process is done
      * you can call {@link #reconnect()} to reclaim the reader.
-     * <p/>
+     * <p>
      * <p>This must be done before calling
      * {@link android.media.MediaRecorder#setCamera(BarCodeReader)}.
-     * <p/>
+     * <p>
      * <p>If you are not recording video, you probably do not need this method.
      *
      * @throws RuntimeException if the reader cannot be unlocked.
@@ -385,11 +385,11 @@ public class BarCodeReader {
      * reader; when the process is done, you must reconnect to the reader,
      * which will re-acquire the lock and allow you to continue using the
      * reader.
-     * <p/>
+     * <p>
      * <p>This must be done after {@link android.media.MediaRecorder} is
      * done recording if {@link android.media.MediaRecorder#setReader(BarCodeReader)}
      * was used.
-     * <p/>
+     * <p>
      * <p>If you are not recording video, you probably do not need this method.
      *
      * @throws IOException if a connection cannot be re-established (for
@@ -458,14 +458,14 @@ public class BarCodeReader {
      * invoked with the buffer. If a frame arrives and there is no buffer left,
      * the frame is discarded. Applications should add buffers back when they
      * finish processing the data in them.
-     * <p/>
+     * <p>
      * <p>The size of the buffer is determined by multiplying the preview
      * image width, height, and bytes per pixel.  The width and height can be
      * read from {@link BarCodeReader.Parameters#getPreviewSize()}.  Bytes per pixel
      * can be computed from
      * {@link ImageFormat#getBitsPerPixel(int)} / 8,
      * using the image format from {@link BarCodeReader.Parameters#getPreviewFormat()}.
-     * <p/>
+     * <p>
      * <p>This method is only necessary when
      * {@link #setPreviewCallbackWithBuffer(PreviewCallback)} is used.  When
      * {@link #setOneShotPreviewCallback(PreviewCallback)} is used, buffers
@@ -493,7 +493,7 @@ public class BarCodeReader {
      * Starts capturing frames in video mode. If a surface has been supplied
      * with {@link #setPreviewDisplay(SurfaceHolder)}, the frames will
      * be drawn to the surface.
-     * <p/>
+     * <p>
      * <p>{@link BarCodeReader.VideoCallback#onVideoFrame(format, width, height, byte[], BarCodeReader)}
      * will be called when preview data becomes available. The data passed will be
      * in the format and resolution specified by ParamNum.IMG_FILE_FORMAT and
@@ -517,12 +517,12 @@ public class BarCodeReader {
      * Starts capturing frames in preview mode. If a surface has been supplied
      * with {@link #setPreviewDisplay(SurfaceHolder)}, the frames will
      * be drawn to the surface.
-     * <p/>
+     * <p>
      * <p>If {@link #setOneShotPreviewCallback(BarCodeReader.PreviewCallback)} or
      * {@link #setPreviewCallbackWithBuffer(BarCodeReader.PreviewCallback)} was
      * called, {@link BarCodeReader.PreviewCallback#onPreviewFrame(byte[], BarCodeReader)}
      * will be called when preview data becomes available.
-     * <p/>
+     * <p>
      * <p>If {@link #setImageCallback(BarCodeReader.ImageCallback)} was
      * called, {@link BarCodeReader.PreviewCallback#onVideoFrame(format, width, height, byte[], BarCodeReader)}
      * will be called when preview data becomes available. The data passed will be
@@ -573,7 +573,7 @@ public class BarCodeReader {
 
     /**
      * Return current preview state.
-     * <p/>
+     * <p>
      * FIXME: Unhide before release
      *
      * @hide
@@ -623,11 +623,11 @@ public class BarCodeReader {
      * front-facing readers is flipped horizontally before the rotation, that
      * is, the image is reflected along the central vertical axis of the reader
      * sensor. So the users can see themselves as looking into a mirror.
-     * <p/>
+     * <p>
      * <p>This does not affect the order of byte array passed in {@link
      * PreviewCallback#onPreviewFrame}, JPEG pictures, or recorded videos. This
      * method is not allowed to be called during preview.
-     * <p/>
+     * <p>
      * <p>If you want to make the reader image show in the same orientation as
      * the display, you can use the following code.
      * <pre>
@@ -720,14 +720,14 @@ public class BarCodeReader {
      * Sets the {@link Surface} to be used for live preview.
      * A surface is necessary for preview, and preview is necessary to take
      * pictures.  The same surface can be re-set without harm.
-     * <p/>
+     * <p>
      * <p>The {@link SurfaceHolder} must already contain a surface when this
      * method is called.  If you are using {@link android.view.SurfaceView},
      * you will need to register a {@link SurfaceHolder.Callback} with
      * {@link SurfaceHolder#addCallback(SurfaceHolder.Callback)} and wait for
      * {@link SurfaceHolder.Callback#surfaceCreated(SurfaceHolder)} before
      * calling setPreviewDisplay() or starting preview.
-     * <p/>
+     * <p>
      * <p>This method must be called before {@link #startPreview()}.  The
      * one exception is that if the preview surface is not set (or set to null)
      * before startPreview() is called, then this method may be called once
@@ -762,7 +762,7 @@ public class BarCodeReader {
      * auto-focus, you must declare that your application uses auto-focus with the
      * <a href="{@docRoot}guide/topics/manifest/uses-feature-element.html">&lt;uses-feature></a>
      * manifest element.</p>
-     * <p/>
+     * <p>
      * <p>If the current flash mode is not
      * {@link com.motorolasolutions.adc.decoder.BarCodeReader.Parameters#FLASH_MODE_OFF}, flash may be
      * fired during auto-focus, depending on the driver and reader hardware.<p>
@@ -796,7 +796,7 @@ public class BarCodeReader {
      * before issuing another request. An application should call
      * {@link #Parameters.setFocusMode(String)} and {@link #setParameters(Parameters)}
      * to set the focus mode to {@link #BarCodeReader.Parameters.FOCUS_MODE_AUTO}.
-     * <p/>
+     * <p>
      * When this function is used to enable automatic auto-focus requests,
      * auto-focus callbacks are disabled. If an application needs to receive
      * auto-focus callbacks, it should issue its own {@link #autoFocus(AutoFocusCallback)}
@@ -833,13 +833,13 @@ public class BarCodeReader {
     /**
      * Triggers an asynchronous image capture. The picture taken callback
      * occurs when a scaled, fully processed image is available
-     * <p/>
+     * <p>
      * <p>This method is only valid when the decoder is idle or view finder
      * mode is active (after calling {@link #startViewFinder()}).  Image capture
      * will be stopped after the picture taken callback is called.  Callers must
      * call {@link #startViewFiner()} and/or takePicture() again if they want to
      * re-start the view finder or take more pictures.
-     * <p/>
+     * <p>
      * <p>After calling this method, you must not call {@link #startPreview()},
      * {@link #startViewFinder()} or take another picture until the picture taken
      * callback has returned.
@@ -877,12 +877,12 @@ public class BarCodeReader {
      * displaying them on the screen.  The callback will be repeatedly called
      * for as long as preview is active and buffers are available.
      * Any other preview callbacks are overridden.
-     * <p/>
+     * <p>
      * <p>The purpose of this method is to improve preview efficiency and frame
      * rate by allowing preview frame memory reuse.  You must call
      * {@link #addCallbackBuffer(byte[])} at some point -- before or after
      * calling this method -- or no callbacks will received.
-     * <p/>
+     * <p>
      * The buffer queue will be cleared if this method is called with a null callback
      * or if {@link #setOneShotPreviewCallback(BarCodeReader.PreviewCallback)} is called.
      *
@@ -1139,7 +1139,7 @@ public class BarCodeReader {
          * The orientation of the reader image. The value is the angle that the
          * reader image needs to be rotated clockwise so it shows correctly on
          * the display in its natural orientation. It should be 0, 90, 180, or 270.
-         * <p/>
+         * <p>
          * For example, suppose a device has a naturally tall screen. The
          * back-facing reader sensor is mounted in landscape. You are looking at
          * the screen. If the top side of the reader sensor is aligned with the
@@ -1635,13 +1635,13 @@ public class BarCodeReader {
 
     /**
      * BarCodeReader service settings.
-     * <p/>
+     * <p>
      * <p>To make reader parameters take effect, applications have to call
      * {@link BarCodeReader#setParameters(BarCodeReader.Parameters)}. For example, after
      * {@link BarCodeReader.Parameters#setWhiteBalance} is called, white balance is not
      * actually changed until {@link BarCodeReader#setParameters(BarCodeReader.Parameters)}
      * is called with the changed parameters object.
-     * <p/>
+     * <p>
      * <p>Different devices may have different reader capabilities, such as
      * picture size or flash modes. The application should query the reader
      * capabilities before setting parameters. For example, the application
@@ -2008,7 +2008,7 @@ public class BarCodeReader {
 
         /**
          * Sets the dimensions for preview pictures.
-         * <p/>
+         * <p>
          * The sides of width and height are based on reader orientation. That
          * is, the preview size is the size before it is rotated by display
          * orientation. So applications need to consider the display orientation
@@ -2108,7 +2108,7 @@ public class BarCodeReader {
          * Sets the dimensions for EXIF thumbnail in Jpeg picture. If
          * applications set both width and height to 0, EXIF will not contain
          * thumbnail.
-         * <p/>
+         * <p>
          * Applications need to consider the display orientation. See {@link
          * #setPreviewSize(int, int)} for reference.
          *
@@ -2327,7 +2327,7 @@ public class BarCodeReader {
 
         /**
          * Sets the dimensions for pictures.
-         * <p/>
+         * <p>
          * Applications need to consider the display orientation. See {@link
          * #setPreviewSize(int, int)} for reference.
          *
@@ -2457,7 +2457,7 @@ public class BarCodeReader {
          * the picture and the EXIF thumbnail. If the Jpeg picture is rotated,
          * the orientation in the EXIF header will be missing or 1 (row #0 is
          * top and column #0 is left side).
-         * <p/>
+         * <p>
          * <p>If applications want to rotate the picture to match the orientation
          * of what users see, apps should use {@link
          * android.view.OrientationEventListener} and {@link ReaderInfo}.
@@ -2468,16 +2468,16 @@ public class BarCodeReader {
          * difference of the two is the rotation angle for front-facing reader.
          * Note that the JPEG pictures of front-facing readers are not mirrored
          * as in preview display.
-         * <p/>
+         * <p>
          * <p>For example, suppose the natural orientation of the device is
          * portrait. The device is rotated 270 degrees clockwise, so the device
          * orientation is 270. Suppose a back-facing reader sensor is mounted in
          * landscape and the top side of the reader sensor is aligned with the
          * right edge of the display in natural orientation. So the reader
          * orientation is 90. The rotation should be set to 0 (270 + 90).
-         * <p/>
+         * <p>
          * <p>The reference code is as follows.
-         * <p/>
+         * <p>
          * <pre>
          * 	#import com.motorolasolutions.adc.decoder;
          *
@@ -2997,20 +2997,20 @@ public class BarCodeReader {
          * Gets the distances from the reader to where an object appears to be
          * in focus. The object is sharpest at the optimal focus distance. The
          * depth of field is the far focus distance minus near focus distance.
-         * <p/>
+         * <p>
          * Focus distances may change after calling {@link
          * #autoFocus(AutoFocusCallback)}, {@link #cancelAutoFocus}, or {@link
          * #startPreview()}. Applications can call {@link #getParameters()}
          * and this method anytime to get the latest focus distances. If the
          * focus mode is FOCUS_MODE_CONTINUOUS_VIDEO, focus distances may change
          * from time to time.
-         * <p/>
+         * <p>
          * This method is intended to estimate the distance between the reader
          * and the subject. After autofocus, the subject distance may be within
          * near and far focus distance. However, the precision depends on the
          * reader hardware, autofocus algorithm, the focus area, and the scene.
          * The error can be large and it should be only used as a reference.
-         * <p/>
+         * <p>
          * Far focus distance >= optimal focus distance >= near focus distance.
          * If the focus distance is infinity, the value will be
          * Float.POSITIVE_INFINITY.
