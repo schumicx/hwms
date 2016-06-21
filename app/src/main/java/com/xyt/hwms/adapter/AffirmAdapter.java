@@ -59,9 +59,27 @@ public class AffirmAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+
+        if (!type.equals(list.get(position).getTransfer_type())) {
+            viewHolder.code.setVisibility(View.GONE);
+            viewHolder.org.setVisibility(View.GONE);
+            viewHolder.text1.setVisibility(View.GONE);
+            viewHolder.text2.setVisibility(View.GONE);
+            viewHolder.text3.setVisibility(View.GONE);
+            viewHolder.carCode.setVisibility(View.GONE);
+            viewHolder.line.setVisibility(View.GONE);
+        } else {
+            viewHolder.code.setVisibility(View.VISIBLE);
+            viewHolder.org.setVisibility(View.VISIBLE);
+            viewHolder.text1.setVisibility(View.VISIBLE);
+            viewHolder.text2.setVisibility(View.VISIBLE);
+            viewHolder.text3.setVisibility(View.VISIBLE);
+            viewHolder.carCode.setVisibility(View.VISIBLE);
+            viewHolder.line.setVisibility(View.VISIBLE);
+        }
+
         viewHolder.code.setText("" + list.get(position).getApply_code());
         viewHolder.org.setText(list.get(position).getParent_org_name() + "-" + list.get(position).getOrg_name());
-
         if (Constants.TRANSFER_TYPE_OUTER.equals(list.get(position).getTransfer_type())) {
             viewHolder.text2.setVisibility(View.GONE);
             viewHolder.text1.setText(list.get(position).getCard_name());
@@ -72,15 +90,6 @@ public class AffirmAdapter extends BaseAdapter {
             viewHolder.text1.setText(list.get(position).getDuty_person());
             viewHolder.text2.setText(list.get(position).getPhone());
             viewHolder.text3.setText(DateUtils.getTime(list.get(position).getCreate_time()));
-        }
-        if (!type.equals(list.get(position).getTransfer_type())) {
-            viewHolder.code.setVisibility(View.GONE);
-            viewHolder.org.setVisibility(View.GONE);
-            viewHolder.text1.setVisibility(View.GONE);
-            viewHolder.text2.setVisibility(View.GONE);
-            viewHolder.text3.setVisibility(View.GONE);
-            viewHolder.carCode.setVisibility(View.GONE);
-            viewHolder.line.setVisibility(View.GONE);
         }
 
         return convertView;

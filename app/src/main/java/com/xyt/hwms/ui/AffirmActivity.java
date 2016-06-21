@@ -165,7 +165,6 @@ public class AffirmActivity extends BaseActivity {
                             PreferencesUtils.putBoolean(context, "isSync", true);
                             Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class);
                             list.addAll(Constants.AFFIRM_LIST.getCollection());
-//                            }
                         }
                         if (list.size() == 0) {
                             empty.setVisibility(View.VISIBLE);
