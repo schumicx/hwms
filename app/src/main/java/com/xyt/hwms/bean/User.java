@@ -26,6 +26,7 @@ public class User {
     private String user_name;
     private String role_name;
     private String role_code;
+    private String role_mobile_res;
 
     public String getCard_id() {
         return card_id;
@@ -97,5 +98,13 @@ public class User {
 
     public void setRole_code(String role_code) {
         this.role_code = role_code;
+    }
+
+    public String getRole_mobile_res() {
+        return role_mobile_res;
+    }
+
+    public void setRole_mobile_res(String role_mobile_res) {
+        this.role_mobile_res = role_mobile_res;
     }
 }

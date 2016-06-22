@@ -3,6 +3,7 @@ package com.xyt.hwms.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -111,13 +112,15 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void nfcLogin(String data) {
-        List<User> userList = new Gson().fromJson(PreferencesUtils.getString(context, "cards"), CardSyncBean.class).getData();
-        for (User user : userList) {
-            if (data.equals(user.getCard_id())) {
-                startActivity(new Intent(context, MainActivity.class));
-                PreferencesUtils.putString(context, "user", new Gson().toJson(user));
-                finish();
-                return;
+        if(!TextUtils.isEmpty(PreferencesUtils.getString(context, "cards"))) {
+            List<User> userList = new Gson().fromJson(PreferencesUtils.getString(context, "cards"), CardSyncBean.class).getData();
+            for (User user : userList) {
+                if (data.equals(user.getCard_id())) {
+                    PreferencesUtils.putString(context, "user", new Gson().toJson(user));
+                    startActivity(new Intent(context, MainActivity.class));
+                    finish();
+                    return;
+                }
             }
         }
         Toast.makeText(context, "卡登录失败,请联系管理员!", Toast.LENGTH_SHORT).show();
@@ -135,8 +138,8 @@ public class LoginActivity extends BaseActivity {
                 new GsonObjectRequest<>(Request.Method.POST, url, LoginBean.class, new Gson().toJson(params), new Response.Listener<LoginBean>() {
                     @Override
                     public void onResponse(LoginBean response) {
-                        startActivity(new Intent(context, MainActivity.class));
                         PreferencesUtils.putString(context, "user", new Gson().toJson(response.getData()));
+                        startActivity(new Intent(context, MainActivity.class));
                         finish();
                     }
                 }, new Response.ErrorListener() {

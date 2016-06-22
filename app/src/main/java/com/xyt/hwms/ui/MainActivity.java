@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -15,6 +16,7 @@ import com.xyt.hwms.R;
 import com.xyt.hwms.bean.BaseBean;
 import com.xyt.hwms.bean.TransferList;
 import com.xyt.hwms.bean.TransferListBean;
+import com.xyt.hwms.bean.User;
 import com.xyt.hwms.support.utils.ApplicationController;
 import com.xyt.hwms.support.utils.BaseUtils;
 import com.xyt.hwms.support.utils.Constants;
@@ -23,12 +25,23 @@ import com.xyt.hwms.support.utils.PreferencesUtils;
 
 import java.io.UnsupportedEncodingException;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity {
 
     private static long back_pressed;
+    @BindView(R.id.button1)
+    Button button1;
+    @BindView(R.id.button2)
+    Button button2;
+    @BindView(R.id.button3)
+    Button button3;
+    @BindView(R.id.button4)
+    Button button4;
+    @BindView(R.id.button5)
+    Button button5;
 
     @OnClick({R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6})
     public void onClick(View view) {
@@ -70,6 +83,33 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        if (!TextUtils.isEmpty(new Gson().fromJson(PreferencesUtils.getString(ApplicationController.getInstance(), "user"), User.class).getRole_mobile_res())) {
+            String mobileRes[] = new Gson().fromJson(PreferencesUtils.getString(ApplicationController.getInstance(), "user"), User.class).getRole_mobile_res().split(",");
+            for (String res : mobileRes) {
+                switch (res) {
+                    case "1":
+                        button1.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.affirm), null, null);
+                        button1.setEnabled(true);
+                        break;
+                    case "2":
+                        button2.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.group), null, null);
+                        button2.setEnabled(true);
+                        break;
+                    case "3":
+                        button3.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.inbound), null, null);
+                        button3.setEnabled(true);
+                        break;
+                    case "4":
+                        button4.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.recycle), null, null);
+                        button4.setEnabled(true);
+                        break;
+                    case "5":
+                        button5.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.outbound), null, null);
+                        button5.setEnabled(true);
+                        break;
+                }
+            }
+        }
 
         if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
         } else {
