@@ -83,7 +83,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        if (!TextUtils.isEmpty(new Gson().fromJson(PreferencesUtils.getString(ApplicationController.getInstance(), "user"), User.class).getRole_mobile_res())) {
+        try {
             String mobileRes[] = new Gson().fromJson(PreferencesUtils.getString(ApplicationController.getInstance(), "user"), User.class).getRole_mobile_res().split(",");
             for (String res : mobileRes) {
                 switch (res) {
@@ -109,6 +109,8 @@ public class MainActivity extends BaseActivity {
                         break;
                 }
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
         if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {

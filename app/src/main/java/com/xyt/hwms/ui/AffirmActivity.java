@@ -98,6 +98,11 @@ public class AffirmActivity extends BaseActivity {
             list.addAll(Constants.AFFIRM_LIST.getCollection());
             affirmAdapter.notifyDataSetChanged();
         }
+        if (list.size() == 0) {
+            empty.setVisibility(View.VISIBLE);
+        } else {
+            empty.setVisibility(View.GONE);
+        }
     }
 
     @Override
