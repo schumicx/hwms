@@ -78,7 +78,7 @@ public class AffirmAdapter extends BaseAdapter {
             viewHolder.line.setVisibility(View.VISIBLE);
         }
 
-        viewHolder.code.setText("" + list.get(position).getApply_code());
+        viewHolder.code.setText(list.get(position).getApply_code());
         viewHolder.org.setText(list.get(position).getParent_org_name() + "-" + list.get(position).getOrg_name());
         if (Constants.TRANSFER_TYPE_OUTER.equals(list.get(position).getTransfer_type())) {
             viewHolder.text2.setVisibility(View.GONE);

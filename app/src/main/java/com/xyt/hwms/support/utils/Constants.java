@@ -3,14 +3,10 @@ package com.xyt.hwms.support.utils;
 import com.xyt.hwms.bean.TransferList;
 
 public class Constants {
-    //开发
 //    public static final String BASE_URL = "http://10.10.102.154:8080";
 //    public static final String BASE_URL = "http://10.10.11.159:8080";
-    //测试
-    public static final String BASE_URL = "http://10.10.120.129:8080";
+    public static final String BASE_URL = "http://eadqas.whchem.com:8080";
 //    public static final String BASE_URL = "http://eadqas.whchem.com:8080";
-    //生产
-//    public static final String BASE_URL = "http://120.25.153.217";
     public static final String KEY = "01554cf384968a8a8b1f554cf38403ea";
     public static final String SERVER = BASE_URL + "/hwms/api/";
     public static final String WARNING = "warning";

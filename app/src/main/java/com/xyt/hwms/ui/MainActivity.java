@@ -47,31 +47,25 @@ public class MainActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button1:
-                //Affirm
                 Intent intent1 = new Intent(context, AffirmActivity.class);
                 intent1.putExtra("type", Constants.TRANSFER_TYPE_OUTER);
                 startActivity(intent1);
                 break;
             case R.id.button2:
-                //Affirm In
                 Intent intent2 = new Intent(context, AffirmActivity.class);
                 intent2.putExtra("type", Constants.TRANSFER_TYPE_INNER);
                 startActivity(intent2);
                 break;
             case R.id.button3:
-                //Inbound
                 startActivity(new Intent(context, InboundActivity.class));
                 break;
             case R.id.button4:
-                //Recycle
                 startActivity(new Intent(context, RecycleActivity.class));
                 break;
             case R.id.button5:
-                //Outbound
                 startActivity(new Intent(context, OutboundActivity.class));
                 break;
             case R.id.button6:
-                //Logout
                 startActivity(new Intent(context, LoginActivity.class));
                 finish();
                 break;
@@ -84,6 +78,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         try {
+//            String mobileRes[] = {"1", "2", "3", "4", "5"};
             String mobileRes[] = new Gson().fromJson(PreferencesUtils.getString(ApplicationController.getInstance(), "user"), User.class).getRole_mobile_res().split(",");
             for (String res : mobileRes) {
                 switch (res) {
