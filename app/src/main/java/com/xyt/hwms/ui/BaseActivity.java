@@ -84,7 +84,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Validato
                     if (ApplicationController.getInstance().isAutoAim() == false) {
                         ApplicationController.getInstance().barCodeReader.stopDecode();
                     }
-                    if (Constants.beepMode) {
+                    if (Constants.BEEP_MODE) {
                         ApplicationController.getInstance().beep();
                     }
                     if (symbology == 0x99) { //type 99?

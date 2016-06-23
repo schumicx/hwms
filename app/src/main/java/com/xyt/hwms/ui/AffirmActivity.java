@@ -49,6 +49,10 @@ public class AffirmActivity extends BaseActivity {
 
     @OnItemClick(R.id.listview)
     public void onItemClick(int position) {
+        if (Constants.AFFIRM_LIST.getCollection().get(position).getDetail() == null) {
+            Toast.makeText(context, "该转移单没有转移明细!", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Intent intent = new Intent(context, AffirmItemsActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt("position", position);
@@ -98,10 +102,13 @@ public class AffirmActivity extends BaseActivity {
             list.addAll(Constants.AFFIRM_LIST.getCollection());
             affirmAdapter.notifyDataSetChanged();
         }
-        if (list.size() == 0) {
-            empty.setVisibility(View.VISIBLE);
-        } else {
-            empty.setVisibility(View.GONE);
+
+        empty.setVisibility(View.VISIBLE);
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getTransfer_type().equals(getIntent().getStringExtra("type"))) {
+                empty.setVisibility(View.GONE);
+                break;
+            }
         }
     }
 
@@ -171,10 +178,12 @@ public class AffirmActivity extends BaseActivity {
                             Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class);
                             list.addAll(Constants.AFFIRM_LIST.getCollection());
                         }
-                        if (list.size() == 0) {
-                            empty.setVisibility(View.VISIBLE);
-                        } else {
-                            empty.setVisibility(View.GONE);
+                        empty.setVisibility(View.VISIBLE);
+                        for (int i = 0; i < list.size(); i++) {
+                            if (list.get(i).getTransfer_type().equals(getIntent().getStringExtra("type"))) {
+                                empty.setVisibility(View.GONE);
+                                break;
+                            }
                         }
                         affirmAdapter.notifyDataSetChanged();
                     }
@@ -200,6 +209,13 @@ public class AffirmActivity extends BaseActivity {
                         if (Constants.AFFIRM_LIST != null && Constants.AFFIRM_LIST.getCollection().size() > 0/* && Constants.AFFIRM_LIST.getCollection().get(0).getTransfer_type().equals(getIntent().getStringExtra("type"))*/) {
                             list.addAll(Constants.AFFIRM_LIST.getCollection());
                             affirmAdapter.notifyDataSetChanged();
+                        }
+                        empty.setVisibility(View.VISIBLE);
+                        for (int i = 0; i < list.size(); i++) {
+                            if (list.get(i).getTransfer_type().equals(getIntent().getStringExtra("type"))) {
+                                empty.setVisibility(View.GONE);
+                                break;
+                            }
                         }
                         error.printStackTrace();
                     }

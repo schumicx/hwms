@@ -78,27 +78,27 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         try {
-//            String mobileRes[] = {"1", "2", "3", "4", "5"};
+//            String mobileRes[] = {Constants.MAIN_ITEM1, Constants.MAIN_ITEM2, Constants.MAIN_ITEM3, Constants.MAIN_ITEM4, Constants.MAIN_ITEM5};
             String mobileRes[] = new Gson().fromJson(PreferencesUtils.getString(ApplicationController.getInstance(), "user"), User.class).getRole_mobile_res().split(",");
             for (String res : mobileRes) {
                 switch (res) {
-                    case "1":
+                    case Constants.MAIN_ITEM1:
                         button1.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.affirm), null, null);
                         button1.setEnabled(true);
                         break;
-                    case "2":
+                    case Constants.MAIN_ITEM2:
                         button2.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.group), null, null);
                         button2.setEnabled(true);
                         break;
-                    case "3":
+                    case Constants.MAIN_ITEM3:
                         button3.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.inbound), null, null);
                         button3.setEnabled(true);
                         break;
-                    case "4":
+                    case Constants.MAIN_ITEM4:
                         button4.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.recycle), null, null);
                         button4.setEnabled(true);
                         break;
-                    case "5":
+                    case Constants.MAIN_ITEM5:
                         button5.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.mipmap.outbound), null, null);
                         button5.setEnabled(true);
                         break;

@@ -85,6 +85,7 @@ public class AffirmAdapter extends BaseAdapter {
             viewHolder.text1.setText(list.get(position).getCard_name());
             viewHolder.carCode.setText(list.get(position).getCar_code());
             viewHolder.text3.setText("电子锁号:" + list.get(position).getLock_code());
+            viewHolder.text3.setText("电子锁号:" + list.get(position).getLock_code());
         } else if (Constants.TRANSFER_TYPE_INNER.equals(list.get(position).getTransfer_type())) {
             viewHolder.carCode.setVisibility(View.GONE);
             viewHolder.text1.setText(list.get(position).getDuty_person());
@@ -94,7 +95,6 @@ public class AffirmAdapter extends BaseAdapter {
 
         return convertView;
     }
-
 
     static class ViewHolder {
         @BindView(R.id.item_layout)

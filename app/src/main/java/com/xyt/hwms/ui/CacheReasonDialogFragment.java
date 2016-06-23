@@ -36,13 +36,13 @@ public class CacheReasonDialogFragment extends DialogFragment {
         }
 
         if (TextUtils.isEmpty(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).getBack_reason())) {
-            Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setBack_reason(reasonArray[(int)reasonIndex]);
+            Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setBack_reason(reasonArray[reasonIndex]);
             Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setBack_reason_index(String.valueOf(reasonIndex));
             PreferencesUtils.putString(getActivity(), "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("退回原因").setSingleChoiceItems(reasonArray, (int)reasonIndex, new DialogInterface.OnClickListener() {
+        builder.setTitle("退回原因").setSingleChoiceItems(reasonArray, reasonIndex, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setBack_reason(reasonArray[which]);
                 Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setBack_reason_index(String.valueOf(which));
