@@ -69,12 +69,6 @@ public class OutboundItemsActivity extends BaseActivity {
         listRequest();
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_complete, menu);
-//        return super.onCreateOptionsMenu(menu);
-//    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -84,9 +78,6 @@ public class OutboundItemsActivity extends BaseActivity {
             case android.R.id.home:
                 finish();
                 return true;
-//            case R.id.complete:
-//                completeRequest();
-//                break;
             default:
                 break;
         }
@@ -174,7 +165,7 @@ public class OutboundItemsActivity extends BaseActivity {
                             querylist.addAll(response.getData().getCollection());
                             OutboundDialogFragment.newInstance(querylist, isOperate).show(getSupportFragmentManager(), getLocalClassName());
                         } else {
-                            Toast.makeText(context, "该固废以出库!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "该固废已出库!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, new Response.ErrorListener() {
