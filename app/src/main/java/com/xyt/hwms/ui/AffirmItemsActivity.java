@@ -191,7 +191,6 @@ public class AffirmItemsActivity extends BaseActivity {
     }
 
     public void updateView() {
-        affirmItemsAdapter.notifyDataSetChanged();
         backNum = 0;
         verifiedNum = 0;
         unverifiedNum = 0;
@@ -218,5 +217,6 @@ public class AffirmItemsActivity extends BaseActivity {
             Constants.AFFIRM_LIST.getCollection().get(applyIndex).setDetail_status("1");
         }
         PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
+        affirmItemsAdapter.notifyDataSetChanged();
     }
 }

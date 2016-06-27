@@ -44,15 +44,17 @@ public class GroupActivity extends BaseActivity {
     @OnClick(R.id.submit)
     public void onClick(View v) {
         if (list.size() > 0) {
-            for (int i = 0; i < list.size(); i++) {
-                for (int j = 0; j < listData.size(); j++) {
-                    if (listData.get(j).getLabel_code().equals(list.get(i).getLabel_code())) {
-                        listData.get(j).setContainer_label_code(container.getText().toString());
+            for (int i = 0; i < listData.size(); i++) {
+                listData.get(i).setContainer_label_code(null);
+                for (int j = 0; j < list.size(); j++) {
+                    if (listData.get(i).getLabel_code().equals(list.get(j).getLabel_code())) {
+                        listData.get(i).setContainer_label_code(container.getText().toString());
                         break;
                     }
                 }
             }
             PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
+            PreferencesUtils.putBoolean(context, "isSync", false);
             Toast.makeText(context, "组盘成功!", Toast.LENGTH_SHORT).show();
             list.clear();
             groupAdapter.notifyDataSetChanged();

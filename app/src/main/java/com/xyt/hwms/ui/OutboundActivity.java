@@ -156,9 +156,8 @@ public class OutboundActivity extends BaseActivity {
                         if (swiperefresh.isRefreshing()) {
                             swiperefresh.setRefreshing(false);
                         }
-                        if (list.size() == 0) {
-                            empty.setVisibility(View.VISIBLE);
-                        }
+                        list.clear();
+                        empty.setVisibility(View.VISIBLE);
                         outboundAdapter.notifyDataSetChanged();
                         try {
                             Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();

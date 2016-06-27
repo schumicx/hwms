@@ -232,7 +232,7 @@ public class AffirmActivity extends BaseActivity {
                         Toast.makeText(context, "同步成功!", Toast.LENGTH_SHORT).show();
                         PreferencesUtils.putString(context, "affirm", null);
                         PreferencesUtils.putBoolean(context, "isSync", true);
-                        Constants.AFFIRM_LIST = null;
+//                        Constants.AFFIRM_LIST = null;
                         obtainRequest();
                     }
                 }, new Response.ErrorListener() {

@@ -69,11 +69,11 @@ public class OutboundItemsActivity extends BaseActivity {
         listRequest();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_complete, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_complete, menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -84,9 +84,9 @@ public class OutboundItemsActivity extends BaseActivity {
             case android.R.id.home:
                 finish();
                 return true;
-            case R.id.complete:
-                completeRequest();
-                break;
+//            case R.id.complete:
+//                completeRequest();
+//                break;
             default:
                 break;
         }
@@ -95,6 +95,7 @@ public class OutboundItemsActivity extends BaseActivity {
 
     @Override
     public void getTagId(String data) {
+        completeRequest(data);
     }
 
     @Override
@@ -150,6 +151,7 @@ public class OutboundItemsActivity extends BaseActivity {
     private void request(String barCodeData, final boolean isOperate) {
         String url = Constants.SERVER + (isOperate ? "mobile-get-in" : "mobile-get-out");
         Map<String, Object> params = new HashMap<>();
+        params.put("transfer_id", id);
         if (barCodeData.startsWith(Constants.LABEL_LIB)) {
             params.put("store_label_code", barCodeData);//库
         } else if (barCodeData.startsWith(Constants.LABEL_LSL)) {
@@ -224,10 +226,11 @@ public class OutboundItemsActivity extends BaseActivity {
     }
 
     //出库完成
-    public void completeRequest() {
+    public void completeRequest(String nfcId) {
         String url = Constants.SERVER + "mobile-hwot/finish";
         Map<String, Object> params = new HashMap<>();
         params.put("transfer_id", id);
+        params.put("card_id", nfcId);
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.POST, url, BaseBean.class, new Gson().toJson(params), new Response.Listener<BaseBean>() {
                     @Override

@@ -107,11 +107,6 @@ public class MainActivity extends BaseActivity {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
-        if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
-        } else {
-            obtainRequest();
-        }
     }
 
     @Override
@@ -119,6 +114,8 @@ public class MainActivity extends BaseActivity {
         super.onResume();
         if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
             syncRequest();
+        } else {
+            obtainRequest();
         }
     }
 

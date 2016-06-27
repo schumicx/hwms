@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.xyt.hwms.R;
@@ -32,13 +33,6 @@ public class CacheWasteDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        if (!Constants.WASTE_BACK.equals(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).getStatus())) {
-            Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setStatus(Constants.WASTE_PASS);
-            Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setTransfer_time(DateUtils.getCurrentTime1());
-            PreferencesUtils.putString(getActivity(), "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
-            PreferencesUtils.putBoolean(getActivity(), "isSync", false);
-        }
-
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_waste, null);
 
@@ -50,6 +44,19 @@ public class CacheWasteDialogFragment extends DialogFragment {
         TextView isKeyWaste = (TextView) view.findViewById(R.id.is_key_waste);
         TextView harmfulIngredient = (TextView) view.findViewById(R.id.harmful_ingredient);
         TextView produceSource = (TextView) view.findViewById(R.id.produce_source);
+//bug 数据越界(操作太快)
+        if (Constants.WASTE_PASS.equals(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).getStatus())) {
+            view.setBackgroundColor(0xff5ea640);
+        } else if (Constants.WASTE_BACK.equals(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).getStatus())) {
+            view.setBackgroundColor(0xffff8e00);
+        }
+
+        if (!Constants.WASTE_BACK.equals(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).getStatus())) {
+            Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setStatus(Constants.WASTE_PASS);
+            Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).setTransfer_time(DateUtils.getCurrentTime1());
+            PreferencesUtils.putString(getActivity(), "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
+            PreferencesUtils.putBoolean(getActivity(), "isSync", false);
+        }
 
         wasteName.setText(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).getWaste_name());
         categoryCode.setText(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getDetail().get(wasteIndex).getCategory_code());
