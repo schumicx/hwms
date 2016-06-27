@@ -1,7 +1,6 @@
 package com.xyt.hwms.ui;
 
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
@@ -48,7 +47,7 @@ public class OutboundItemsActivity extends BaseActivity {
 
     @OnItemClick(R.id.listview)
     public void onItemClick(int position) {
-        request(list.get(position).getLabel_code(), false);
+        request(list.get(position).getLabel_code(), false, list.get(position).getOut_record_id());
     }
 
     @Override
@@ -92,7 +91,7 @@ public class OutboundItemsActivity extends BaseActivity {
     @Override
     public void getBarcode(String data) {
         barCodeData = data;
-        request(barCodeData, true);
+        request(barCodeData, true, null);
     }
 
     @Override
@@ -139,10 +138,10 @@ public class OutboundItemsActivity extends BaseActivity {
     }
 
     //出库明细查询
-    private void request(String barCodeData, final boolean isOperate) {
+    private void request(String barCodeData, final boolean isOperate, String outRecordId) {
         String url = Constants.SERVER + (isOperate ? "mobile-get-in" : "mobile-get-out");
         Map<String, Object> params = new HashMap<>();
-        params.put("transfer_id", id);
+        params.put("out_record_id", outRecordId);
         if (barCodeData.startsWith(Constants.LABEL_LIB)) {
             params.put("store_label_code", barCodeData);//库
         } else if (barCodeData.startsWith(Constants.LABEL_LSL)) {
