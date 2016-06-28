@@ -1,13 +1,11 @@
 package com.xyt.hwms.support.utils;
 
+import com.xyt.hwms.BuildConfig;
 import com.xyt.hwms.bean.TransferList;
 
 public class Constants {
-//    public static final String BASE_URL = "http://10.10.11.159:8080";
-    public static final String BASE_URL = "http://eadqas.whchem.com:8080";
-//    public static final String BASE_URL = "http://eadqas.whchem.com:8080";
     public static final String KEY = "01554cf384968a8a8b1f554cf38403ea";
-    public static final String SERVER = BASE_URL + "/hwms/api/";
+    public static final String SERVER = BuildConfig.API_URL + "/hwms/api/";
     public static final String WARNING = "warning";
     public static final int STATE_IDLE = 0;
     public static final int STATE_DECODE = 1;

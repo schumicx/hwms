@@ -15,6 +15,8 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
+        resValue "string", "app_name", "固废管理"
+        buildConfigField "String", "API_URL", "\"http://eadqas.whchem.com:8080\""
         multiDexEnabled true
     }
 
@@ -59,12 +61,26 @@ android {
                 variant.outputs.each { output ->
                     def outputFile = output.outputFile
                     if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                        def fileName = "hwms_v${defaultConfig.versionName}_${releaseTime()}.apk"
+                        def fileName = "hwms_v${defaultConfig.versionName}_${variant.productFlavors[0].name}_${releaseTime()}.apk"
                         output.outputFile = new File(outputFile.parent, fileName)
                     }
                 }
             }
         }
+    }
+
+    productFlavors {
+//        develop {
+//            applicationIdSuffix ".develop"
+//            buildConfigField "String", "API_URL", "\"http://10.10.11.159:8080\""
+//            resValue "string", "app_name", "DEV"
+//        }
+//        examination {
+//            applicationIdSuffix ".examination"
+//            buildConfigField "String", "API_URL", "\"http://eadqas.whchem.com:8080\""
+//            resValue "string", "app_name", "TEST"
+//        }
+        produce {}
     }
 }
 

@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">固废管理</string>
-
     <string name="prompt_account">账号</string>
     <string name="prompt_password">密码</string>
     <string name="sign_in">登录</string>
