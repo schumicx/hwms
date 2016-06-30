@@ -127,6 +127,7 @@ public class GroupActivity extends BaseActivity {
                 Toast.makeText(context, "请先扫描容器!", Toast.LENGTH_SHORT).show();
                 return;
             }
+            int l = 0;
             for (int i = 0; i < listData.size(); i++) {
                 if (data.equals(listData.get(i).getLabel_code())) {
                     this.position = i;
@@ -148,7 +149,12 @@ public class GroupActivity extends BaseActivity {
                     affirmDialog = CacheWasteDialogFragment.newInstance(applyIndex, position);
                     affirmDialog.show(getSupportFragmentManager(), getLocalClassName());
                     break;
+                } else {
+                    l++;
                 }
+            }
+            if (l >= listData.size()) {
+                Toast.makeText(context, "转移单内无该固废!", Toast.LENGTH_SHORT).show();
             }
         }
         groupAdapter.notifyDataSetChanged();

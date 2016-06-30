@@ -77,6 +77,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        pdialog.setMessage("同步中...");
         try {
 //            String mobileRes[] = {Constants.MAIN_ITEM1, Constants.MAIN_ITEM2, Constants.MAIN_ITEM3, Constants.MAIN_ITEM4, Constants.MAIN_ITEM5};
             String mobileRes[] = new Gson().fromJson(PreferencesUtils.getString(ApplicationController.getInstance(), "user"), User.class).getRole_mobile_res().split(",");
@@ -120,6 +121,15 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (pdialog.isShowing()) {
+            pdialog.dismiss();
+        }
+        ApplicationController.getInstance().cancelPendingRequests(getLocalClassName());
+    }
+
+    @Override
     public void getTagId(String data) {
     }
 
@@ -138,6 +148,9 @@ public class MainActivity extends BaseActivity {
                 new GsonObjectRequest<>(Request.Method.GET, url, TransferListBean.class, null, new Response.Listener<TransferListBean>() {
                     @Override
                     public void onResponse(TransferListBean response) {
+                        if (pdialog.isShowing()) {
+                            pdialog.dismiss();
+                        }
                         if (response.getData().getCollection().size() > 0) {
                             PreferencesUtils.putString(context, "affirm", new Gson().toJson(response.getData()));
                             PreferencesUtils.putBoolean(context, "isSync", true);
@@ -146,6 +159,9 @@ public class MainActivity extends BaseActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        if (pdialog.isShowing()) {
+                            pdialog.dismiss();
+                        }
                         try {
                             Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {
@@ -164,6 +180,7 @@ public class MainActivity extends BaseActivity {
 
     //同步固废转移单
     public void syncRequest() {
+        pdialog.show();
         String url = Constants.SERVER + "mobile-hwit";
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.PUT, url, BaseBean.class, new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()), new Response.Listener<BaseBean>() {
@@ -178,6 +195,9 @@ public class MainActivity extends BaseActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        if (pdialog.isShowing()) {
+                            pdialog.dismiss();
+                        }
                         if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
                             SyncDialogFragment.newInstance().show(getSupportFragmentManager(), getLocalClassName());
                         }

@@ -81,7 +81,7 @@
             android:id="@+id/weight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="总重量"
+            android:hint="总重量(kg)"
             android:imeActionId="@+id/login"
             android:imeActionLabel="@string/down"
             android:imeOptions="actionUnspecified"

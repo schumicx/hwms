@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
+import android.text.Selection;
+import android.text.Spannable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -104,6 +106,19 @@ public class InboundAdapter extends BaseAdapter {
 
             @Override
             public void afterTextChanged(Editable s) {
+                if (s.toString().equals(".")){
+                    viewHolder.itemWeight.setText("0.");
+                    CharSequence text = viewHolder.itemWeight.getText();
+                    if (text instanceof Spannable) {
+                        Spannable spanText = (Spannable) text;
+                        try {
+                            Selection.setSelection(spanText, viewHolder.itemWeight.length());
+                        } catch (IndexOutOfBoundsException e) {
+                            Selection.setSelection(spanText, text.length());
+                        }
+                    }
+                    return;
+                }
                 if (viewHolder.itemWeight.isFocused()) {
                     if (!TextUtils.isEmpty(s.toString())) {
                         list.get(position).setWeight(Float.valueOf(s.toString()));

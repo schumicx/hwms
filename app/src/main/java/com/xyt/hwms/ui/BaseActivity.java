@@ -2,6 +2,7 @@ package com.xyt.hwms.ui;
 
 import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,6 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Validato
     protected String NFCTagId;
     protected String barCodeData;
     protected Validator validator;
+    protected ProgressDialog pdialog;
     private NfcAdapter mAdapter;
     private PendingIntent mPendingIntent;
 
@@ -51,6 +53,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Validato
         this.context = this;
         validator = new Validator(this);
         validator.setValidationListener(this);
+
+        pdialog = new ProgressDialog(this, 0);
+        pdialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pdialog.setCancelable(false);
 
         resolveIntent(getIntent());
 

@@ -2,6 +2,8 @@ package com.xyt.hwms.ui;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Selection;
+import android.text.Spannable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -94,6 +96,19 @@ public class InboundActivity extends BaseActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                if (s.toString().equals(".")){
+                    weight.setText("0.");
+                    CharSequence text = weight.getText();
+                    if (text instanceof Spannable) {
+                        Spannable spanText = (Spannable) text;
+                        try {
+                            Selection.setSelection(spanText, weight.length());
+                        } catch (IndexOutOfBoundsException e) {
+                            Selection.setSelection(spanText, text.length());
+                        }
+                    }
+                    return;
+                }
                 if (weight.isFocused()) {
                     if (!TextUtils.isEmpty(s.toString())) {
                         for (int i = 0; i < list.size(); i++) {
@@ -266,6 +281,7 @@ public class InboundActivity extends BaseActivity {
         params.put("status", Constants.WASTE_BACK);
         params.put("back_reason", getResources().getStringArray(R.array.reason)[index]);
         params.put("back_reason_index", index);
+        params.put("container_label_code", null);
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.POST, url, InboundQueryBean.class, new Gson().toJson(params), new Response.Listener<InboundQueryBean>() {
                     @Override

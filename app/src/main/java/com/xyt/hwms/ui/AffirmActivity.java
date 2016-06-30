@@ -69,6 +69,7 @@ public class AffirmActivity extends BaseActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        pdialog.setMessage("同步中...");
         if (Constants.TRANSFER_TYPE_OUTER.equals(getIntent().getStringExtra("type"))) {
             getSupportActionBar().setTitle(R.string.main_item1);
         } else if (Constants.TRANSFER_TYPE_INNER.equals(getIntent().getStringExtra("type"))) {
@@ -122,6 +123,15 @@ public class AffirmActivity extends BaseActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (pdialog.isShowing()) {
+            pdialog.dismiss();
+        }
+        ApplicationController.getInstance().cancelPendingRequests(getLocalClassName());
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_sync, menu);
         return super.onCreateOptionsMenu(menu);
@@ -172,9 +182,9 @@ public class AffirmActivity extends BaseActivity {
                             swiperefresh.setRefreshing(false);
                         }
                         list.clear();
+                        PreferencesUtils.putString(context, "affirm", null);
+                        PreferencesUtils.putString(context, "affirm", new Gson().toJson(response.getData()));
                         if (response.getData().getCollection().size() > 0) {
-                            PreferencesUtils.putString(context, "affirm", new Gson().toJson(response.getData()));
-                            PreferencesUtils.putBoolean(context, "isSync", true);
                             Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class);
                             list.addAll(Constants.AFFIRM_LIST.getCollection());
                         }
@@ -186,6 +196,9 @@ public class AffirmActivity extends BaseActivity {
                             }
                         }
                         affirmAdapter.notifyDataSetChanged();
+                        if (pdialog.isShowing()) {
+                            pdialog.dismiss();
+                        }
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -217,6 +230,9 @@ public class AffirmActivity extends BaseActivity {
                                 break;
                             }
                         }
+                        if (pdialog.isShowing()) {
+                            pdialog.dismiss();
+                        }
                         error.printStackTrace();
                     }
                 }), getLocalClassName());
@@ -224,6 +240,7 @@ public class AffirmActivity extends BaseActivity {
 
     //同步固废转移单
     public void syncRequest() {
+        pdialog.show();
         String url = Constants.SERVER + "mobile-hwit";
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.PUT, url, BaseBean.class, new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()), new Response.Listener<BaseBean>() {
@@ -232,12 +249,15 @@ public class AffirmActivity extends BaseActivity {
                         Toast.makeText(context, "同步成功!", Toast.LENGTH_SHORT).show();
                         PreferencesUtils.putString(context, "affirm", null);
                         PreferencesUtils.putBoolean(context, "isSync", true);
-//                        Constants.AFFIRM_LIST = null;
+                        Constants.AFFIRM_LIST = null;
                         obtainRequest();
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        if (pdialog.isShowing()) {
+                            pdialog.dismiss();
+                        }
                         try {
                             Toast.makeText(context, new Gson().fromJson(new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers)), BaseBean.class).getContent(), Toast.LENGTH_SHORT).show();
                         } catch (NullPointerException e) {

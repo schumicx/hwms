@@ -126,12 +126,18 @@ public class AffirmItemsActivity extends BaseActivity {
 
     @Override
     public void onValidationSucceeded() {
+        int j=0;
         for (int i = 0; i < list.size(); i++) {
             if (barCodeData.equals(list.get(i).getLabel_code())) {
                 cacheWasteDialogFragment = CacheWasteDialogFragment.newInstance(applyIndex, i);
                 cacheWasteDialogFragment.show(getSupportFragmentManager(), getLocalClassName());
                 break;
+            } else {
+                j++;
             }
+        }
+        if (j >= list.size()) {
+            Toast.makeText(context, "转移单内无该固废!", Toast.LENGTH_SHORT).show();
         }
     }
 
