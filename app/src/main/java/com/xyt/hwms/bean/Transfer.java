@@ -17,6 +17,7 @@ public class Transfer implements Serializable {
     private long create_time;
     private String detail_status;
     private String operator;
+    private String transfer_person;
     private String transfer_type;
     private String phone;
     private String duty_person;
@@ -94,6 +95,14 @@ public class Transfer implements Serializable {
 
     public void setOperator(String operator) {
         this.operator = operator;
+    }
+
+    public String getTransfer_person() {
+        return transfer_person;
+    }
+
+    public void setTransfer_person(String transfer_person) {
+        this.transfer_person = transfer_person;
     }
 
     public String getTransfer_type() {

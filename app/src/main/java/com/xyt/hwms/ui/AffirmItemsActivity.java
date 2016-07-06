@@ -2,6 +2,7 @@ package com.xyt.hwms.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -38,6 +39,8 @@ public class AffirmItemsActivity extends BaseActivity {
     ListView listview;
     @NotEmpty(trim = true, message = "请输入操作人账号")
     EditText operator;
+    @NotEmpty(trim = true, message = "请输入接收人账号")
+    EditText receiver;
     private TextView total;
     private TextView verified;
     private TextView unverified;
@@ -73,6 +76,8 @@ public class AffirmItemsActivity extends BaseActivity {
         unverified = (TextView) head.findViewById(R.id.unverified);
         back = (TextView) head.findViewById(R.id.back);
         operator = (EditText) head.findViewById(R.id.operator);
+        receiver = (EditText) head.findViewById(R.id.receiver);
+        TextInputLayout til = (TextInputLayout) head.findViewById(R.id.til);
 
         totalNum = list.size();
         total.setText("" + totalNum);
@@ -84,12 +89,18 @@ public class AffirmItemsActivity extends BaseActivity {
             operator.setText(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getOperator());
         }
 
+        if (!TextUtils.isEmpty(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getTransfer_person()) && Constants.TRANSFER_TYPE_INNER.equals(getIntent().getStringExtra("type"))) {
+            receiver.setText(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getTransfer_person());
+        }
+
         if (Constants.TRANSFER_TYPE_INNER.equals(getIntent().getStringExtra("type"))) {
             operator.setFocusableInTouchMode(false);
             operator.setLongClickable(false);
+            til.setVisibility(View.VISIBLE);
         } else {
             operator.setFocusableInTouchMode(true);
             operator.setLongClickable(true);
+            til.setVisibility(View.GONE);
         }
 
         listview.addHeaderView(head);
@@ -112,6 +123,23 @@ public class AffirmItemsActivity extends BaseActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 Constants.AFFIRM_LIST.getCollection().get(applyIndex).setOperator(s.toString().trim());
+                PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
+                PreferencesUtils.putBoolean(context, "isSync", false);
+            }
+        });
+
+        receiver.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Constants.AFFIRM_LIST.getCollection().get(applyIndex).setTransfer_person(s.toString().trim());
                 PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
                 PreferencesUtils.putBoolean(context, "isSync", false);
             }
@@ -144,7 +172,7 @@ public class AffirmItemsActivity extends BaseActivity {
     @Override
     public void onValidationFailed(List<ValidationError> errors) {
         super.onValidationFailed(errors);
-        Toast.makeText(context, "操作人不能为空!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "操作(接收)人不能为空!", Toast.LENGTH_SHORT).show();
     }
 
     @Override

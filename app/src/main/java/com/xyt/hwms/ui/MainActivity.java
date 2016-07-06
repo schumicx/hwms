@@ -142,7 +142,7 @@ public class MainActivity extends BaseActivity {
     }
 
     //获取固废转移单
-    private void obtainRequest() {
+    public void obtainRequest() {
         String url = Constants.SERVER + "mobile-hwit";
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.GET, url, TransferListBean.class, null, new Response.Listener<TransferListBean>() {
@@ -151,10 +151,8 @@ public class MainActivity extends BaseActivity {
                         if (pdialog.isShowing()) {
                             pdialog.dismiss();
                         }
-                        if (response.getData().getCollection().size() > 0) {
-                            PreferencesUtils.putString(context, "affirm", new Gson().toJson(response.getData()));
-                            PreferencesUtils.putBoolean(context, "isSync", true);
-                        }
+                        PreferencesUtils.putString(context, "affirm", new Gson().toJson(response.getData()));
+                        PreferencesUtils.putBoolean(context, "isSync", true);
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -181,9 +179,9 @@ public class MainActivity extends BaseActivity {
     //同步固废转移单
     public void syncRequest() {
         pdialog.show();
-        String url = Constants.SERVER + "mobile-hwit";
+        String url = Constants.SERVER + "mobile-hwit/sync";
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.PUT, url, BaseBean.class, new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()), new Response.Listener<BaseBean>() {
+                new GsonObjectRequest<>(Request.Method.POST, url, BaseBean.class, new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()), new Response.Listener<BaseBean>() {
                     @Override
                     public void onResponse(BaseBean response) {
                         Toast.makeText(context, "同步成功!", Toast.LENGTH_SHORT).show();

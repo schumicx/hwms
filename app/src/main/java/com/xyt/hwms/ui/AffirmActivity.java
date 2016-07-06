@@ -172,7 +172,8 @@ public class AffirmActivity extends BaseActivity {
     }
 
     //获取固废转移单
-    private void obtainRequest() {
+    public void obtainRequest() {
+//        PreferencesUtils.putString(context, "affirm", null);
         String url = Constants.SERVER + "mobile-hwit";
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.GET, url, TransferListBean.class, null, new Response.Listener<TransferListBean>() {
@@ -182,7 +183,7 @@ public class AffirmActivity extends BaseActivity {
                             swiperefresh.setRefreshing(false);
                         }
                         list.clear();
-                        PreferencesUtils.putString(context, "affirm", null);
+                        PreferencesUtils.putBoolean(context, "isSync", true);
                         PreferencesUtils.putString(context, "affirm", new Gson().toJson(response.getData()));
                         if (response.getData().getCollection().size() > 0) {
                             Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class);
@@ -241,9 +242,9 @@ public class AffirmActivity extends BaseActivity {
     //同步固废转移单
     public void syncRequest() {
         pdialog.show();
-        String url = Constants.SERVER + "mobile-hwit";
+        String url = Constants.SERVER + "mobile-hwit/sync";
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.PUT, url, BaseBean.class, new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()), new Response.Listener<BaseBean>() {
+                new GsonObjectRequest<>(Request.Method.POST, url, BaseBean.class, new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()), new Response.Listener<BaseBean>() {
                     @Override
                     public void onResponse(BaseBean response) {
                         Toast.makeText(context, "同步成功!", Toast.LENGTH_SHORT).show();

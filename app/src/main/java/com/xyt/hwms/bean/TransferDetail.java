@@ -19,6 +19,7 @@ public class TransferDetail {
      */
 
     private String transfer_detail_id;
+    private String waste_detail_id;
     private String waste_name;
     private String category_code;
     private String is_key_waste;
@@ -134,5 +135,13 @@ public class TransferDetail {
 
     public void setHarmful_ingredient(String harmful_ingredient) {
         this.harmful_ingredient = harmful_ingredient;
+    }
+
+    public String getWaste_detail_id() {
+        return waste_detail_id;
+    }
+
+    public void setWaste_detail_id(String waste_detail_id) {
+        this.waste_detail_id = waste_detail_id;
     }
 }
