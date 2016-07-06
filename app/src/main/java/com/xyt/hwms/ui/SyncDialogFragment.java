@@ -41,7 +41,7 @@ public class SyncDialogFragment extends DialogFragment {
                             ((MainActivity) getActivity()).obtainRequest();
                         }
                     }
-                });;
+                });
         return builder.create();
     }
 }
