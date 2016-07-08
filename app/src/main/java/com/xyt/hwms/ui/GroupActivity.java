@@ -53,6 +53,7 @@ public class GroupActivity extends BaseActivity {
                     }
                 }
             }
+            Constants.AFFIRM_LIST.getCollection().get(applyIndex).setModify(true);
             PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
             PreferencesUtils.putBoolean(context, "isSync", false);
             Toast.makeText(context, "组盘成功!", Toast.LENGTH_SHORT).show();

@@ -75,7 +75,7 @@ public class GsonObjectRequest<T> extends JsonRequest<T> {
 
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
-        Long timestamp = DateUtils.getTime();
+        Long timestamp = System.currentTimeMillis();
         String account = "";
         try {
             account = new Gson().fromJson(PreferencesUtils.getString(ApplicationController.getInstance(), "user"), User.class).getAccount();

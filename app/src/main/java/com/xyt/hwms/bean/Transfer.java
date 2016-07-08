@@ -23,6 +23,7 @@ public class Transfer implements Serializable {
     private String duty_person;
     private String org_name;
     private String lock_code;
+    private boolean isModify;
     private List<TransferDetail> detail;
 
     public String getTransfer_id() {
@@ -143,6 +144,14 @@ public class Transfer implements Serializable {
 
     public void setLock_code(String lock_code) {
         this.lock_code = lock_code;
+    }
+
+    public boolean isModify() {
+        return isModify;
+    }
+
+    public void setModify(boolean modify) {
+        isModify = modify;
     }
 
     public List<TransferDetail> getDetail() {

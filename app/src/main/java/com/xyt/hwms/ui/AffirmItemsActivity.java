@@ -84,7 +84,7 @@ public class AffirmItemsActivity extends BaseActivity {
         if (TextUtils.isEmpty(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getOperator()) || Constants.TRANSFER_TYPE_INNER.equals(getIntent().getStringExtra("type"))) {
             operator.setText(new Gson().fromJson(PreferencesUtils.getString(ApplicationController.getInstance(), "user"), User.class).getAccount());
             Constants.AFFIRM_LIST.getCollection().get(applyIndex).setOperator(operator.getText().toString().trim());
-            PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
+//            PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
         } else {
             operator.setText(Constants.AFFIRM_LIST.getCollection().get(applyIndex).getOperator());
         }
@@ -123,6 +123,7 @@ public class AffirmItemsActivity extends BaseActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 Constants.AFFIRM_LIST.getCollection().get(applyIndex).setOperator(s.toString().trim());
+                Constants.AFFIRM_LIST.getCollection().get(applyIndex).setModify(true);
                 PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
                 PreferencesUtils.putBoolean(context, "isSync", false);
             }
@@ -140,6 +141,7 @@ public class AffirmItemsActivity extends BaseActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 Constants.AFFIRM_LIST.getCollection().get(applyIndex).setTransfer_person(s.toString().trim());
+                Constants.AFFIRM_LIST.getCollection().get(applyIndex).setModify(true);
                 PreferencesUtils.putString(context, "affirm", new Gson().toJson(Constants.AFFIRM_LIST));
                 PreferencesUtils.putBoolean(context, "isSync", false);
             }

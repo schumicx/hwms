@@ -116,11 +116,38 @@ public class AffirmActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+//        writeFileToSD(new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()));
         if (!PreferencesUtils.getBoolean(context, "isSync", false) && !TextUtils.isEmpty(PreferencesUtils.getString(context, "affirm"))) {
             syncRequest();
         }
         affirmAdapter.notifyDataSetChanged();
     }
+
+//    private void writeFileToSD(String s) {
+//        String sdStatus = Environment.getExternalStorageState();
+//        if(!sdStatus.equals(Environment.MEDIA_MOUNTED)) {
+//            return;
+//        }
+//        try {
+//            String pathName="/sdcard/test/";
+//            String fileName="file.txt";
+//            File path = new File(pathName);
+//            File file = new File(pathName + fileName);
+//            if( !path.exists()) {
+//                path.mkdir();
+//            }
+//            if( !file.exists()) {
+//                file.createNewFile();
+//            }
+//            FileOutputStream stream = new FileOutputStream(file);
+//            byte[] buf = s.getBytes();
+//            stream.write(buf);
+//            stream.close();
+//
+//        } catch(Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     @Override
     protected void onDestroy() {
@@ -241,12 +268,14 @@ public class AffirmActivity extends BaseActivity {
 
     //同步固废转移单
     public void syncRequest() {
+//        final Long t = System.currentTimeMillis();
         pdialog.show();
         String url = Constants.SERVER + "mobile-hwit/sync";
         ApplicationController.getInstance().addToRequestQueue(
                 new GsonObjectRequest<>(Request.Method.POST, url, BaseBean.class, new Gson().toJson(new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class).getCollection()), new Response.Listener<BaseBean>() {
                     @Override
                     public void onResponse(BaseBean response) {
+//                        Toast.makeText(context, "time:" + ((System.currentTimeMillis() - t) / 1000) / 60 + ":" + ((System.currentTimeMillis() - t) / 1000) % 60, Toast.LENGTH_SHORT).show();
                         Toast.makeText(context, "同步成功!", Toast.LENGTH_SHORT).show();
                         PreferencesUtils.putString(context, "affirm", null);
                         PreferencesUtils.putBoolean(context, "isSync", true);
