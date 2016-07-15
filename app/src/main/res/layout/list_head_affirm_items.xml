@@ -10,6 +10,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/total_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -39,6 +40,7 @@
             android:background="#E1E1E1" />
 
         <LinearLayout
+            android:id="@+id/verified_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -68,6 +70,7 @@
             android:background="#E1E1E1" />
 
         <LinearLayout
+            android:id="@+id/unverified_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -97,6 +100,7 @@
             android:background="#E1E1E1" />
 
         <LinearLayout
+            android:id="@+id/back_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

@@ -22,6 +22,7 @@ import com.xyt.hwms.bean.BaseBean;
 import com.xyt.hwms.bean.Transfer;
 import com.xyt.hwms.bean.TransferList;
 import com.xyt.hwms.bean.TransferListBean;
+import com.xyt.hwms.bean.User;
 import com.xyt.hwms.support.utils.ApplicationController;
 import com.xyt.hwms.support.utils.BaseUtils;
 import com.xyt.hwms.support.utils.Constants;
@@ -30,7 +31,9 @@ import com.xyt.hwms.support.utils.PreferencesUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -202,8 +205,10 @@ public class AffirmActivity extends BaseActivity {
     public void obtainRequest() {
 //        PreferencesUtils.putString(context, "affirm", null);
         String url = Constants.SERVER + "mobile-hwit";
+        Map<String, Object> params = new HashMap<>();
+        params.put("card_id", new Gson().fromJson(PreferencesUtils.getString(context, "user"), User.class).getCard_id());
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.GET, url, TransferListBean.class, null, new Response.Listener<TransferListBean>() {
+                new GsonObjectRequest<>(url, TransferListBean.class, params, new Response.Listener<TransferListBean>() {
                     @Override
                     public void onResponse(TransferListBean response) {
                         if (swiperefresh.isRefreshing()) {
@@ -247,7 +252,7 @@ public class AffirmActivity extends BaseActivity {
                         }
                         list.clear();
                         Constants.AFFIRM_LIST = new Gson().fromJson(PreferencesUtils.getString(context, "affirm"), TransferList.class);
-                        if (Constants.AFFIRM_LIST != null && Constants.AFFIRM_LIST.getCollection().size() > 0/* && Constants.AFFIRM_LIST.getCollection().get(0).getTransfer_type().equals(getIntent().getStringExtra("type"))*/) {
+                        if (Constants.AFFIRM_LIST != null && Constants.AFFIRM_LIST.getCollection().size() > 0) {
                             list.addAll(Constants.AFFIRM_LIST.getCollection());
                             affirmAdapter.notifyDataSetChanged();
                         }

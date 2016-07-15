@@ -24,6 +24,8 @@ import com.xyt.hwms.support.utils.GsonObjectRequest;
 import com.xyt.hwms.support.utils.PreferencesUtils;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -143,9 +145,14 @@ public class MainActivity extends BaseActivity {
 
     //获取固废转移单
     public void obtainRequest() {
+        if (!pdialog.isShowing()) {
+            pdialog.show();
+        }
         String url = Constants.SERVER + "mobile-hwit";
+        Map<String, Object> params = new HashMap<>();
+        params.put("card_id", new Gson().fromJson(PreferencesUtils.getString(context, "user"), User.class).getCard_id());
         ApplicationController.getInstance().addToRequestQueue(
-                new GsonObjectRequest<>(Request.Method.GET, url, TransferListBean.class, null, new Response.Listener<TransferListBean>() {
+                new GsonObjectRequest<>(url, TransferListBean.class, params, new Response.Listener<TransferListBean>() {
                     @Override
                     public void onResponse(TransferListBean response) {
                         if (pdialog.isShowing()) {

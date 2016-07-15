@@ -17,7 +17,6 @@ android {
         versionName "1.0"
         resValue "string", "app_name", "固废管理"
         buildConfigField "String", "API_URL", "\"http://eadqas.whchem.com:8080\""
-//        buildConfigField "String", "API_URL", "\"http://10.10.102.154:8080\""
         multiDexEnabled true
     }
 
