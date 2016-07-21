@@ -6,5 +6,6 @@
         <item>漏液</item>
         <item>一般固废</item>
         <item>其它</item>
+        <item>包装不合格</item>
     </string-array>
 </resources>
