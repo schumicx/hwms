@@ -79,6 +79,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        getSupportActionBar().setSubtitle("登录人:" + new Gson().fromJson(PreferencesUtils.getString(ApplicationController.getInstance(), "user"), User.class).getUser_name());
         pdialog.setMessage("同步中...");
         try {
 //            String mobileRes[] = {Constants.MAIN_ITEM1, Constants.MAIN_ITEM2, Constants.MAIN_ITEM3, Constants.MAIN_ITEM4, Constants.MAIN_ITEM5};
