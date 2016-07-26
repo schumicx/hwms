@@ -2,6 +2,7 @@ package com.xyt.hwms.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Password;
+import com.xyt.hwms.BuildConfig;
 import com.xyt.hwms.R;
 import com.xyt.hwms.bean.BaseBean;
 import com.xyt.hwms.bean.CardSyncBean;
@@ -112,7 +114,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void nfcLogin(String data) {
-        if(!TextUtils.isEmpty(PreferencesUtils.getString(context, "cards"))) {
+        if (!TextUtils.isEmpty(PreferencesUtils.getString(context, "cards"))) {
             List<User> userList = new Gson().fromJson(PreferencesUtils.getString(context, "cards"), CardSyncBean.class).getData();
             for (User user : userList) {
                 if (data.equals(user.getCard_id())) {

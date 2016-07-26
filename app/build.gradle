@@ -70,10 +70,10 @@ android {
     }
 
     productFlavors {
-        pei {
-            applicationIdSuffix ".develop"
+        local {
+            applicationIdSuffix ".local"
             buildConfigField "String", "API_URL", "\"http://10.10.11.159:8080\""
-            resValue "string", "app_name", "DEV"
+            resValue "string", "app_name", "LOCAL"
         }
         develop {
             applicationIdSuffix ".develop"

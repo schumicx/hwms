@@ -62,12 +62,6 @@ public class AffirmItemsActivity extends BaseActivity implements View.OnClickLis
     private int backNum;
     private String reasonArray[];
 
-    @OnItemClick(R.id.listview)
-    public void onItemClick(int position) {
-        cacheWasteDialogFragment = CacheWasteDialogFragment.newInstance(applyIndex, position - 1);
-        cacheWasteDialogFragment.show(getSupportFragmentManager(), getLocalClassName());
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

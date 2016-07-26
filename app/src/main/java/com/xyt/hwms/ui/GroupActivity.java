@@ -63,13 +63,6 @@ public class GroupActivity extends BaseActivity {
         container.getText().clear();
     }
 
-    @OnItemClick(R.id.listview)
-    public void onItemClick(int position) {
-        this.position = position - 1;
-        affirmDialog = CacheWasteDialogFragment.newInstance(applyIndex, position - 1);
-        affirmDialog.show(getSupportFragmentManager(), getLocalClassName());
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
