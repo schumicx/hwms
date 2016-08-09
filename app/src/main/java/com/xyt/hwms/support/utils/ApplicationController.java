@@ -10,6 +10,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.motorolasolutions.adc.decoder.BarCodeReader;
+import com.xyt.hwms.support.bluetooth.BluetoothSppClient;
 
 public class ApplicationController extends Application {
 
@@ -32,6 +33,8 @@ public class ApplicationController extends Application {
     public int state = Constants.STATE_IDLE;
     public ToneGenerator toneGenerator;
     public BarCodeReader barCodeReader;
+
+    public BluetoothSppClient mBSC = null;
 
     /**
      * Global request queue for Volley
@@ -158,5 +161,36 @@ public class ApplicationController extends Application {
                 ret = Constants.STATE_IDLE;
         }
         return ret;
+    }
+
+    /**
+     * 建立蓝牙连接
+     *
+     * @param sMac 蓝牙硬件地址
+     * @return
+     */
+    public boolean createConn(String sMac) {
+        if (null == this.mBSC) {
+            this.mBSC = new BluetoothSppClient(sMac);
+            if (this.mBSC.createConn())
+                return true;
+            else {
+                this.mBSC = null;
+                return false;
+            }
+        } else
+            return true;
+    }
+
+    /**
+     * 关闭并释放连接
+     *
+     * @return void
+     */
+    public void closeConn() {
+        if (null != this.mBSC) {
+            this.mBSC.closeConn();
+            this.mBSC = null;
+        }
     }
 }

@@ -5,6 +5,10 @@
     <uses-permission android:name="android.permission.NFC" />
     <uses-feature android:name="android.hardware.nfc" />
 
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-feature android:name="android.hardware.bluetooth" android:required="true"/>
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -99,6 +103,10 @@
         <activity
             android:name=".ui.RecycleItemsActivity"
             android:label="@string/recycle_items"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.DiscoveryBluetoothActivity"
+            android:label="@string/discovery_device"
             android:screenOrientation="portrait" />
     </application>
 

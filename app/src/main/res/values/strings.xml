@@ -17,11 +17,34 @@
     <string name="group_site">固废明细</string>
     <string name="outbound_items">出库明细</string>
     <string name="recycle_items">内部利用明细</string>
+    <string name="discovery_device">搜索设备</string>
 
     <string name="no_nfc">此设备上没有NFC刷卡器!</string>
     <string name="nfc_disabled">NFC刷卡器已关闭，请在无线设置中启用!</string>
 
     <string name="no_internet">网络连接失败,请检查您的网络!</string>
     <string name="no_connection">服务器连接异常!</string>
+
+    <string name="actDiscovery_bond_bonded">已配对</string>
+    <string name="actDiscovery_bond_nothing">未配对</string>
+    <string name="actDiscovery_msg_select_device">选择需要连接的设备</string>
+    <string name="actDiscovery_msg_not_find_device">未找到蓝牙设备</string>
+    <string name="device_type_bredr">BR/EDR Bluetooth</string>
+    <string name="device_type_ble">Low Energy Bluetooth</string>
+    <string name="device_type_dumo">Duplex mode Bluetooth</string>
+    <string name="actDiscovery_msg_scaning_device">搜索中&#8230;</string>
+    <string name="actDiscovery_msg_bluetooth_not_start">蓝牙未开启</string>
+    <string name="actDiscovery_msg_starting_device">蓝牙设备启动中&#8230;</string>
+    <string name="dialog_title_sys_err">系统错误</string>
+    <string name="actDiscovery_msg_start_bluetooth_fail">蓝牙启动失败</string>
+    <string name="btn_ok">确定</string>
+    <string name="actMain_msg_bluetooth_Bonding">配对中，请稍候&#8230;</string>
+    <string name="actMain_msg_bluetooth_Bond_Success">配对成功</string>
+    <string name="actMain_msg_bluetooth_Bond_fail">配对失败</string>
+    <string name="actMain_msg_device_connecting">正在连接设备&#8230;</string>
+    <string name="actMain_msg_device_connect_succes">成功连接上设备</string>
+    <string name="actMain_msg_device_connect_fail">蓝牙SPP通信连接建立失败</string>
+    <string name="msg_msg_bt_connect_lost">蓝牙设备的通信连接丢失，请尝试重新连接</string>
+    <string name="msg_receive_data_stop">数据接收终止</string>
 
 </resources>

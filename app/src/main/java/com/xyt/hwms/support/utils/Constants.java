@@ -4,6 +4,7 @@ import com.xyt.hwms.BuildConfig;
 import com.xyt.hwms.bean.TransferList;
 
 public class Constants {
+//    public static final String EXTRA_DEVICE_TYPE = "android.bluetooth.device.extra.DEVICE_TYPE";
     public static final String KEY = "01554cf384968a8a8b1f554cf38403ea";
     public static final int TIMEOUTMS = 30 * 1000;
     public static final String SERVER = BuildConfig.API_URL + "/hwms/api/";
