@@ -16,7 +16,7 @@ android {
         versionCode 1
         versionName "1.0"
         resValue "string", "app_name", "固废管理"
-        buildConfigField "String", "API_URL", "\"http://eas.whchem.com\""
+        buildConfigField "String", "API_URL", "\"http://eas.whchem.com:8080\""
         multiDexEnabled true
     }
 
