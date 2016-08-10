@@ -20,28 +20,19 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xyt.hwms.R;
-import com.xyt.hwms.support.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DiscoveryBluetoothActivity extends BaseActivity {
-    //CONST: device type bltetooth 2.1
-    public static final int DEVICE_TYPE_BREDR = 0x01;
-    //CONST: device type bltetooth 4.0 ble
-    public static final int DEVICE_TYPE_BLE = 0x02;
-    //CONST: device type bltetooth double mode
-    public static final int DEVICE_TYPE_DUMO = 0x03;
     @BindView(R.id.listview)
     ListView listview;
     //Discovery is Finished
@@ -67,25 +58,16 @@ public class DiscoveryBluetoothActivity extends BaseActivity {
 			/* get the search results */
             BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
             /* create found device profiles to htDeviceInfo*/
-            Bundle bundle = intent.getExtras();
-//            htDeviceInfo.put("RSSI", String.valueOf(bundle.get(BluetoothDevice.EXTRA_RSSI)));
             if (null == device.getName()) {
                 htDeviceInfo.put("NAME", "Null");
             } else {
                 htDeviceInfo.put("NAME", device.getName());
             }
-//            htDeviceInfo.put("COD", String.valueOf(bundle.get(BluetoothDevice.EXTRA_CLASS)));
             if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
                 htDeviceInfo.put("BOND", getString(R.string.actDiscovery_bond_bonded));
             } else {
                 htDeviceInfo.put("BOND", getString(R.string.actDiscovery_bond_nothing));
             }
-//            String sDeviceType = String.valueOf(bundle.get(Constants.EXTRA_DEVICE_TYPE));
-//            if (!sDeviceType.equals("null")) {
-//                htDeviceInfo.put("DEVICE_TYPE", sDeviceType);
-//            } else {
-//                htDeviceInfo.put("DEVICE_TYPE", "-1"); //不存在设备号
-//            }
             /*adding scan to the device profiles*/
             mhtFDS.put(device.getAddress(), htDeviceInfo);
 
@@ -126,15 +108,11 @@ public class DiscoveryBluetoothActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 String sMAC = (String) malListItem.get(arg2).get("MAC");
-//                String sMAC = ((TextView) arg1.findViewById(R.id.device_item_ble_mac)).getText().toString();
                 Log.e("----------", sMAC);
                 Intent result = new Intent();
                 result.putExtra("MAC", sMAC);
-//                result.putExtra("RSSI", mhtFDS.get(sMAC).get("RSSI"));
                 result.putExtra("NAME", mhtFDS.get(sMAC).get("NAME"));
-//                result.putExtra("COD", mhtFDS.get(sMAC).get("COD"));
                 result.putExtra("BOND", mhtFDS.get(sMAC).get("BOND"));
-//                result.putExtra("DEVICE_TYPE", toDeviceTypeString(mhtFDS.get(sMAC).get("DEVICE_TYPE")));
                 setResult(Activity.RESULT_OK, result);
                 finish();
             }
@@ -199,29 +177,6 @@ public class DiscoveryBluetoothActivity extends BaseActivity {
         this.showDevices(); //the first scan clear show list
     }
 
-    /**
-     * 将设备类型ID，转换成设备解释字符串
-     *
-     * @return String
-     */
-//    private String toDeviceTypeString(String sDeviceTypeId) {
-//        Pattern pt = Pattern.compile("^[-\\+]?[\\d]+$");
-//        if (pt.matcher(sDeviceTypeId).matches()) {
-//            switch (Integer.valueOf(sDeviceTypeId)) {
-//                case DEVICE_TYPE_BREDR:
-//                    return getString(R.string.device_type_bredr);
-//                case DEVICE_TYPE_BLE:
-//                    return getString(R.string.device_type_ble);
-//                case DEVICE_TYPE_DUMO:
-//                    return getString(R.string.device_type_dumo);
-//                default: //默认为蓝牙2.0
-//                    return getString(R.string.device_type_bredr);
-//            }
-//        } else {
-//            return sDeviceTypeId; //如果不是数字，则直接输出
-//        }
-//    }
-
     /* Show devices list */
     protected void showDevices() {
         if (null == this.malListItem) {//数组容器不存在时，创建
@@ -233,13 +188,10 @@ public class DiscoveryBluetoothActivity extends BaseActivity {
             this.msaListItemAdapter = new SimpleAdapter(this, malListItem,//数据源
                     R.layout.list_item_devices,//ListItem的XML实现
                     //动态数组与ImageItem对应的子项
-                    new String[]{"NAME", "MAC", /*"COD", "RSSI", "DEVICE_TYPE",*/ "BOND"},
+                    new String[]{"NAME", "MAC", "BOND"},
                     //ImageItem的XML文件里面的一个ImageView,两个TextView ID
                     new int[]{R.id.device_item_ble_name,
                             R.id.device_item_ble_mac,
-//	        			   R.id.device_item_ble_cod,
-//	        			   R.id.device_item_ble_rssi,
-//	        			   R.id.device_item_ble_device_type,
                             R.id.device_item_ble_bond
                     }
             );
@@ -256,10 +208,7 @@ public class DiscoveryBluetoothActivity extends BaseActivity {
             String sKey = e.nextElement();
             map.put("MAC", sKey);
             map.put("NAME", this.mhtFDS.get(sKey).get("NAME"));
-//            map.put("RSSI", this.mhtFDS.get(sKey).get("RSSI"));
-//            map.put("COD", this.mhtFDS.get(sKey).get("COD"));
             map.put("BOND", this.mhtFDS.get(sKey).get("BOND"));
-//            map.put("DEVICE_TYPE", toDeviceTypeString(this.mhtFDS.get(sKey).get("DEVICE_TYPE")));
             this.malListItem.add(map);
         }
         this.msaListItemAdapter.notifyDataSetChanged(); //通知适配器内容发生变化自动跟新
@@ -280,36 +229,23 @@ public class DiscoveryBluetoothActivity extends BaseActivity {
 
     }
 
-    //----------------
     /*多线程处理:设备扫描监管线程*/
     private class scanDeviceTask extends AsyncTask<String, String, Integer> {
-        /**
-         * 常量:蓝牙未开启
-         */
+        //常量:蓝牙未开启
         private static final int RET_BLUETOOTH_NOT_START = 0x0001;
-        /**
-         * 常量:设备搜索完成
-         */
+        //常量:设备搜索完成
         private static final int RET_SCAN_DEVICE_FINISHED = 0x0002;
-        /**
-         * 等待蓝牙设备启动的最长时间(单位S)
-         */
+        //等待蓝牙设备启动的最长时间(单位S)
         private static final int miWATI_TIME = 10;
-        /**
-         * 每次线程休眠时间(单位ms)
-         */
+        //每次线程休眠时间(单位ms)
         private static final int miSLEEP_TIME = 150;
-        /**
-         * 进程等待提示框
-         */
+        //进程等待提示框
         private ProgressDialog mpd = null;
 
-        /**
-         * 线程启动初始化操作
-         */
+        //线程启动初始化操作
         @Override
         public void onPreExecute() {
-	    	/*定义进程对话框*/
+            /*定义进程对话框*/
             this.mpd = new ProgressDialog(context);
             this.mpd.setMessage(getString(R.string.actDiscovery_msg_scaning_device));
             this.mpd.setCancelable(true);//可被终止
@@ -343,16 +279,7 @@ public class DiscoveryBluetoothActivity extends BaseActivity {
             return RET_SCAN_DEVICE_FINISHED; //在规定时间内，蓝牙设备未启动
         }
 
-        /**
-         * 线程内更新处理
-         */
-//        @Override
-//        public void onProgressUpdate(String... progress) {
-//        }
-
-        /**
-         * 阻塞任务执行完后的清理工作
-         */
+        //阻塞任务执行完后的清理工作
         @Override
         public void onPostExecute(Integer result) {
             if (this.mpd.isShowing()) {

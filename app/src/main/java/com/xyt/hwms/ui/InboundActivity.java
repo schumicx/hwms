@@ -62,7 +62,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class InboundActivity extends BaseActivity {
-
     //常量:搜索页面返回
     public static final byte REQUEST_DISCOVERY = 0x01;
     //未设限制的AsyncTask线程池(重要)
@@ -90,7 +89,7 @@ public class InboundActivity extends BaseActivity {
     private List<InboundQuery> list = new ArrayList<>();
     private InboundAdapter inboundAdapter;
     private String labelCode;
-    private String s;
+    private String serialData;
     //手机的蓝牙适配器
     private BluetoothAdapter mBT = BluetoothAdapter.getDefaultAdapter();
     //蓝牙设备连接句柄
@@ -110,13 +109,14 @@ public class InboundActivity extends BaseActivity {
             String action = intent.getAction();
             int iLoop = 0;
             if (BluetoothDevice.ACTION_UUID.equals(action)) {
-                Parcelable[] uuidExtra =
-                        intent.getParcelableArrayExtra("android.bluetooth.device.extra.UUID");
-                if (null != uuidExtra)
+                Parcelable[] uuidExtra = intent.getParcelableArrayExtra("android.bluetooth.device.extra.UUID");
+                if (null != uuidExtra) {
                     iLoop = uuidExtra.length;
+                }
                 /*uuidExtra should contain my service's UUID among his files, but it doesn't!!*/
-                for (int i = 0; i < iLoop; i++)
+                for (int i = 0; i < iLoop; i++) {
                     mslUuidList.add(uuidExtra[i].toString());
+                }
             }
         }
     };
@@ -127,10 +127,11 @@ public class InboundActivity extends BaseActivity {
             BluetoothDevice device = null;
             if (intent.getAction().equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {    //配对状态改变时，的广播处理
                 device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if (device.getBondState() == BluetoothDevice.BOND_BONDED)
+                if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
                     mbBonded = true;//蓝牙配对设置成功
-                else
+                } else {
                     mbBonded = false;//蓝牙配对进行中或者配对失败
+                }
             }
         }
     };
@@ -222,9 +223,6 @@ public class InboundActivity extends BaseActivity {
         new startBluetoothDeviceTask().execute(""); //启动蓝牙设备
     }
 
-    /**
-     * 析构处理
-     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -280,11 +278,7 @@ public class InboundActivity extends BaseActivity {
         new connSocketTask().execute(Mac);
     }
 
-    /**
-     * 通信模式选择-串行流模式
-     *
-     * @return void
-     */
+    //通信模式选择-串行流模式
     public void serialStream() {
         this.mBSC = ApplicationController.getInstance().mBSC;
         new receiveTask().executeOnExecutor(FULL_TASK_EXECUTOR);
@@ -336,27 +330,18 @@ public class InboundActivity extends BaseActivity {
         ReasonDialogFragment.newInstance(inboundQuery).show(getSupportFragmentManager(), getLocalClassName());
     }
 
-    /**
-     * 进入搜索蓝牙设备列表页面
-     */
     private void openDiscovery() {
         //进入蓝牙设备搜索界面
         Intent intent = new Intent(this, DiscoveryBluetoothActivity.class);
         this.startActivityForResult(intent, REQUEST_DISCOVERY); //等待返回搜索结果
     }
 
-    /**
-     * 显示Service UUID信息
-     *
-     * @return void
-     */
+    //显示Service UUID信息
     private void showServiceUUIDs() {
         new GetUUIDServiceTask().execute("");
     }
 
-    /**
-     * 蓝牙设备选择完后返回处理
-     */
+    //蓝牙设备选择完后返回处理
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_DISCOVERY) {
             if (Activity.RESULT_OK == resultCode) {
@@ -383,8 +368,8 @@ public class InboundActivity extends BaseActivity {
             this.mbThreadStop = true; //终止接收线程
             this.finish();
             return true;
-        } else
-            return super.onKeyDown(keyCode, event);
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     //入库查询
@@ -550,20 +535,19 @@ public class InboundActivity extends BaseActivity {
                     }
                     SystemClock.sleep(miSLEEP_TIME);
                 }
-                if (iWait < 0) //表示在规定时间内,蓝牙设备未启动
+                if (iWait < 0) {//表示在规定时间内,蓝牙设备未启动
                     return RET_BLUETOOTH_START_FAIL;
+                }
             }
             return RET_BULETOOTH_IS_START;
         }
 
-        /**
-         * 阻塞任务执行完后的清理工作
-         */
+        //阻塞任务执行完后的清理工作
         @Override
         public void onPostExecute(Integer result) {
-            if (mpd.isShowing())
+            if (mpd.isShowing()) {
                 mpd.dismiss();//关闭等待对话框
-
+            }
             if (RET_BLUETOOTH_START_FAIL == result) {    //蓝牙设备启动失败
                 AlertDialog.Builder builder = new AlertDialog.Builder(context); //对话框控件
                 builder.setTitle(getString(R.string.dialog_title_sys_err));//设置标题
@@ -589,25 +573,16 @@ public class InboundActivity extends BaseActivity {
         }
     }
 
-    //----------------
     /*多线程处理(配对处理线程)*/
     private class PairTask extends AsyncTask<String, String, Integer> {
-        /**
-         * 常量:配对成功
-         */
+        //常量:配对成功
         static private final int RET_BOND_OK = 0x00;
-        /**
-         * 常量: 配对失败
-         */
+        //常量: 配对失败
         static private final int RET_BOND_FAIL = 0x01;
-        /**
-         * 常量: 配对等待时间(10秒)
-         */
+        //常量: 配对等待时间(10秒)
         static private final int iTIMEOUT = 1000 * 10;
 
-        /**
-         * 线程启动初始化操作
-         */
+        //线程启动初始化操作
         @Override
         public void onPreExecute() {
             //提示开始建立配对
@@ -629,7 +604,6 @@ public class InboundActivity extends BaseActivity {
                 BluetoothCtrl.createBond(mBDevice);
                 mbBonded = false; //初始化配对完成标志
             } catch (Exception e1) {    //配对启动失败
-                Log.d(getString(R.string.app_name), "create Bond failed!");
                 e1.printStackTrace();
                 return RET_BOND_FAIL;
             }
@@ -637,12 +611,10 @@ public class InboundActivity extends BaseActivity {
                 SystemClock.sleep(iStepTime);
                 iWait -= iStepTime;
             }
-            return (int) ((iWait > 0) ? RET_BOND_OK : RET_BOND_FAIL);
+            return iWait > 0 ? RET_BOND_OK : RET_BOND_FAIL;
         }
 
-        /**
-         * 阻塞任务执行完后的清理工作
-         */
+        //阻塞任务执行完后的清理工作
         @Override
         public void onPostExecute(Integer result) {
             unregisterReceiver(_mPairingRequest); //注销监听
@@ -664,87 +636,66 @@ public class InboundActivity extends BaseActivity {
         }
     }
 
-    //----------------
     /*多线程处理(读取UUID Service信息线程)*/
     private class GetUUIDServiceTask extends AsyncTask<String, String, Integer> {
-        /**
-         * 延时等待时间
-         */
+       //延时等待时间
         private static final int miWATI_TIME = 4 * 1000;
-        /**
-         * 每次检测的时间
-         */
+        //每次检测的时间
         private static final int miREF_TIME = 200;
-        /**
-         * uuis find service is run
-         */
+        //uuis find service is run
         private boolean mbFindServiceIsRun = false;
 
-        /**
-         * 线程启动初始化操作
-         */
+        //线程启动初始化操作
         @Override
         public void onPreExecute() {
             mslUuidList.clear();
             // Don't forget to unregister during onDestroy
-            registerReceiver(_mGetUuidServiceReceiver,
-                    new IntentFilter(BluetoothDevice.ACTION_UUID));// Register the BroadcastReceiver
+            registerReceiver(_mGetUuidServiceReceiver, new IntentFilter(BluetoothDevice.ACTION_UUID));// Register the BroadcastReceiver
             this.mbFindServiceIsRun = mBDevice.fetchUuidsWithSdp();
         }
 
-        /**
-         * 线程异步处理
-         */
+        //线程异步处理
         @Override
         protected Integer doInBackground(String... arg0) {
             int iWait = miWATI_TIME;//倒减计数器
 
-            if (!this.mbFindServiceIsRun)
+            if (!this.mbFindServiceIsRun) {
                 return null; //UUID Service扫瞄服务器启动失败
-
+            }
             while (iWait > 0) {
-                if (mslUuidList.size() > 0 && iWait > 1500)
+                if (mslUuidList.size() > 0 && iWait > 1500) {
                     iWait = 1500; //如果找到了第一个UUID则继续搜索N秒后结束
+                }
                 SystemClock.sleep(miREF_TIME);
                 iWait -= miREF_TIME;//每次循环减去刷新时间
             }
             return null;
         }
 
-        /**
-         * 阻塞任务执行完后的清理工作
-         */
+        //阻塞任务执行完后的清理工作
         @Override
         public void onPostExecute(Integer result) {
             StringBuilder sbTmp = new StringBuilder();
             unregisterReceiver(_mGetUuidServiceReceiver); //注销广播监听
             //如果存在数据，则自动刷新
             if (mslUuidList.size() > 0) {
-                for (int i = 0; i < mslUuidList.size(); i++)
+                for (int i = 0; i < mslUuidList.size(); i++) {
                     sbTmp.append(mslUuidList.get(i) + "\n");
+                }
             }
         }
     }
 
-    //----------------
     /*多线程处理(建立蓝牙设备的串行通信连接)*/
     private class connSocketTask extends AsyncTask<String, String, Integer> {
-        /**
-         * 常量:连接建立失败
-         */
+        //常量:连接建立失败
         private static final int CONN_FAIL = 0x01;
-        /**
-         * 常量:连接建立成功
-         */
+        //常量:连接建立成功
         private static final int CONN_SUCCESS = 0x02;
-        /**
-         * 进程等待提示框
-         */
+        //进程等待提示框
         private ProgressDialog mpd = null;
 
-        /**
-         * 线程启动初始化操作
-         */
+        //线程启动初始化操作
         @Override
         public void onPreExecute() {
             /*定义进程对话框*/
@@ -757,15 +708,13 @@ public class InboundActivity extends BaseActivity {
 
         @Override
         protected Integer doInBackground(String... arg0) {
-            if (ApplicationController.getInstance().createConn(arg0[0]))
+            if (ApplicationController.getInstance().createConn(arg0[0])) {
                 return CONN_SUCCESS; //建立成功
-            else
-                return CONN_FAIL; //建立失败
+            }
+            return CONN_FAIL; //建立失败
         }
 
-        /**
-         * 阻塞任务执行完后的清理工作
-         */
+        //阻塞任务执行完后的清理工作
         @Override
         public void onPostExecute(Integer result) {
             this.mpd.dismiss();
@@ -781,30 +730,20 @@ public class InboundActivity extends BaseActivity {
 
     /*多线程处理(建立蓝牙设备的串行通信连接)*/
     private class receiveTask extends AsyncTask<String, String, Integer> {
-        /**
-         * Constant: the connection is lost
-         */
+        //Constant: the connection is lost
         private final static byte CONNECT_LOST = 0x01;
-        /**
-         * Constant: the end of the thread task
-         */
+        //Constant: the end of the thread task
         private final static byte THREAD_END = 0x02;
-        /**
-         * Constant: the end of the thread task
-         */
+        //Constant: the end of the thread task
         private final static byte CONNECT_NONE = 0x03;
 
-        /**
-         * 线程启动初始化操作
-         */
+        //线程启动初始化操作
         @Override
         public void onPreExecute() {
             mbThreadStop = false;
         }
 
-        /**
-         * 线程异步处理
-         */
+        //线程异步处理
         @Override
         protected Integer doInBackground(String... arg0) {
             if (mBSC == null) {
@@ -813,9 +752,9 @@ public class InboundActivity extends BaseActivity {
             }
             mBSC.Receive(); //首次启动调用一次以启动接收线程
             while (!mbThreadStop) {
-                if (!mBSC.isConnect())//检查连接是否丢失
+                if (!mBSC.isConnect()) {//检查连接是否丢失
                     return (int) CONNECT_LOST;
-
+                }
                 if (mBSC.getReceiveBufLen() > 0) {
                     SystemClock.sleep(20); //先延迟让缓冲区填满
                     this.publishProgress(mBSC.Receive());
@@ -824,17 +763,15 @@ public class InboundActivity extends BaseActivity {
             return (int) THREAD_END;
         }
 
-        /**
-         * 线程内更新处理
-         */
+        //线程内更新处理
         @Override
         public void onProgressUpdate(String... progress) {
             if (null != progress[0]) {
-                s += progress[0];
-                if (s.length() > 50) {
-                    s = s.substring(0, s.lastIndexOf("\n"));
-                    s = s.substring(s.lastIndexOf("\n"), s.length());
-                    weight.setText(s.substring(3, s.length() - 3));
+                serialData += progress[0];
+                if (serialData.length() > 50) {
+                    serialData = serialData.substring(0, serialData.lastIndexOf("\n"));
+                    serialData = serialData.substring(serialData.lastIndexOf("\n"), serialData.length());
+                    weight.setText(serialData.substring(3, serialData.length() - 3));
 
                     for (int i = 0; i < list.size(); i++) {
                         list.get(i).setWeight(Float.valueOf(weight.getText().toString()) / list.size());
@@ -845,9 +782,7 @@ public class InboundActivity extends BaseActivity {
             }
         }
 
-        /**
-         * 阻塞任务执行完后的清理工作
-         */
+        //阻塞任务执行完后的清理工作
         @Override
         public void onPostExecute(Integer result) {
             if (CONNECT_NONE == result) {
@@ -855,8 +790,9 @@ public class InboundActivity extends BaseActivity {
             } else if (CONNECT_LOST == result) {//connection is lost
                 Toast.makeText(getBaseContext(), R.string.msg_msg_bt_connect_lost, Toast.LENGTH_SHORT).show();
                 ApplicationController.getInstance().closeConn();//释放连接对象
-            } else
+            } else {
                 Toast.makeText(getBaseContext(), R.string.msg_receive_data_stop, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
