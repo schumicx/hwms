@@ -26,7 +26,7 @@ public class GsonObjectRequest<T> extends JsonRequest<T> {
     private int statusCode;
 
     public GsonObjectRequest(int method, String url, Class<T> clazz, String jsonRequest, Listener<T> listener, ErrorListener errorListener) {
-        super(method, url, (jsonRequest == null) ? null : jsonRequest, listener, errorListener);
+        super(method, url + timestampParams(url), (jsonRequest == null) ? null : jsonRequest, listener, errorListener);
         this.mClazz = clazz;
     }
 
@@ -48,6 +48,12 @@ public class GsonObjectRequest<T> extends JsonRequest<T> {
                 sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
             }
         }
+        return sb.toString();
+    }
+
+    private static String timestampParams(String url) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(url.contains("?") ? "&" : "?").append("_time=").append(System.currentTimeMillis());
         return sb.toString();
     }
 

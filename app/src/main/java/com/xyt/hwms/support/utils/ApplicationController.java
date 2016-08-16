@@ -123,7 +123,7 @@ public class ApplicationController extends Application {
 
     public void beep() {
         if (toneGenerator != null) {
-            toneGenerator.startTone(ToneGenerator.TONE_CDMA_NETWORK_BUSY_ONE_SHOT);
+            toneGenerator.startTone(ToneGenerator.TONE_CDMA_ABBR_ALERT);
         }
     }
 
